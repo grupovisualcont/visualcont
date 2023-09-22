@@ -1,0 +1,207 @@
+
+/*
+ * ====================================================================
+ * GENERAL
+ * ====================================================================
+ */
+body {
+    background-color: #f7f8f9;
+}
+
+a {
+    color: rgb(54 135 207);
+}
+
+.app-header {
+    border-bottom: 0.15rem solid #3687cf;
+    background: rgb(54 135 207);
+    color: #000000;
+}
+
+#main-wrapper[data-layout=vertical] .app-header.fixed-header .navbar {
+    background: #3687cf;
+}
+
+.text-version {
+    color: #000306;
+    text-align: right;
+    font-size: .75rem;
+}
+
+.unlimited-access {
+    padding: 15px 10px 15px;
+}
+
+.bg-vc-100 {
+    background: rgb(54 135 207) !important;
+}
+
+.bg-vc-50 {
+    background: rgb(143 187 216) !important;
+}
+
+.bg-vc-25 {
+    background: rgb(197 226 243) !important;
+}
+
+/*
+ * ====================================================================
+ * MENU
+ * ====================================================================
+ */
+
+.brand-logo {
+    padding: 0 10px;
+}
+
+.left-sidebar {
+    border-right: 0.15rem solid rgb(54 135 207);
+}
+
+.left-sidebar .scroll-sidebar {
+    border-radius: inherit;
+    background: rgb(54 135 207);
+}
+
+.sidebar-nav ul .sidebar-item .sidebar-link {
+    color: #f3f3f3;
+}
+
+.sidebar-nav ul .sidebar-item .sidebar-link:hover {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.sidebar-nav ul .sidebar-item .first-level .sidebar-item .sidebar-link:hover {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.sidebar-nav ul .sidebar-item .first-level .sidebar-item .sidebar-link.active {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+.sidebar-nav ul .sidebar-item .first-level .sidebar-item .sidebar-link.active.has-arrow::after {
+    border-color: #ffffff;
+    font-weight: 700;
+}
+
+.sidebar-nav .has-arrow::after {
+    border-color: #ffffff;
+    font-weight: 700;
+}
+
+.nav-icon-hover:hover::before {
+    background-color: #0074ba;
+}
+
+.app-header .navbar .navbar-nav .nav-item .nav-link {
+    color: #ffffff;
+}
+
+.nav-small-cap {
+    color: #ffffff;
+}
+
+.app-header .navbar .navbar-nav.quick-links .nav-item:hover .nav-link:before {
+    border-radius: inherit;
+    background: inherit;
+    border-bottom: .3rem solid #0074ba
+}
+
+.app-header .navbar .navbar-nav.quick-links .nav-item:hover .nav-link {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+/*
+ * ====================================================================
+ * CONTENT
+ * ====================================================================
+ */
+
+.card {
+    border: 1px solid #d8dadd;
+    box-shadow: none;
+    margin-bottom: 10px;
+}
+
+.card-body {
+    padding: 0.875rem;
+}
+
+.content-header {
+    padding-bottom: 10px;
+}
+
+.content-header .content-header-name {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000;
+}
+
+.content-header .content-header-links {
+    text-align: right;
+    font-size: 0.875rem;
+}
+
+.content-buttons {
+    margin-bottom: 10px;
+}
+
+/*
+ * ====================================================================
+ * INPUT, SELECTE, TEXTAREA
+ * ====================================================================
+ */
+
+.form-group {
+    margin-bottom: 1rem !important;
+}
+
+.form-control-vc {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: inherit;
+    padding: 0.1rem 0.1rem;
+}
+
+.input-group-vc .form-control {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: inherit;
+    padding: 0.1rem 0.1rem;
+}
+
+.input-group-vc .input-group-text {
+    background: inherit;
+    border-bottom: 1px solid #dfe5ef;
+}
+
+.form-select-vc {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: inherit;
+    padding: 0.1rem 0.1rem;
+}
+
+/*
+ * ====================================================================
+ * BOOTSTRAP
+ * ====================================================================
+ */
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #000;
+    background: inherit;
+    border-bottom: 1px solid #3687cf;
+    border-radius: inherit;
+}
+
+.nav-tabs .nav-link {
+    padding: .1rem;
+    margin-right: 0.875rem;
+}

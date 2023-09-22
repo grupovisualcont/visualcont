@@ -1,0 +1,27 @@
+.DS_Store
+
+# CI
+/app/Database/
+/vendor/
+/writable/
+
+# VUE
+/node_modules
+
+# Editor directories and files
+/nbproject/
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+# SISTEMA
+/public/images/
