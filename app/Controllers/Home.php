@@ -11,6 +11,7 @@ class Home extends BaseController
 
     public function hello(): string
     {
-        return view('app/panel/index');
+        return view('login/index');
     }
+
 }
