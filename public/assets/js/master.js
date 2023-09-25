@@ -1,3 +1,16 @@
+/*
+ * 
+ * @version 1.0.0
+ */
 
+const objMaster = {};
 
-console.log('eaa');
+$(function() {
+
+});
+
+$(document).ready(function() {
+    
+    jQuery(".mydatepicker").datepicker();
+
+});

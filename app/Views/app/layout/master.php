@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="<?= base_url('assets/template/css/icons/font-awesome/css/fontawesome-all.min.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/template/libs/prismjs/themes/prism-okaidia.min.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/template/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/template/libs/select2/dist/css/select2.min.css') ?>" />
     <link id="themeColors" rel="stylesheet" href="<?= base_url('assets/template/css/style-aqua.min.css') ?>" />
     <link rel="stylesheet" href="<?= base_url('assets/css/master.css') ?>" />
 </head>
@@ -64,14 +65,17 @@
     <script src="<?= base_url('assets/template/js/app.init.js') ?>"></script>
     <script src="<?= base_url('assets/template/js/app-style-switcher.js') ?>"></script>
     <script src="<?= base_url('assets/template/js/sidebarmenu.js') ?>"></script>
+    <script src="<?= base_url('assets/template/libs/select2/dist/js/select2.full.min.js') ?>"></script>
+    <script src="<?= base_url('assets/template/libs/select2/dist/js/i18n/es.js') ?>"></script>
     
     <script src="<?= base_url('assets/template/js/custom.js') ?>"></script>
     <script src="<?= base_url('assets/template/libs/prismjs/prism.js') ?>"></script>
     <script src="<?= base_url('assets/template/libs/moment-js/moment.js') ?>"></script>
     <script src="<?= base_url('assets/template/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') ?>"></script>
-    <script>
-      // Date Picker
-      jQuery(".mydatepicker").datepicker();
+    <script src="<?= assetVersion('js/master.js') ?>"></script>
+    <script type="text/javascript" >
+        const BASE_URL = "<?= base_url(); ?>"
     </script>
+    <?= $this->renderSection('script') ?>
     </body>
 </html>
