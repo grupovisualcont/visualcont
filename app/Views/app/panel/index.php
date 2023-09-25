@@ -6,7 +6,7 @@
     <section class="content-header" >
         <div class="row justify-content-between" >
             <div class="col-xl-8 col-md-8 col-sm-8 col-12 content-header-name" >
-                Socio Negocio
+                Socio Negocio 2
             </div>
             <div class="col-xl-4 col-md-4 col-sm-4 col-12 content-header-links col-xl-4 col-md-4 col-sm-4 col-12 content-header-links d-flex align-items-center justify-content-end" >
                 <nav style="--bs-breadcrumb-divider: '/'" aria-label="breadcrumb" >
