@@ -46,11 +46,12 @@
                             <div class="row">
                                 <div class="col-xl-4 col-lg-4 col-md-12 col-12" >
                                     <div class="form-group row" >
-                                        <label for="" class="control-label col-xl-2 col-lg-2 col-12" >
+                                        <label for="tipo_voucher" class="control-label col-xl-2 col-lg-2 col-12" >
                                             Tipo
                                         </label>
                                         <div class="col-xl-10 col-lg-10 col-12" >
-                                            <select class="form-select form-select-sm form-select-vc" >
+                                            <select class="form-select form-select-sm form-select-vc" 
+                                            id="tipo_voucher" name="tipo_voucher" >
                                                 <option value="1" >Opcion 1</option>
                                                 <option value="2" >Opcion 2</option>
                                                 <option value="3" >Opcion 3</option>
@@ -558,5 +559,6 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('script') ?>
-<script src="<?= assetVersion('js/app/tipo_documento/select2.js') ?>"></script>
+<script src="<?= assetVersion('js/app/tipo_voucher/select2.js') ?>"></script>
+<script src="<?= assetVersion('js/app/compra/generar.js') ?>"></script>
 <?= $this->endSection() ?>

@@ -16,4 +16,9 @@ $routes->group('app', static function($routes) {
 
         $routes->get('create', 'Compras::crear');
     });
+
+    $routes->group('type_vouchers', static function($routes) {
+        
+        $routes->get('autocompletado', 'TipoVouchers::autoCompletado');
+    });
 });

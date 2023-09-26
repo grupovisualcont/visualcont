@@ -14,6 +14,6 @@ class Compras extends BaseController
     public function crear()
     {
 
-        return view('app/compra/crear');
+        return viewApp('Compra', 'app/compra/crear');
     }
 }
