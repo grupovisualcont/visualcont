@@ -27,7 +27,7 @@ class TipoVoucherCab extends Model
     {
         $db      = \Config\Database::connect();
         $builder = $db->table('TIPOVOUCHERCAB');
-        $builder->select('CodTV, DescVoucher');
+        $builder->select('CodTV as id, DescVoucher as text');
         // $builder->table('TIPOVOUCHERCAB');
         $builder->like('CodTV', $CodTV);
         $builder->like('DescVoucher', $DescVoucher);

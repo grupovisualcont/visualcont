@@ -39,7 +39,7 @@ $(function () {
          * lo hace siempre que se llame el metodo para que previamente haya sido configurado
          */
         init: function (objDOM, dropdownParent, width) {
-            objDOM = (typeof objDOM == "undefined") ? $('select#tipo_voucher[role=menuitem]') : objDOM;
+            objDOM = (typeof objDOM == "undefined") ? $('select#tipo_voucher') : objDOM;
             dropdownParent = (typeof dropdownParent == "undefined" || !dropdownParent) ? null : dropdownParent;
             width = (typeof width == "undefined" || !width) ? '100%' : width;
 
@@ -59,7 +59,7 @@ $(function () {
                         };
                     },
                     processResults: function (data) {
-                        return {results: data.items};
+                        return {results: data};
                     },
                     cache: true
                 },
