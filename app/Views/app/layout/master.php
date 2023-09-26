@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="<?= base_url('assets/template/libs/select2/dist/css/select2.min.css') ?>" />
     <link id="themeColors" rel="stylesheet" href="<?= base_url('assets/template/css/style-aqua.min.css') ?>" />
     <link rel="stylesheet" href="<?= base_url('assets/css/master.css') ?>" />
+    <link rel="stylesheet" href="<?= base_url('assets/css/main.css') ?>" />
 </head>
 
 <body>

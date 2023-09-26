@@ -45,18 +45,20 @@
                         <div class="authentication-login min-vh-100 bg-body row justify-content-center align-items-center p-4">
                             <div class="col-sm-8 col-md-6 col-xl-9">
                                 <h2 class="mb-3 fs-7 fw-bolder">Inicio de Sesión</h2>
-                                <form>
+                                <p class="text-danger"><?= isset($login) ? $login : '' ?></p>
+                                <span class="text-danger"><?= \Config\Services::validation()->listErrors() ?></span>
+                                <form class="user" method="POST" action="<?= base_url('login') ?>">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control border border-info" placeholder="Username">
+                                        <input type="text" name="usuario" class="form-control border border-info" placeholder="Usuario">
                                         <label>
                                             <i class="ti ti-user me-2 fs-4 text-info"></i>
                                             <span class="border-start border-info ps-3">
-                                                Username
+                                                Usuario
                                             </span>
                                         </label>
                                     </div>
                                     <div class="form-floating mb-3">
-                                        <input type="password" class="form-control border border-info" placeholder="Contraseña">
+                                        <input type="password" name="password" class="form-control border border-info" placeholder="Contraseña">
                                         <label>
                                             <i class="ti ti-lock me-2 fs-4 text-info"></i>
                                             <span class="border-start border-info ps-3">
@@ -73,9 +75,9 @@
                                         </div>
                                         <a class="text-primary fw-medium" href="/">Recuperar contraseña ?</a>
                                     </div>
-                                    <a href="./index.html" class="btn btn-primary w-100 py-8 mb-4 rounded-2">
+                                    <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2">
                                         <i class="fa fa-sign-in-alt"></i> Iniciar Sesión
-                                    </a>
+                                    </button>
                                     <!--<div class="d-flex align-items-center justify-content-center">
                                         <p class="fs-4 mb-0 fw-medium">New to Modernize?</p>
                                         <a class="text-primary fw-medium ms-2" href="./authentication-register.html">Create an account</a>

@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class Moneda extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'monedas';
+    protected $table            = 'moneda';
     protected $primaryKey       = 'CodMoneda';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';

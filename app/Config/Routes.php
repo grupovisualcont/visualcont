@@ -6,8 +6,9 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
+$routes->get('app/panel/index', 'Panel::index');
 
-$routes->get('hello', 'Home::hello');
+$routes->post('login', 'Empresa::login');
 
 $routes->group('app', static function($routes) {
 
