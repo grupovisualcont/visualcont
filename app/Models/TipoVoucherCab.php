@@ -22,7 +22,7 @@ class TipoVoucherCab extends Model
         'CodTVcaja',
         'FlagInterno'
     ];
-    
+
     public function autoCompletado($CodTV = '', $DescVoucher = '')
     {
         $db      = \Config\Database::connect();
@@ -35,5 +35,4 @@ class TipoVoucherCab extends Model
         $builder->orderBy('DescVoucher');
         return $builder->get()->getResult();
     }
-
 }

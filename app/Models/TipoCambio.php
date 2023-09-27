@@ -6,38 +6,34 @@ use CodeIgniter\Model;
 
 class TipoCambio extends Model
 {
-    protected $DBGroup          = 'default';
     protected $table            = 'tipocambio';
     protected $primaryKey       = 'FechaTipoCambio';
-    protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
     protected $allowedFields = [
-        'FechaTipoCambio', 'CodEmpresa', 'CodMoneda', 'ValorCompra', 'ValorVenta', 'Estado'
+        'FechaTipoCambio',
+        'CodEmpresa',
+        'CodMoneda',
+        'ValorCompra',
+        'ValorVenta',
+        'Estado'
     ];
 
-    // Dates
-    protected $useTimestamps = false;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
+    public function insertar($post)
+    {
+        try {
+            $this->insert($post);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 
-    // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
-    protected $skipValidation       = false;
-    protected $cleanValidationRules = true;
+    public function getTipoCambioByFecha($CodEmpresa, $fecha)
+    {
+        try {
+            $result = $this->where('CodEmpresa', $CodEmpresa)->where('FechaTipoCambio', $fecha . ' 00:00:00')->findAll();
 
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

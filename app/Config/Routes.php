@@ -12,6 +12,8 @@ $routes->post('login', 'Empresa::login');
 
 $routes->group('app', static function($routes) {
 
+    $routes->get('mantenimiento/socio_negocio/index', 'Mantenimiento::socio_negocio');
+
     $routes->group('purchase', static function($routes) {
 
         $routes->get('create', 'Compras::crear');

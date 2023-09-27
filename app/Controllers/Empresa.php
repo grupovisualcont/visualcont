@@ -4,32 +4,29 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\Empresa as ModelsEmpresa;
-use App\Models\Moneda;
 use App\Models\TipoCambio;
+
+@session_start();
 
 class Empresa extends BaseController
 {
     protected $page;
-    protected $helpers;
     protected $CodEmpresa;
 
     protected $empresaModel;
     protected $sidebarModel;
     protected $sidebarDetallesModel;
     protected $tipoCambioModel;
-    protected $monedaModel;
 
     public function __construct()
     {
         $this->page = 'Inicio';
-        $this->helpers = ['form', 'url', 'html'];
-        $this->CodEmpresa = isset($_COOKIE['empresa']) && !empty($_COOKIE['empresa']) ? $_COOKIE['empresa'] : '';
+        $this->CodEmpresa = $_COOKIE['empresa'] ?? '';
 
         $this->empresaModel = model('Empresa');
         $this->sidebarModel = model('Sidebar');
         $this->sidebarDetallesModel = model('SidebarDetalles');
         $this->tipoCambioModel = model('TipoCambio');
-        $this->monedaModel = model('Moneda');
     }
 
     public function getCodEmpresa()
@@ -69,7 +66,7 @@ class Empresa extends BaseController
 
                 $this->empresaModel = new ModelsEmpresa();
 
-                $result = $this->empresaModel->where('CodEmpresa', $usuario)->where('Contraseña', $password)->findAll();
+                $result = $this->empresaModel->login($usuario, $password);
 
                 if (count($result) == 1) {
                     $_SESSION['empresa'] = $usuario;
@@ -118,10 +115,36 @@ class Empresa extends BaseController
         }
     }
 
+    public function menu($page = '')
+    {
+        try {
+            return [
+                'page' => $page,
+                'sidebars' => $this->sidebars(),
+                'sidebardetalles' => $this->sidebardetalles(),
+                'empresa' => $this->empresa(),
+                'tipo_cambio' => $this->consulta_tipo_cambio(),
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function empresa()
+    {
+        try {
+            $result = $this->empresaModel->getEmpresaByCodEmpresa('RazonSocial, Ruc', $this->CodEmpresa);
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function sidebars()
     {
         try {
-            $result = $this->sidebarModel->findAll();
+            $result = $this->sidebarModel->getSidebar();
 
             return $result;
         } catch (\Throwable $th) {
@@ -132,7 +155,7 @@ class Empresa extends BaseController
     public function sidebardetalles()
     {
         try {
-            $result = $this->sidebarDetallesModel->findAll();
+            $result = $this->sidebarDetallesModel->getSidebarDetalles();
 
             return $result;
         } catch (\Throwable $th) {
@@ -215,11 +238,7 @@ class Empresa extends BaseController
 
             $this->tipoCambioModel = new TipoCambio();
 
-            $tipo_cambio = $this->tipoCambioModel->where('CodEmpresa', $this->CodEmpresa)->where('FechaTipoCambio', $fecha . ' 00:00:00')->findAll();
-
-            $this->monedaModel = new Moneda();
-
-            $moneda = $this->monedaModel->select('CodMoneda')->where('AbrevMoneda', 'USD')->findAll();
+            $tipo_cambio = $this->tipoCambioModel->getTipoCambioByFecha($this->getCodEmpresa(), $fecha);
 
             if (count($tipo_cambio) == 0) {
                 $token = 'apis-token-1.aTSI1U7KEuT-6bbbCguH-4Y8TI6KS73N';
@@ -251,16 +270,16 @@ class Empresa extends BaseController
                 if ($tipoCambioSunat->compra != NULL && $tipoCambioSunat->venta != NULL) {
                     $post['FechaTipoCambio'] = $fecha . ' 00:00:00';
                     $post['CodEmpresa'] = $this->CodEmpresa;
-                    $post['CodMoneda'] = $moneda[0]['CodMoneda'];
+                    $post['CodMoneda'] = 'MO002';
                     $post['ValorCompra'] = $tipoCambioSunat->compra;
                     $post['ValorVenta'] = $tipoCambioSunat->venta;
                     $post['Estado'] = 1;
 
                     $this->tipoCambioModel = new TipoCambio();
 
-                    $tipo_cambio = $this->tipoCambioModel->where('CodEmpresa', $this->CodEmpresa)->where('FechaTipoCambio', $post['FechaTipoCambio'])->findAll();
+                    $tipo_cambio = $this->tipoCambioModel->getTipoCambioByFecha($this->getCodEmpresa(), $post['FechaTipoCambio']);
 
-                    if (count($tipo_cambio) == 0) $this->tipoCambioModel->insert($post);
+                    if (count($tipo_cambio) == 0) $this->tipoCambioModel->insertar($post);
                 }
             } else {
                 $tipoCambioSunat = json_decode(json_encode(array('compra' => $tipo_cambio[0]['ValorCompra'], 'venta' => $tipo_cambio[0]['ValorVenta'])));

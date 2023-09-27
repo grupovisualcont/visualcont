@@ -113,15 +113,15 @@
                 <div class="d-flex">
                     <div class="unlimited-access-title w-100">
                         <h4 class="fs-2 mb-6 text-dark w-100 fw-bolder">
-                            <?= $ruc . ' ' . $razon_social ?>
+                            <?= $empresa['Ruc'] . ' ' . $empresa['RazonSocial'] ?>
                         </h4>
                         <div class="fw-normal fs-2 mb-6 text-dark w-100">
-                            Tipo de Cambio <?= $fecha ?>
+                            Tipo de Cambio <?= date('d/m/Y') ?>
                         </div>
                         <div class="fs-2 mb-6 text-dark w-100">
                             <div class="d-flex justify-content-between">
-                                <span class="fw-normal">Compra: <?= (isset($tipo_cambio)) ?? $tipo_cambio->compra ?></span>
-                                <span class="fw-normal">Venta: <?= (isset($tipo_cambio)) ?? $tipo_cambio->venta ?></span>
+                                <span class="fw-normal">Compra: <?= $tipo_cambio->compra ?? '' ?></span>
+                                <span class="fw-normal">Venta: <?= $tipo_cambio->venta ?? '' ?></span>
                             </div>
                         </div>
                     </div>
