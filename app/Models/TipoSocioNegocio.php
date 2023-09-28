@@ -11,4 +11,15 @@ class TipoSocioNegocio extends Model
     protected $primaryKey = 'CodTipoSN';
 
     protected $allowedFields = [];
+
+    public function getTipoSocioNegocio()
+    {
+        try {
+            $result = $this->findAll();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

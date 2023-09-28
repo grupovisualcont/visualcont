@@ -20,4 +20,21 @@ class Anexo extends Model
         'OtroDato',
         'IdTipOpeDetra'
     ];
+
+    public function getAnexoByTipoAnexo($CodEmpresa, $TipoAnexo, $OtroDato, $orderBy)
+    {
+        try {
+            $result = $this->where('CodEmpresa', $CodEmpresa)->where('TipoAnexo', $TipoAnexo);
+
+            if (!empty($OtroDato)) $result = $result->where('OtroDato', $OtroDato);
+
+            if (!empty($orderBy)) $result = $result->orderBy($orderBy);
+
+            $result = $result->findAll();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

@@ -289,7 +289,7 @@ class Empresa extends BaseController
 
             if (is_array($rutas) && count($rutas) > 0) {
                 foreach ($rutas as $indice => $valor) {
-                    $script .= '<script src="' . base_url() . 'public/assets/js/' . $valor . '"></script>';
+                    $script .= '<script src="' . base_url() . 'assets/js/' . $valor . '"></script>';
                 }
             }
 

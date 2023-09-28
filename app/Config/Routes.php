@@ -17,9 +17,14 @@ $routes->group('app', static function($routes) {
         $routes->group('socio_negocio', static function($routes) {
 
             $routes->get('index', 'Mantenimiento::socio_negocio');
+            $routes->get('create', 'Mantenimiento::socio_negocio_nuevo');
+            $routes->post('save', 'Mantenimiento::socio_negocio_grabar');
+            $routes->get('edit/(:any)', 'Mantenimiento::socio_negocio_editar/$1');
+            $routes->post('update', 'Mantenimiento::socio_negocio_actualizar');
             $routes->get('delete/(:any)', 'Mantenimiento::socio_negocio_eliminar/$1'); 
             $routes->get('excel', 'Mantenimiento::socio_negocio_reporte_excel');
             $routes->get('pdf', 'Mantenimiento::socio_negocio_reporte_pdf');
+            $routes->post('consulta_duplicados', 'Mantenimiento::socio_negocio_consulta_duplicados');
 
         });
     });

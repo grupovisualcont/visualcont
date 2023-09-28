@@ -11,4 +11,15 @@ class Ts27Vinculo extends Model
     protected $primaryKey = 'CodVinculo';
 
     protected $allowedFields = [];
+
+    public function getTs27Vinculo()
+    {
+        try {
+            $result = $this->findAll();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

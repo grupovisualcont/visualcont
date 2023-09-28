@@ -136,6 +136,7 @@
         <script type="text/javascript">
             const BASE_URL = "<?= base_url(); ?>"
         </script>
+        <?= isset($script) && !empty($script) ? $script : '' ?>
         <?= $this->renderSection('script') ?>
 </body>
 

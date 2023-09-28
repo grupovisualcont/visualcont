@@ -11,4 +11,15 @@ class TipoPersona extends Model
     protected $primaryKey = 'CodTipPer';
 
     protected $allowedFields = [];
+
+    public function getTipoPersona()
+    {
+        try {
+            $result = $this->findAll();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

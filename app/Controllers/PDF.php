@@ -28,9 +28,9 @@ class PDF extends BaseController
             'datos' => $datos
         ]);
 
-        // $stylesheet = file_get_contents('http://localhost/visualcont/public/assets/css/reporte.css');
+        $stylesheet = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/assets/css/reporte.css');
 
-        // $this->objPDF->WriteHTML($stylesheet, 1);
+        $this->objPDF->WriteHTML($stylesheet, 1);
 		$this->objPDF->WriteHTML($html);
         
         service('response')->setHeader("Content-Type", "application/pdf");

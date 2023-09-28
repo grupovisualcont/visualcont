@@ -23,4 +23,15 @@ class Banco extends Model
         'Propio',
         'PagoDetraccion'
     ];
+
+    public function getBanco($CodEmpresa, $columnas)
+    {
+        try {
+            $result = $this->select($columnas)->where('CodEmpresa', $CodEmpresa)->orderBy('Codbanco', 'ASC')->findAll();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

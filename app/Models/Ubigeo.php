@@ -11,4 +11,15 @@ class Ubigeo extends Model
     protected $primaryKey = 'codubigeo';
 
     protected $allowedFields = [];
+
+    public function getPaises()
+    {
+        try {
+            $result = $this->where('LENGTH(codubigeo) =', 2, FALSE)->orWhere('codubigeo LIKE "9%"')->findAll();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }
