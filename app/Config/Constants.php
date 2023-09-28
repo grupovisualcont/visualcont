@@ -98,3 +98,9 @@ define('EVENT_PRIORITY_HIGH', 10);
  * @var string
  */
 define('APP_VERSION', '0.0.1');
+
+/**
+ * Limite para mostrar los registros de un auto completado
+ * @var int
+ */
+define('LIMITE_AUTOCOMPLETADO', 80);

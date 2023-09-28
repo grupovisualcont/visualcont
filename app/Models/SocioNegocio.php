@@ -49,7 +49,6 @@ class SocioNegocio extends Model
                 ->where('socionegocio.CodEmpresa', $CodEmpresa)
                 ->orderBy('socionegocio.idSocioN', 'ASC')
                 ->findAll();
-
             return $result;
         } catch (\Throwable $th) {
             throw $th;
@@ -100,4 +99,28 @@ class SocioNegocio extends Model
             throw $th;
         }
     }
+
+    /**
+     * autocompletado de clientes
+     */
+    public function autoCompletado($busqueda, $tipo, $codEmpresa)
+    {
+        $this->select("
+            socionegocio.idSocioN as id,
+            CONCAT(socionegocio.ruc, ' ', socionegocio.razonsocial) AS text
+        ");
+        $this->table('socionegocio');
+        $this->join('socionegocioxtipo', 'socionegocio.idSocioN = socionegocioxtipo.idSocioN', 'inner');
+        $this->where('socionegocio.codEmpresa', $codEmpresa);
+        $this->where('socionegocioxtipo.CodTipoSN', $tipo);
+        if (!empty($busqueda)) {
+            $this->groupStart();
+            $this->like('socionegocio.razonsocial', $busqueda);
+            $this->orLike('socionegocio.ruc', $busqueda);
+            $this->groupEnd();
+        }
+        $this->limit(LIMITE_AUTOCOMPLETADO);
+        return $this->get()->getResult();
+    }
+
 }

@@ -52,9 +52,11 @@
                                         <div class="col-xl-10 col-lg-10 col-12" >
                                             <select class="form-select form-select-sm form-select-vc" 
                                             id="tipo_voucher" name="tipo_voucher" >
-                                                <option value="1" >Opcion 1</option>
-                                                <option value="2" >Opcion 2</option>
-                                                <option value="3" >Opcion 3</option>
+                                                <?php if (!empty($objTypeVoucher)) { ?>
+                                                    <option value="<?= $objTypeVoucher->CodTV ?>">
+                                                        <?= $objTypeVoucher->DescVoucher ?>
+                                                    </option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
@@ -65,8 +67,11 @@
                                             Voucher
                                         </label>
                                         <div class="col-xl-9 col-lg-9 col-12" >
-                                            <input type="text" class="form-control form-control-sm form-control-vc" 
-                                            value="" >
+                                            <div class="input-group input-group-sm" >
+                                                <span class="input-group-text" >COM</span>
+                                                <input type="text" class="form-control form-control-sm form-control-vc" 
+                                                value="<?= substr($voucher, 3, strlen($voucher)) ?>" >
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -99,7 +104,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-12" >
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-12 d-none" >
                                     <div class="form-group" >
                                         <div class="form-check form-check-reverse">
                                             <label class="form-check-label" for="flexCheckDefault">
@@ -126,16 +131,12 @@
                                 <div class="tab-pane px-2 py-3 fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                                     <div class="row">
                                         <div class="col-xl-8 col-md-8 col-12" >
-                                            <div class="form-group row" >
+                                            <div class="form-group row" for="socio_negocio" >
                                                 <label for="" class="control-label col-xl-3 col-lg-3 col-12" >
-                                                    Cliente
+                                                    Proveedor
                                                 </label>
                                                 <div class="col-xl-9 col-lg-9 col-12" >
-                                                    <select class="form-select form-select-sm form-select-vc" >
-                                                        <option value="1" >Cliente 1</option>
-                                                        <option value="2" >Cliente 2</option>
-                                                        <option value="3" >Cliente 3</option>
-                                                    </select>
+                                                    <select class="form-select form-select-sm form-select-vc" id="socio_negocio" name="socio_negocio" ></select>
                                                 </div>
                                             </div>
                                             <div class="form-group row" >
@@ -560,5 +561,6 @@
 
 <?= $this->section('script') ?>
 <script src="<?= assetVersion('js/app/tipo_voucher/select2.js') ?>"></script>
+<script src="<?= assetVersion('js/app/socio_negocio/select2.js') ?>"></script>
 <script src="<?= assetVersion('js/app/compra/generar.js') ?>"></script>
 <?= $this->endSection() ?>

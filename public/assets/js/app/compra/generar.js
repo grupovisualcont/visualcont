@@ -10,6 +10,7 @@ $(function() {
 
 $(document).ready(function() {
 
+    s2SocioNegocio.init();
     s2TipoVoucher.init();
 
 });

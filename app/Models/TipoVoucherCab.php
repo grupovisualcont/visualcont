@@ -9,6 +9,7 @@ class TipoVoucherCab extends Model
     protected $DBGroup          = 'default';
     protected $table            = 'tipovouchercab';
     protected $primaryKey       = 'CodTv';
+    protected $returnType       = 'object';
     protected $allowedFields    = [
         'CodTV',
         'CodEmpresa',
@@ -35,4 +36,5 @@ class TipoVoucherCab extends Model
         $builder->orderBy('DescVoucher');
         return $builder->get()->getResult();
     }
+
 }
