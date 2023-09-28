@@ -48,7 +48,10 @@ a {
     border-color: transparent;
     border-bottom: 1px solid #dfe5ef;
     height: 28px;
-    line-height: 20px;
+    line-height: 30px;
+    font-size: .765625rem;
+    color: #5a6a85;
+    padding-left: 0;
 }
 
 /*

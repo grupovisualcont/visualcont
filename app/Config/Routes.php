@@ -29,6 +29,14 @@ $routes->group('app', static function($routes) {
         });
     });
 
+    $routes->group('mantenience', static function($routes) {
+        
+        $routes->group('business_partner', static function($routes) {
+        
+            $routes->get('autocompletado', 'SocioNegocios::autoCompletado');
+        });
+    });
+
     $routes->group('purchase', static function($routes) {
 
         $routes->get('create', 'Compras::crear');
