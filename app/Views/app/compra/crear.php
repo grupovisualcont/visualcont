@@ -26,12 +26,12 @@
         </div>
     </section>
     <section class="content-buttons btn-groups" >
-        <button type="button" class="btn btn-info font-medium rounded-pill px-4" >
+        <button type="button" class="btn btn-info btn-sm font-medium rounded-pill px-4" >
             <div class="d-flex align-items-center" >
                 <i class="fa fa-save me-2 fs-4" ></i> Grabar
             </div>
         </button>
-        <button type="button" class="btn btn-link font-medium rounded-pill px-4" >
+        <button type="button" class="btn btn-link btn-sm font-medium rounded-pill px-4" >
             <div class="d-flex align-items-center" >
                 Cancelar
             </div>
@@ -164,7 +164,7 @@
                                                     </div>
                                                     <div class="form-group row" >
                                                         <label for="" class="control-label col-xl-4 col-lg-4 col-12" >
-                                                            Nro Inicial
+                                                            Número
                                                         </label>
                                                         <div class="col-xl-8 col-lg-8 col-12" >
                                                             <input type="text" class="form-control form-control-sm form-control-vc" 
@@ -172,23 +172,11 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row" >
-                                                        <label for="" class="control-label col-xl-4 col-lg-4 col-12" >
-                                                            Nro Final
-                                                        </label>
-                                                        <div class="col-xl-8 col-lg-8 col-12" >
-                                                            <input type="text" class="form-control form-control-sm form-control-vc" 
-                                                            value="" >
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row" >
-                                                        <label for="" class="control-label col-xl-4 col-lg-4 col-12" >
+                                                        <label for="condicion_pago" class="control-label col-xl-4 col-lg-4 col-12" >
                                                             Cond. Pago
                                                         </label>
                                                         <div class="col-xl-8 col-lg-8 col-12" >
-                                                            <select class="form-select form-select-sm form-select-vc" >
-                                                                <option value="1" >CREDITO</option>
-                                                                <option value="2" >CONTADO</option>
-                                                            </select>
+                                                            <select class="form-select form-select-sm form-select-vc" id="condicion_pago" name="condicion_pago" ></select>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -222,13 +210,16 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row" >
-                                                        <label for="" class="control-label col-xl-5 col-lg-5 col-12" >
+                                                        <label for="moneda" class="control-label col-xl-5 col-lg-5 col-12" >
                                                             Moneda
                                                         </label>
                                                         <div class="col-xl-7 col-lg-7 col-12" >
-                                                            <select class="form-select form-select-sm form-select-vc" >
-                                                                <option value="1" >Soles</option>
-                                                                <option value="2" >Dolares</option>
+                                                            <select class="form-select form-select-sm form-select-vc" id="moneda" name="moneda" >
+                                                                <?php if (!empty($objCurrency)) { ?>
+                                                                    <option value="<?= $objCurrency->CodMoneda ?>">
+                                                                        <?= $objCurrency->DescMoneda ?>
+                                                                </option>
+                                                                <?php } ?>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -242,14 +233,16 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row" >
-                                                        <label for="" class="control-label col-xl-5 col-lg-5 col-12" >
+                                                        <label for="operation_type" class="control-label col-xl-5 col-lg-5 col-12" >
                                                             Tipo Operación
                                                         </label>
                                                         <div class="col-xl-7 col-lg-7 col-12" >
-                                                            <select class="form-select form-select-sm form-select-vc" >
-                                                                <option value="1" >Gravada</option>
-                                                                <option value="2" >Inafecto</option>
-                                                                <option value="2" >Exonerado</option>
+                                                            <select class="form-select form-select-sm form-select-vc" id="operation_type" name="operation_type" >
+                                                                <?php if (!empty($objOperationType)) { ?>
+                                                                    <option value="<?= $objOperationType->IdAnexo ?>">
+                                                                        <?= $objOperationType->DescAnexo ?>
+                                                                    </option>
+                                                                <?php } ?>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -559,8 +552,12 @@
 
 <?= $this->endSection() ?>
 
+
 <?= $this->section('script') ?>
+<script src="<?= assetVersion('js/app/condicion_pago/select2.js') ?>"></script>
 <script src="<?= assetVersion('js/app/tipo_voucher/select2.js') ?>"></script>
 <script src="<?= assetVersion('js/app/socio_negocio/select2.js') ?>"></script>
+<script src="<?= assetVersion('js/app/anexo/select2.js') ?>"></script>
+<script src="<?= assetVersion('js/app/moneda/select2.js') ?>"></script>
 <script src="<?= assetVersion('js/app/compra/generar.js') ?>"></script>
 <?= $this->endSection() ?>

@@ -35,6 +35,18 @@ $routes->group('app', static function($routes) {
         
             $routes->get('autocompletado', 'SocioNegocios::autoCompletado');
         });
+
+        $routes->group('payment_condition', static function($routes) {
+
+            $routes->get('autocompletado', 'CondicionesPago::autoCompletado');
+        });
+
+        $routes->group('anexo', static function($routes) {
+
+            $routes->get('operation_type', 'Anexos::autoCompletadoTipoOperacion');
+        });
+
+        $routes->get('moneda/autocompletado', 'Monedas::autoCompletado');
     });
 
     $routes->group('purchase', static function($routes) {

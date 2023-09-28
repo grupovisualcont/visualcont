@@ -37,4 +37,19 @@ class Anexo extends Model
             throw $th;
         }
     }
+
+    public function autoCompletado($busqueda, $codEmpresa, $tipo)
+    {
+        $this->select('
+            IdAnexo as id,
+            DescAnexo as text
+        ');
+        $this->where('TipoAnexo', $tipo);
+        $this->where('codEmpresa', $codEmpresa);
+        if (!empty($busqueda)) {
+            $this->like('DescAnexo', $busqueda);
+        }
+        $this->orderBy('CodInterno', 'ASC');
+        return $this->get()->getResult();
+    }
 }
