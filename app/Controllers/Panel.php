@@ -12,8 +12,6 @@ class Panel extends BaseController
     protected $empresa;
     protected $CodEmpresa;
 
-    protected $db;
-
     public function __construct()
     {
         $this->page = 'Inicio';
@@ -23,8 +21,6 @@ class Panel extends BaseController
 
     public function index()
     {
-        $data = $this->empresa->menu($this->page);
-
-        return view('app/panel/index', $data);
+        return viewApp($this->page, 'app/panel/index');
     }
 }

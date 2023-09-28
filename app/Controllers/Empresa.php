@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\Empresa as ModelsEmpresa;
+use App\Models\Sidebar;
+use App\Models\SidebarDetalles;
 use App\Models\TipoCambio;
 
 @session_start();
@@ -23,10 +25,10 @@ class Empresa extends BaseController
         $this->page = 'Inicio';
         $this->CodEmpresa = $_COOKIE['empresa'] ?? '';
 
-        $this->empresaModel = model('Empresa');
-        $this->sidebarModel = model('Sidebar');
-        $this->sidebarDetallesModel = model('SidebarDetalles');
-        $this->tipoCambioModel = model('TipoCambio');
+        $this->empresaModel = new ModelsEmpresa();
+        $this->sidebarModel = new Sidebar();
+        $this->sidebarDetallesModel = new SidebarDetalles();
+        $this->tipoCambioModel = new TipoCambio();
     }
 
     public function getCodEmpresa()
@@ -73,7 +75,7 @@ class Empresa extends BaseController
 
                     setcookie('empresa', $usuario, time() + 60 * 60 * 24 * 365, '/');
 
-                    return redirect()->to(base_url() . 'app/panel/index');
+                    return redirect()->to(base_url('app/panel/index'));
                 } else {
                     return view('login/index', [
                         'validation' => $this->validator,
@@ -110,21 +112,6 @@ class Empresa extends BaseController
             } else {
                 return false;
             }
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
-    public function menu($page = '')
-    {
-        try {
-            return [
-                'page' => $page,
-                'sidebars' => $this->sidebars(),
-                'sidebardetalles' => $this->sidebardetalles(),
-                'empresa' => $this->empresa(),
-                'tipo_cambio' => $this->consulta_tipo_cambio(),
-            ];
         } catch (\Throwable $th) {
             throw $th;
         }

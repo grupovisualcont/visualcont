@@ -7,19 +7,17 @@
         <div class="card-header py-3">
             <span class="titulo-header-card">Socio de Negocio</span>
             <div class="float-end">
-                <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-boundary="viewport" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-bars"></i>
                 </button>
                 <div class="dropdown-menu" x-placement="left-start">
-                    <a class="dropdown-item item" href="<?= base_url('app/mantenimiento/socio_negocio/create') ?>">
+                    <a class="dropdown-item" href="<?= base_url('app/mantenimiento/socio_negocio/create') ?>">
                         <i class="fas fa-plus-circle"></i> Nuevo
                     </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item item" href="<?= base_url('app/mantenimiento/socio_negocio/excel') ?>">
+                    <a class="dropdown-item" href="<?= base_url('app/mantenimiento/socio_negocio/excel') ?>">
                         <i class="fas fa-file-excel"></i> Exportar a Excel
                     </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item item option-remove" href="<?= base_url('app/mantenimiento/socio_negocio/pdf') ?>" target="_blank">
+                    <a class="dropdown-item" href="<?= base_url('app/mantenimiento/socio_negocio/pdf') ?>" target="_blank">
                         <i class="fas fa-print"></i> Imprimir
                     </a>
                 </div>
@@ -51,15 +49,14 @@
                                 <td><?= $valor['estado'] ?></td>
                                 <td><?= $valor['condicion'] ?></td>
                                 <td align="center">
-                                    <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-boundary="viewport" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-bars"></i>
                                     </button>
                                     <div class="dropdown-menu" x-placement="left-start">
-                                        <a class="dropdown-item item" href="<?= base_url('app/mantenimiento/socio_negocio/update/' . $valor['IdSocioN']) ?>">
+                                        <a class="dropdown-item" href="<?= base_url('app/mantenimiento/socio_negocio/update/' . $valor['IdSocioN']) ?>">
                                             <i class="fa fa-edit"></i> Editar
                                         </a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item item option-remove" href="<?= base_url('app/mantenimiento/socio_negocio/delete/' . $valor['IdSocioN']) ?>" onclick="return confirm('¿Está seguro de eliminar?')">
+                                        <a class="dropdown-item" href="<?= base_url('app/mantenimiento/socio_negocio/delete/' . $valor['IdSocioN']) ?>" onclick="return confirm('¿Está seguro de eliminar?')">
                                             <i class="fa fa-trash"></i> Eliminar
                                         </a>
                                     </div>

@@ -14,38 +14,39 @@
  * @see: https://codeigniter.com/user_guide/extending/common.html
  */
 
+use App\Controllers\Empresa;
+
  if (! function_exists('viewApp')) {
     /**
      * Metodo para cargar la vista junto con el menu, la empresa y tipo de cambio
      */
     function viewApp(string $page, string $name, array $data = [], array $options = []): string
     {
+        $Empresa = new Empresa;
+
         $db = db_connect();
+
         // menu
-        $fecha = date('Y-m-d');
-        $codEmpresa = $_COOKIE['empresa'];
-        $builder = $db->table('sidebar');
-        $sidebars   = $builder->get()->getResult('array');
+        $sidebars = $Empresa->sidebars();
+
         // sub menu
-        $builder = $db->table('sidebardetalles');
-        $sidebardetalles   = $builder->get()->getResult('array');
+        $sidebardetalles   = $Empresa->sidebardetalles();
+
         // empresa
-        $builder = $db->table('empresas');
-        $empresa   = $builder->where('codEmpresa', $codEmpresa)->get()->getRow();
+        $empresa   = $Empresa->empresa();
+        
         // tipo de cambio
-        $builder = $db->table('tipocambio');
-        $tipoCambio   = $builder->where('CodEmpresa', $codEmpresa)
-                    ->where('FechaTipoCambio', $fecha . ' 00:00:00')->get()->getRow();
+        $tipoCambio   = $Empresa->consulta_tipo_cambio();
         
         $data = array_merge($data, [
             'page' => $page,
             'sidebars' => $sidebars,
             'sidebardetalles' => $sidebardetalles,
-            'razon_social' => $empresa->RazonSocial,
-            'ruc' => $empresa->Ruc,
+            'empresa' => $empresa,
             'fecha' => date('d/m/Y'),
             'tipo_cambio' => $tipoCambio,
         ]);
+
         return view($name, $data, $options);
     }
 }

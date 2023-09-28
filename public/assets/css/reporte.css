@@ -1,0 +1,50 @@
+h2 {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+p {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#reporte {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+  
+#reporte th {
+    text-align: left;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 8px;
+    font-weight: normal;
+    display: block;
+    white-space: nowrap;
+}
+
+#reporte td {
+    padding: 8px;
+}
+
+table {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.border-top {
+    border-top: 2px solid black;
+}
+
+.border-bottom {
+    border-bottom: 2px solid black;
+}
+
+.border-general {
+    border-top: 5px double black;
+}
+
+.nowrap {
+    display: block;
+    white-space: nowrap;
+}

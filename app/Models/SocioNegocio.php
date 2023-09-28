@@ -55,4 +55,49 @@ class SocioNegocio extends Model
             throw $th;
         }
     }
+
+    public function eliminarSocioNegocio($CodEmpresa, $IdSocioN)
+    {
+        try {
+            $this->where('CodEmpresa', $CodEmpresa)->delete($IdSocioN);
+
+            $socioNegocioXTipoModel = new SocioNegocioXTipo();
+
+            $socioNegocioXTipoModel->where('IdSocioN', $IdSocioN)->delete();
+
+            $socioNegocioBancoModel = new SocioNegocioBanco();
+
+            $socioNegocioBancoModel->where('IdSocion', $IdSocioN)->delete();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function getSocioNegocioPDF($CodEmpresa)
+    {
+        try {
+            $result = $this->select("IdSocioN, IF(ruc = '', CONCAT(ApePat, ' ', ApeMat, ' ', Nom1, IF(LENGTH(Nom2) = 0, '', CONCAT(' ', Nom2))), razonsocial) AS Cliente, ruc, docidentidad, telefono, direccion1")
+                ->where('CodEmpresa', $CodEmpresa)
+                ->orderBy('idSocioN', 'ASC')
+                ->findAll();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function getSocioNegocioExcel($CodEmpresa)
+    {
+        try {
+            $result = $this->select("IdSocioN, IF(ruc = '', CONCAT(ApePat, ' ', ApeMat, ' ', Nom1, IF(LENGTH(Nom2) = 0, '', CONCAT(' ', Nom2))), razonsocial) AS Cliente, ruc, docidentidad, telefono, direccion1")
+                ->where('CodEmpresa', $CodEmpresa)
+                ->orderBy('idSocioN', 'ASC')
+                ->findAll();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }
