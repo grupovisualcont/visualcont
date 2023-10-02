@@ -17,21 +17,52 @@ class TipoCambio extends Model
         'Estado'
     ];
 
-    public function insertar($post)
+    public function getTipoCambio(string $CodEmpresa, string $FechaTipoCambio, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
-            $this->insert($post);
+            $result = $this;
+
+            if (!empty($columnas)) $result = $this->select($columnas);
+
+            if (is_array($join) && count($join) > 0) {
+                foreach ($join as $indice => $valor) {
+                    $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
+                }
+            }
+
+            $result = $result->where('CodEmpresa', $CodEmpresa);
+
+            if (!empty($FechaTipoCambio)) $result = $result->where('FechaTipoCambio', strpos($FechaTipoCambio, ' 00:00:00') !== FALSE ? $FechaTipoCambio : $FechaTipoCambio . ' 00:00:00');
+
+            if (!empty($where)) $result = $result->where($where);
+
+            if (!empty($orderBy)) $result = $result->orderBy($orderBy);
+
+            $result = $result->findAll();
+
+            return $result;
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function getTipoCambioByFecha($CodEmpresa, $fecha)
+    public function agregar($data)
     {
         try {
-            $result = $this->where('CodEmpresa', $CodEmpresa)->where('FechaTipoCambio', $fecha . ' 00:00:00')->findAll();
+            $this->insert($data);
+
+            $result = $this->insertID();
 
             return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function actualizar($CodEmpresa, $FechaTipoCambio, $data)
+    {
+        try {
+            $this->where('CodEmpresa', $CodEmpresa)->update($FechaTipoCambio, $data);
         } catch (\Throwable $th) {
             throw $th;
         }

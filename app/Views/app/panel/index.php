@@ -76,7 +76,7 @@
                                         </label>
                                         <div class="col-xl-8 col-lg-8 col-12" >
                                             <div class="input-group input-group-sm input-group-vc">
-                                                <input type="text" class="form-control mydatepicker" placeholder="mm/dd/yyyy"
+                                                <input type="text" class="form-control mydatepicker" placeholder="dd/mm/yyyy"
                                                 value="21/09/2023" >
                                                 <span class="input-group-text" >
                                                     <i class="fa fa-calendar" ></i>
@@ -197,7 +197,7 @@
                                                         </label>
                                                         <div class="col-xl-7 col-lg-7 col-12" >
                                                             <div class="input-group input-group-sm input-group-vc">
-                                                                <input type="text" class="form-control mydatepicker" placeholder="mm/dd/yyyy"
+                                                                <input type="text" class="form-control mydatepicker" placeholder="dd/mm/yyyy"
                                                                 value="21/09/2023" >
                                                                 <span class="input-group-text" >
                                                                     <i class="fa fa-calendar" ></i>
@@ -211,7 +211,7 @@
                                                         </label>
                                                         <div class="col-xl-7 col-lg-7 col-12" >
                                                             <div class="input-group input-group-sm input-group-vc">
-                                                                <input type="text" class="form-control mydatepicker" placeholder="mm/dd/yyyy"
+                                                                <input type="text" class="form-control mydatepicker" placeholder="dd/mm/yyyy"
                                                                 value="21/09/2023" >
                                                                 <span class="input-group-text" >
                                                                     <i class="fa fa-calendar" ></i>

@@ -11,6 +11,8 @@ $(function() {
 
 $(document).ready(function() {
     
-    jQuery(".mydatepicker").datepicker();
+    jQuery(".mydatepicker").datepicker({
+        format: "dd/mm/yyyy"
+    });
 
 });

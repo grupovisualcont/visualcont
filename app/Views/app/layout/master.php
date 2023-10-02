@@ -97,6 +97,81 @@
             }
             ?>
 
+            function esNumero(evt) {
+                var theEvent = evt || window.event;
+
+                if (theEvent.type === 'paste') {
+                    key = event.clipboardData.getData('text/plain');
+                } else {
+                    var key = theEvent.keyCode || theEvent.which;
+                    key = String.fromCharCode(key);
+                }
+
+                var regex = /[0-9]|\./;
+
+                if (!regex.test(key)) {
+                    theEvent.returnValue = false;
+
+                    if (theEvent.preventDefault) theEvent.preventDefault();
+                }
+            }
+
+            function esMayorCero(evt) {
+                if (parseFloat(evt.value) <= 0) {
+                    evt.value = '';
+                }
+            }
+
+            function autocompletado(id, url) {
+                $(id).select2({
+                    placeholder: 'Seleccione',
+                    dropdownAutoWidth: true,
+                    ajax: {
+                        url: url,
+                        dataType: 'json',
+                        type: 'POST',
+                        data: function(params) {
+                            var query = {
+                                search: params.term
+                            }
+
+                            return query;
+                        },
+                        processResults: function(data) {
+                            return {
+                                results: $.map(data, function(item) {
+                                    return {
+                                        id: item.value,
+                                        text: item.name,
+                                        disabled: item.disabled,
+                                        TipoDato: item.TipoDato,
+                                        tipo_dato: item.tipo_dato
+                                    }
+                                })
+                            };
+                        },
+                    },
+                    templateSelection: function(data, container) {
+                        if(data.TipoDato){
+                            $(data.element).attr('data-tipo-dato', data.TipoDato);
+                        }
+
+                        if (data.tipo_dato) {
+                            var tipo_dato = data.tipo_dato.split('|');
+                            var longitud = tipo_dato[2];
+                            var serie = tipo_dato[3];
+                            var es_numero = tipo_dato[4].length == 0 ? 'no' : 'si';
+
+                            $(data.element).attr('data-es-numero', es_numero);
+                            $(data.element).attr('data-serie', serie);
+                            $(data.element).attr('data-longitud', longitud);
+                        }
+
+                        return data.text;
+                    }
+                });
+            }
+
             alertify.defaults.transition = "slide";
             alertify.defaults.theme.ok = "btn btn-sm btn-primary";
             alertify.defaults.theme.cancel = "btn btn-sm btn-danger";

@@ -40,22 +40,58 @@ class SocioNegocio extends Model
         'docidentidad_Tele'
     ];
 
-    public function getSocioNegocio($CodEmpresa)
+    public function getSocioNegocio(string $CodEmpresa, int $IdSocioN, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
-            $result = $this->select('socionegocio.*, IF(LENGTH(socionegocio.razonsocial) = 0, CONCAT(socionegocio.Nom1, " ", IF(LENGTH(socionegocio.Nom2) = 0, "", CONCAT(socionegocio.Nom2, " ")), socionegocio.ApePat, " ", socionegocio.ApeMat), socionegocio.razonsocial) AS razonsocial, a1.DescAnexo AS estado, a2.DescAnexo AS condicion')
-                ->join('anexos a1', 'a1.IdAnexo = socionegocio.Idestado AND a1.CodEmpresa = socionegocio.CodEmpresa', 'left')
-                ->join('anexos a2', 'a2.IdAnexo = socionegocio.IdCondicion AND a2.CodEmpresa = socionegocio.CodEmpresa', 'left')
-                ->where('socionegocio.CodEmpresa', $CodEmpresa)
-                ->orderBy('socionegocio.idSocioN', 'ASC')
-                ->findAll();
+            $result = $this;
+
+            if (!empty($columnas)) $result = $this->select($columnas);
+
+            if (is_array($join) && count($join) > 0) {
+                foreach ($join as $indice => $valor) {
+                    $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
+                }
+            }
+
+            $result = $result->where('socionegocio.CodEmpresa', $CodEmpresa);
+
+            if (!empty($IdSocioN)) $result = $result->where('socionegocio.IdSocioN', $IdSocioN);
+
+            if (!empty($where)) $result = $result->where($where);
+
+            if (!empty($orderBy)) $result = $result->orderBy($orderBy);
+
+            $result = $result->findAll();
+
             return $result;
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function eliminarSocioNegocio($CodEmpresa, $IdSocioN)
+    public function agregar($data)
+    {
+        try {
+            $this->insert($data);
+
+            $result = $this->insertID();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function actualizar($CodEmpresa, $IdSocioN, $data)
+    {
+        try {
+            $this->where('CodEmpresa', $CodEmpresa)->update($IdSocioN, $data);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function eliminar($CodEmpresa, $IdSocioN)
     {
         try {
             $this->where('CodEmpresa', $CodEmpresa)->delete($IdSocioN);
@@ -67,34 +103,6 @@ class SocioNegocio extends Model
             $socioNegocioBancoModel = new SocioNegocioBanco();
 
             $socioNegocioBancoModel->where('IdSocion', $IdSocioN)->delete();
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
-    public function getSocioNegocioPDF($CodEmpresa)
-    {
-        try {
-            $result = $this->select("IdSocioN, IF(ruc = '', CONCAT(ApePat, ' ', ApeMat, ' ', Nom1, IF(LENGTH(Nom2) = 0, '', CONCAT(' ', Nom2))), razonsocial) AS Cliente, ruc, docidentidad, telefono, direccion1")
-                ->where('CodEmpresa', $CodEmpresa)
-                ->orderBy('idSocioN', 'ASC')
-                ->findAll();
-
-            return $result;
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
-    public function getSocioNegocioExcel($CodEmpresa)
-    {
-        try {
-            $result = $this->select("IdSocioN, IF(ruc = '', CONCAT(ApePat, ' ', ApeMat, ' ', Nom1, IF(LENGTH(Nom2) = 0, '', CONCAT(' ', Nom2))), razonsocial) AS Cliente, ruc, docidentidad, telefono, direccion1")
-                ->where('CodEmpresa', $CodEmpresa)
-                ->orderBy('idSocioN', 'ASC')
-                ->findAll();
-
-            return $result;
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -122,5 +130,4 @@ class SocioNegocio extends Model
         $this->limit(LIMITE_AUTOCOMPLETADO);
         return $this->get()->getResult();
     }
-
 }

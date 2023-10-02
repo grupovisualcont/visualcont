@@ -11,4 +11,15 @@ class I_AnexoSunat extends Model
     protected $primaryKey = 'IdAnexoS';
 
     protected $allowedFields = [];
+
+    public function getI_AnexoSunatByTipoAnexoS($TipoAnexoS)
+    {
+        try {
+            $result = $this->where('TipoAnexoS', $TipoAnexoS)->findAll();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

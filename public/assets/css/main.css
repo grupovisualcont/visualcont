@@ -2,10 +2,166 @@
     white-space: normal !important;
 }
 
+.text-black-tabla {
+    color: #858796 !important;
+}
+
 .display-block {
     display: block !important;
 }
 
 .display-none {
     display: none !important;
+}
+
+.underline {
+    border-bottom: 1px solid black !important;
+}
+
+.background-readonly {
+    background-color: #eaecf4 !important;
+}
+
+.select2-results__option {
+    white-space: wrap;
+}
+  
+.select2.select2-container {
+    width: 100% !important;
+}
+
+@media (min-width: 576px) {
+    .width-35 {
+        width: 100% !important;
+    }
+
+    .width-50 {
+        width: 100% !important;
+    }
+
+    .width-65 {
+        width: 100% !important;
+    }
+
+    .width-75 {
+        width: 100% !important;
+    }
+
+    .width-100 {
+        width: 100% !important;
+    }
+
+    .hidden-in-sm {
+        display: none !important;
+    }
+
+    .table-layout{
+        table-layout: auto;
+    }
+
+    .display-sm-grid {
+        display: grid !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .width-35 {
+        width: 100% !important;
+    }
+
+    .width-50 {
+        width: 100% !important;
+    }
+
+    .width-65 {
+        width: 100% !important;
+    }
+
+    .width-75 {
+        width: 100% !important;
+    }
+
+    .width-100 {
+        width: 100% !important;
+    }
+
+    .hidden-in-sm {
+        display: none !important;
+    }
+
+    .table-layout{
+        table-layout: auto;
+    }
+
+    .display-sm-grid {
+        display: grid !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .width-35 {
+        width: 35% !important;
+    }
+
+    .width-50 {
+        width: 50% !important;
+    }
+
+    .width-65 {
+        width: 65% !important;
+    }
+
+    .width-75 {
+        width: 75% !important;
+    }
+
+    .width-100 {
+        width: 100% !important;
+    }
+
+    .hidden-in-sm {
+        display: block !important;
+    }
+
+    .table-layout{
+        table-layout: fixed;
+    }
+
+    .display-sm-grid {
+        display: block !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .width-35 {
+        width: 35% !important;
+    }
+
+    .width-50 {
+        width: 50% !important;
+    }
+
+    .width-65 {
+        width: 65% !important;
+    }
+
+    .width-75 {
+        width: 75% !important;
+    }
+
+    .width-100 {
+        width: 100% !important;
+    }
+
+    .hidden-in-sm {
+        display: block !important;
+    }
+
+    .table-layout{
+        table-layout: fixed;
+    }
+
+    .display-sm-grid {
+        display: block !important;
+    }
 }

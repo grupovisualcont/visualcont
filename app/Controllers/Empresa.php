@@ -225,7 +225,7 @@ class Empresa extends BaseController
 
             $this->tipoCambioModel = new TipoCambio();
 
-            $tipo_cambio = $this->tipoCambioModel->getTipoCambioByFecha($this->getCodEmpresa(), $fecha);
+            $tipo_cambio = $this->tipoCambioModel->getTipoCambio($this->getCodEmpresa(), $fecha, '', [], '', '');
 
             if (count($tipo_cambio) == 0) {
                 $token = 'apis-token-1.aTSI1U7KEuT-6bbbCguH-4Y8TI6KS73N';
@@ -264,7 +264,7 @@ class Empresa extends BaseController
 
                     $this->tipoCambioModel = new TipoCambio();
 
-                    $tipo_cambio = $this->tipoCambioModel->getTipoCambioByFecha($this->getCodEmpresa(), $post['FechaTipoCambio']);
+                    $tipo_cambio = $this->tipoCambioModel->getTipoCambio($this->getCodEmpresa(), $post['FechaTipoCambio'], '', [], '', '');
 
                     if (count($tipo_cambio) == 0) $this->tipoCambioModel->insertar($post);
                 }

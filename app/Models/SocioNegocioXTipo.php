@@ -16,4 +16,30 @@ class SocioNegocioXTipo extends Model
         'CodTipoSN',
         'IdSocioN'
     ];
+
+    public function getSocioNegocioXTipo($IdSocioN){
+        try {
+            $result = $this->where('IdSocioN', $IdSocioN)->findAll();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function agregar($data){
+        try {
+            $this->insert($data);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function eliminar($IdSocioN){
+        try {
+            $this->where('IdSocioN', $IdSocioN)->delete();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }
