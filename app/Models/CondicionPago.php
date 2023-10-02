@@ -81,4 +81,18 @@ class CondicionPago extends Model
             throw $th;
         }
     }
+
+    public function autoCompletado($busqueda, $codEmpresa)
+    {
+        $this->select('
+            codcondpago as id,
+            desccondpago as text
+        ');
+        if (!empty($busqueda)) {
+            $this->like('desccondpago', $busqueda);
+        }
+        $this->where('codEmpresa', $codEmpresa);
+        $this->limit(LIMITE_AUTOCOMPLETADO);
+        return $this->get()->getResult();
+    }
 }
