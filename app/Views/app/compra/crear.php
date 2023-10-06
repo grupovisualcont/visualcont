@@ -1,37 +1,31 @@
 <?= $this->extend('app/layout/master') ?>
 
+<?= $this->section('menu') ?>
+<nav style="--bs-breadcrumb-divider: '/'" aria-label="breadcrumb" class="nav-breadcrumb" >
+    <ol class="breadcrumb" >
+        <li class="breadcrumb-item" >
+            Movimientos 
+        </li>
+        <li class="breadcrumb-item" >
+            <a href="#">Ingreso de compra</a>
+        </li>
+        <li class="breadcrumb-item" >
+            Crear
+        </li>
+    </ol>
+</nav>
+<?= $this->endSection() ?>
+
 <?= $this->section('content') ?>
 
 <div class="container-fluid">
-    <section class="content-header" >
-        <div class="row justify-content-between" >
-            <div class="col-xl-8 col-md-8 col-sm-8 col-12 content-header-name" >
-                Socio Negocio 3
-            </div>
-            <div class="col-xl-4 col-md-4 col-sm-4 col-12 content-header-links col-xl-4 col-md-4 col-sm-4 col-12 content-header-links d-flex align-items-center justify-content-end" >
-                <nav style="--bs-breadcrumb-divider: '/'" aria-label="breadcrumb" >
-                    <ol class="breadcrumb" >
-                        <li class="breadcrumb-item" >
-                            Mantenimiento
-                        </li>
-                        <li class="breadcrumb-item" >
-                            <a href="#">Socio Negocio</a>
-                        </li>
-                        <li class="breadcrumb-item" >
-                            Crear
-                        </li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </section>
     <section class="content-buttons btn-groups" >
-        <button type="button" class="btn btn-info btn-sm font-medium rounded-pill px-4" >
+        <button type="button" class="btn btn-primary btn-sm px-4" >
             <div class="d-flex align-items-center" >
                 <i class="fa fa-save me-2 fs-4" ></i> Grabar
             </div>
         </button>
-        <button type="button" class="btn btn-link btn-sm font-medium rounded-pill px-4" >
+        <button type="button" class="btn btn-link btn-sm px-4" >
             <div class="d-flex align-items-center" >
                 Cancelar
             </div>
@@ -93,18 +87,18 @@
                                 </div>
                             </div>
                             <div class="row" >
-                                <div class="col-xl-8 col-lg-8 col-md-8 col-12" >
+                                <div class="col-xl-9 col-lg-9 col-md-9 col-12" >
                                     <div class="form-group row" >
-                                        <label for="" class="control-label col-xl-2 col-lg-2 col-12" >
+                                        <label for="" class="control-label col-xl-1 col-lg-1 col-12" >
                                             Glosa
                                         </label>
-                                        <div class="col-xl-10 col-lg-10 col-12" >
+                                        <div class="col-xl-11 col-lg-11 col-12" >
                                             <input type="text" class="form-control form-control-sm form-control-vc" 
                                             value="" >
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-12 d-none" >
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-12 d-none" >
                                     <div class="form-group" >
                                         <div class="form-check form-check-reverse">
                                             <label class="form-check-label" for="flexCheckDefault">
@@ -115,7 +109,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">
                                         Datos del comprobante
@@ -130,20 +124,20 @@
                             <div class="tab-content" id="myTabContent">
                                 <div class="tab-pane px-2 py-3 fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                                     <div class="row">
-                                        <div class="col-xl-8 col-md-8 col-12" >
+                                        <div class="col-xl-9 col-md-9 col-12" >
                                             <div class="form-group row" for="socio_negocio" >
-                                                <label for="" class="control-label col-xl-3 col-lg-3 col-12" >
+                                                <label for="" class="control-label col-xl-2 col-lg-2 col-12" >
                                                     Proveedor
                                                 </label>
-                                                <div class="col-xl-9 col-lg-9 col-12" >
+                                                <div class="col-xl-10 col-lg-10 col-12" >
                                                     <select class="form-select form-select-sm form-select-vc" id="socio_negocio" name="socio_negocio" ></select>
                                                 </div>
                                             </div>
                                             <div class="form-group row" >
-                                                <label for="" class="control-label col-xl-3 col-lg-3 col-12" >
+                                                <label for="" class="control-label col-xl-2 col-lg-2 col-12" >
                                                     Comprobante
                                                 </label>
-                                                <div class="col-xl-9 col-lg-9 col-12" >
+                                                <div class="col-xl-10 col-lg-10 col-12" >
                                                     <select class="form-select form-select-sm form-select-vc" >
                                                         <option value="1" >Factura</option>
                                                         <option value="2" >Boleta</option>
@@ -258,117 +252,117 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xl-4 col-md-4 col-12 bg-vc-100" >
-                                            <div class="form-group row mt-3" >
-                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-5 text-white" >
+                                        <div class="col-xl-3 col-md-3 col-12 bg-vc-100" >
+                                            <div class="form-group row mt-2" >
+                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-12 text-white pe-0" >
                                                     Afecto
                                                 </label>
-                                                <div class="col-xl-8 col-lg-8 col-md-8 col-7" >
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-8" >
                                                     <div class="input-group input-group-sm input-group-vc">
                                                         <input type="text" class="form-control text-end bg-white"
                                                         value="" >
-                                                        <span class="input-group-text text-white px-3" >
-                                                            70111
-                                                        </span>
                                                     </div>
                                                 </div>
+                                                <div class="col-xl-2 col-lg-2 col-md-2 col-4 p-0" >
+                                                    <span class="text-white" >70111</span>
+                                                </div>
                                             </div>
-                                            <div class="form-group row" >
-                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-5 text-white" >
+                                            <div class="form-group row mt-1" >
+                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-12 text-white pe-0" >
                                                     Inafecto
                                                 </label>
-                                                <div class="col-xl-8 col-lg-8 col-md-8 col-7" >
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-8" >
                                                     <div class="input-group input-group-sm input-group-vc">
                                                         <input type="text" class="form-control text-end bg-white"
                                                         value="" >
-                                                        <span class="input-group-text text-white px-3" >
-                                                            -
-                                                        </span>
                                                     </div>
                                                 </div>
+                                                <div class="col-xl-2 col-lg-2 col-md-2 col-4 p-0" >
+                                                    <span class="text-white" >70111</span>
+                                                </div>
                                             </div>
-                                            <div class="form-group row" >
-                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-5 text-white" >
+                                            <div class="form-group row mt-1" >
+                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-12 text-white pe-0" >
                                                     Exonerado
                                                 </label>
-                                                <div class="col-xl-8 col-lg-8 col-md-8 col-7" >
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-8" >
                                                     <div class="input-group input-group-sm input-group-vc">
                                                         <input type="text" class="form-control text-end bg-white"
                                                         value="" >
-                                                        <span class="input-group-text text-white px-3" >
-                                                            -
-                                                        </span>
                                                     </div>
                                                 </div>
+                                                <div class="col-xl-2 col-lg-2 col-md-2 col-4 p-0" >
+                                                    <span class="text-white" >70111</span>
+                                                </div>
                                             </div>
-                                            <div class="form-group row" >
-                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-5 text-white" >
+                                            <div class="form-group row mt-1" >
+                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-12 text-white pe-0" >
                                                     Descuento
                                                 </label>
-                                                <div class="col-xl-8 col-lg-8 col-md-8 col-7" >
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-8" >
                                                     <div class="input-group input-group-sm input-group-vc">
                                                         <input type="text" class="form-control text-end bg-white"
                                                         value="" >
-                                                        <span class="input-group-text text-white px-3" >
-                                                            70111
-                                                        </span>
                                                     </div>
                                                 </div>
+                                                <div class="col-xl-2 col-lg-2 col-md-2 col-4 p-0" >
+                                                    <span class="text-white" >70111</span>
+                                                </div>
                                             </div>
-                                            <div class="form-group row" >
-                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-5 text-white" >
-                                                    Anticipo
+                                            <div class="form-group row mt-1" >
+                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-12 text-white pe-0" >
+                                                    Ancitipo
                                                 </label>
-                                                <div class="col-xl-8 col-lg-8 col-md-8 col-7" >
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-8" >
                                                     <div class="input-group input-group-sm input-group-vc">
                                                         <input type="text" class="form-control text-end bg-white"
                                                         value="" >
-                                                        <span class="input-group-text text-white px-3" >
-                                                            70111
-                                                        </span>
                                                     </div>
                                                 </div>
+                                                <div class="col-xl-2 col-lg-2 col-md-2 col-4 p-0" >
+                                                    <span class="text-white" >70111</span>
+                                                </div>
                                             </div>
-                                            <div class="form-group row" >
-                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-5 text-white" >
+                                            <div class="form-group row mt-1" >
+                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-12 text-white pe-0" >
                                                     ISC
                                                 </label>
-                                                <div class="col-xl-8 col-lg-8 col-md-8 col-7" >
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-8" >
                                                     <div class="input-group input-group-sm input-group-vc">
                                                         <input type="text" class="form-control text-end bg-white"
                                                         value="" >
-                                                        <span class="input-group-text text-white px-3" >
-                                                            -
-                                                        </span>
                                                     </div>
                                                 </div>
+                                                <div class="col-xl-2 col-lg-2 col-md-2 col-4 p-0" >
+                                                    <span class="text-white" >70111</span>
+                                                </div>
                                             </div>
-                                            <div class="form-group row" >
-                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-5 text-white fw-bolder" >
-                                                    Igv 18%
+                                            <div class="form-group row mt-1" >
+                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-12 text-white pe-0 fw-bolder" >
+                                                    IGV 18%
                                                 </label>
-                                                <div class="col-xl-8 col-lg-8 col-md-8 col-7" >
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-8" >
                                                     <div class="input-group input-group-sm input-group-vc">
                                                         <input type="text" class="form-control text-end bg-white"
                                                         value="" >
-                                                        <span class="input-group-text text-white px-3" >
-                                                            40111
-                                                        </span>
                                                     </div>
                                                 </div>
+                                                <div class="col-xl-2 col-lg-2 col-md-2 col-4 p-0" >
+                                                    <span class="text-white" >70111</span>
+                                                </div>
                                             </div>
-                                            <div class="form-group row" >
-                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-5 text-white" >
+                                            <div class="form-group row mt-1" >
+                                                <label for="" class="control-label col-xl-4 col-lg-4 col-md-4 col-12 text-white pe-0" >
                                                     Total
                                                 </label>
-                                                <div class="col-xl-8 col-lg-8 col-md-8 col-7" >
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-8" >
                                                     <div class="input-group input-group-sm input-group-vc">
                                                         <input type="text" class="form-control text-end bg-white"
                                                         value="" >
-                                                        <span class="input-group-text text-white px-3" >
-                                                            12121
-                                                        </span>
                                                     </div>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-2 col-md-2 col-4 p-0" >
+                                                    <span class="text-white" >70111</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -424,7 +418,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mt-3" >
+                            <div class="row" >
                                 <div class="col-xl-8 col-lg-8 col-md-8 col-12" >
                                     <div class="row" >
                                         <div class="col-xl-8 col-lg-8 col-md-8 col-12" >
@@ -450,7 +444,7 @@
                                     </div>
                                 </div>
                                 <div class="col-xl-4 col-lg-4 col-md-4 col-12 text-end" >
-                                    <button type="button" class="btn btn-info font-medium px-4" >
+                                    <button type="button" class="btn btn-info btn-sm px-4" >
                                         <i class="fa fa-plus" ></i> Agregar
                                     </button>
                                 </div>

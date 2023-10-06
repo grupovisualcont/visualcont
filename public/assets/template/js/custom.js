@@ -63,13 +63,13 @@ $(function () {
   });
 
   // fixed header
-  $(window).scroll(function () {
+  /*$(window).scroll(function () {
     if ($(window).scrollTop() >= 60) {
       $(".app-header").addClass("fixed-header");
     } else {
       $(".app-header").removeClass("fixed-header");
     }
-  });
+  });*/
 
   // Checkout
   $(function () {

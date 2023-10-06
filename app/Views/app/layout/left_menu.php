@@ -20,7 +20,7 @@
                 ?>
                         <li class="nav-small-cap">
                             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                            <span class="hide-menu"><?= $sidebar['nombre'] ?></span>
+                            <span class="hide-menu text-black"><?= $sidebar['nombre'] ?></span>
                         </li>
                     <?php
                     } else {

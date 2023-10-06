@@ -99,6 +99,6 @@ class Anexo extends Model
             $this->like('DescAnexo', $busqueda);
         }
         $this->orderBy('CodInterno', 'ASC');
-        return $this->get()->getResult();
+        return $this->get()->getResult('object');
     }
 }

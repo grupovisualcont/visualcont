@@ -12,7 +12,9 @@ $(function() {
 $(document).ready(function() {
     
     jQuery(".mydatepicker").datepicker({
-        format: "dd/mm/yyyy"
+        format: "dd/mm/yyyy",
+        'language' : 'es',
+        autoclose: true
     });
 
 });

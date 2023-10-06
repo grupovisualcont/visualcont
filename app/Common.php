@@ -20,7 +20,7 @@ use App\Controllers\Empresa;
     /**
      * Metodo para cargar la vista junto con el menu, la empresa y tipo de cambio
      */
-    function viewApp(string $page, string $name, array $data = [], array $options = []): string
+    function viewApp(string $page, string $name, array $data = [], array $options = [], bool $openMenu = false): string
     {
         $Empresa = new Empresa;
 
@@ -45,6 +45,7 @@ use App\Controllers\Empresa;
             'empresa' => $empresa,
             'fecha' => date('d/m/Y'),
             'tipo_cambio' => $tipoCambio,
+            'openMenu' => $openMenu,
         ]);
 
         return view($name, $data, $options);

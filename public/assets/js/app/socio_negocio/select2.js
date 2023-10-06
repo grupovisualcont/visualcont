@@ -75,7 +75,7 @@ $(function () {
                     if (typeof res.id !== "undefined") {
                         var text = res.text;
                         // La operacion tendra otro tipo de vista
-                        if (res.id == 'C' && s2SocioNegocio.btnCreate) {
+                        if (res.id == 'C' && s2SocioNegocio.acciones.botonCrear) {
                             text = '<a class="select2-options" ><i class="fa fa-plus" ></i> <b>' + res.text + '</b></a>';
                         }
                         return text;

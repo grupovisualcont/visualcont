@@ -5,7 +5,7 @@
     <!-- --------------------------------------------------- -->
     <!-- Title -->
     <!-- --------------------------------------------------- -->
-    <title>Mordenize</title>
+    <title><?= $page ?></title>
 
     <!-- --------------------------------------------------- -->
     <!-- Required Meta Tag -->
@@ -39,7 +39,7 @@
     <!-- --------------------------------------------------- -->
     <!-- Body Wrapper -->
     <!-- --------------------------------------------------- -->
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+    <div class="page-wrapper show-sidebar" id="main-wrapper" data-layout="vertical" data-sidebartype="mini-sidebar" data-sidebar-position="fixed" data-header-position="fixed">
         <!-- --------------------------------------------------- -->
         <!-- Sidebar -->
         <!-- --------------------------------------------------- -->
@@ -61,6 +61,10 @@
         <div class="dark-transparent sidebartoggler"></div>
         <div class="dark-transparent sidebartoggler"></div>
 
+        <script>
+            const VC_OPEN_MENU = "<?= ($openMenu) ? 'full' : 'mini-sidebar'; ?>";
+        </script>
+
         <script src="<?= base_url('assets/template/libs/jquery/dist/jquery.min.js') ?>"></script>
         <script src="<?= base_url('assets/template/libs/simplebar/dist/simplebar.min.js') ?>"></script>
         <script src="<?= base_url('assets/template/libs/bootstrap/dist/js/bootstrap.bundle.min.js') ?>"></script>
@@ -76,6 +80,7 @@
         <script src="<?= base_url('assets/template/libs/prismjs/prism.js') ?>"></script>
         <script src="<?= base_url('assets/template/libs/moment-js/moment.js') ?>"></script>
         <script src="<?= base_url('assets/template/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') ?>"></script>
+        <script src="<?= base_url('assets/template/libs/bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min.js') ?>"></script>
         <script src="<?= base_url('assets/js/datatables.js') ?>"></script>
         <script src="<?= base_url('assets/js/alertify.min.js') ?>"></script>
         <script src="<?= assetVersion('js/master.js') ?>"></script>

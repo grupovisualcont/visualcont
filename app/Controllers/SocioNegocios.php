@@ -665,7 +665,18 @@ class SocioNegocios extends BaseController
     public function autocompletado()
     {
         $busqueda = $this->request->getGet('search');
+        $acciones = $this->request->getGet('acciones');
         $items = (new SocioNegocio())->autoCompletado($busqueda, 2, $this->request->getCookie('empresa'));
+        $botonCrear = $acciones['botonCrear'] ?? "0";
+        if ($botonCrear == "1") {
+            $text = (empty($busqueda)) ? 'Crear nuevo proveedor' : "Crear \"{$busqueda}\"";
+            $items = array_merge($items, [
+                [
+                    'id' => 'C',
+                    'text' => $text
+                ]
+            ]);
+        }
         return $this->response->setJson($items);
     }
 

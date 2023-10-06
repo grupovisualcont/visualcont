@@ -3,28 +3,6 @@
 <?= $this->section('content') ?>
 
 <div class="container-fluid">
-    <section class="content-header" >
-        <div class="row justify-content-between" >
-            <div class="col-xl-8 col-md-8 col-sm-8 col-12 content-header-name" >
-                Socio Negocio
-            </div>
-            <div class="col-xl-4 col-md-4 col-sm-4 col-12 content-header-links col-xl-4 col-md-4 col-sm-4 col-12 content-header-links d-flex align-items-center justify-content-end" >
-                <nav style="--bs-breadcrumb-divider: '/'" aria-label="breadcrumb" >
-                    <ol class="breadcrumb" >
-                        <li class="breadcrumb-item" >
-                            Mantenimiento
-                        </li>
-                        <li class="breadcrumb-item" >
-                            <a href="#">Socio Negocio</a>
-                        </li>
-                        <li class="breadcrumb-item" >
-                            Crear
-                        </li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </section>
     <section class="content-buttons btn-groups" >
         <button type="button" class="btn btn-info font-medium rounded-pill px-4" >
             <div class="d-flex align-items-center" >

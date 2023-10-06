@@ -26,7 +26,7 @@ class Compras extends BaseController
             // Tipo de voucher
             $objTypeVoucher = (new TipoVoucherCab())->find($objPredeterminado->CodTV_co);
             // Tipo de operacion
-            $objOperationType = (new Anexo())->find($objPredeterminado->TipoOperacion_co);
+            $objOperationType = (Object) (new Anexo())->find($objPredeterminado->TipoOperacion_co);
             // Moneda
             $objCurrency = (new Moneda())->find($objPredeterminado->CodMoneda_co);
         }
@@ -38,6 +38,6 @@ class Compras extends BaseController
             'voucher',
             'objOperationType',
             'objCurrency'
-        ));
+        ), [], false);
     }
 }

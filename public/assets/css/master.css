@@ -4,6 +4,12 @@
  * GENERAL
  * ====================================================================
  */
+
+:root {
+    --bs-body-font-size: 0.765rem;
+    --bs-card-color: #111827;
+}
+
 body {
     background-color: #f7f8f9;
 }
@@ -13,8 +19,8 @@ a {
 }
 
 .app-header {
-    border-bottom: 0.15rem solid #3687cf;
-    background: rgb(54 135 207);
+    border-bottom: 0.1rem solid #3687cf;
+    /* background: rgb(54 135 207); */
     color: #000000;
 }
 
@@ -47,10 +53,10 @@ a {
 .select2-container--classic .select2-selection--single, .select2-container--classic .select2-selection--single .select2-selection__arrow, .select2-container--classic .select2-selection--single .select2-selection__rendered, .select2-container--default .select2-selection--multiple, .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--single .select2-selection__arrow, .select2-container--default .select2-selection--single .select2-selection__rendered {
     border-color: transparent;
     border-bottom: 1px solid #dfe5ef;
-    height: 28px;
-    line-height: 30px;
-    font-size: .765625rem;
-    color: #5a6a85;
+    height: 23px;
+    line-height: 25px;
+    font-size: 0.765rem;
+    color: #111827;
     padding-left: 0;
 }
 
@@ -60,45 +66,72 @@ a {
  * ====================================================================
  */
 
+.nav-breadcrumb {
+    height: 50px;
+    padding: 8px 16px;
+    line-height: 35px;
+}
+
+.app-header .navbar .navbar-nav .nav-item .nav-link {
+    height: 50px;
+}
+
+.app-header .navbar {
+    min-height: 50px;
+}
+
+.nav-small-cap {
+    margin-top: 10px;
+}
+
 .brand-logo {
     padding: 0 10px;
 }
 
 .left-sidebar {
-    border-right: 0.15rem solid rgb(54 135 207);
+    /* border-right: 0.15rem solid rgb(54 135 207); */
 }
 
 .left-sidebar .scroll-sidebar {
     border-radius: inherit;
-    background: rgb(54 135 207);
+    /*background: rgb(54 135 207);*/
 }
 
 .sidebar-nav ul .sidebar-item .sidebar-link {
-    color: #f3f3f3;
+    color: #111827;
 }
 
 .sidebar-nav ul .sidebar-item .sidebar-link:hover {
-    color: #ffffff;
+    color: #3a3a3a;
     font-weight: 700;
+    background: rgb(143 187 216);
+}
+
+.sidebar-nav ul .sidebar-item.selected>.sidebar-link, .sidebar-nav ul .sidebar-item.selected>.sidebar-link.active, .sidebar-nav ul .sidebar-item>.sidebar-link.active {
+    color: #3a3a3a;
+    font-weight: 700;
+    background: rgb(143 187 216);
 }
 
 .sidebar-nav ul .sidebar-item .first-level .sidebar-item .sidebar-link:hover {
-    color: #ffffff;
+    color: #3a3a3a;
     font-weight: 700;
+    background: rgb(143 187 216);
 }
 
 .sidebar-nav ul .sidebar-item .first-level .sidebar-item .sidebar-link.active {
-    color: #ffffff !important;
+    color: #3a3a3a;
     font-weight: 700;
+    background: rgb(143 187 216);
 }
 
 .sidebar-nav ul .sidebar-item .first-level .sidebar-item .sidebar-link.active.has-arrow::after {
-    border-color: #ffffff;
+    border-color: #3a3a3a;
     font-weight: 700;
 }
 
 .sidebar-nav .has-arrow::after {
-    border-color: #ffffff;
+    /* border-color: #ffffff; */
     font-weight: 700;
 }
 
@@ -107,7 +140,7 @@ a {
 }
 
 .app-header .navbar .navbar-nav .nav-item .nav-link {
-    color: #ffffff;
+    color: #3a3a3a;
 }
 
 .nav-small-cap {
@@ -117,12 +150,41 @@ a {
 .app-header .navbar .navbar-nav.quick-links .nav-item:hover .nav-link:before {
     border-radius: inherit;
     background: inherit;
-    border-bottom: .3rem solid #0074ba
+    border-bottom: 0.15rem solid rgb(54 135 207)
 }
 
-.app-header .navbar .navbar-nav.quick-links .nav-item:hover .nav-link {
-    color: #ffffff !important;
-    font-weight: 700;
+#main-wrapper[data-layout=vertical][data-header-position=fixed] .body-wrapper>.container-fluid, #main-wrapper[data-layout=vertical][data-header-position=fixed] .body-wrapper>.container-lg, #main-wrapper[data-layout=vertical][data-header-position=fixed] .body-wrapper>.container-md, #main-wrapper[data-layout=vertical][data-header-position=fixed] .body-wrapper>.container-sm, #main-wrapper[data-layout=vertical][data-header-position=fixed] .body-wrapper>.container-xl, #main-wrapper[data-layout=vertical][data-header-position=fixed] .body-wrapper>.container-xxl {
+    padding-top: 15px;
+}
+
+#main-wrapper[data-layout=vertical][data-header-position=fixed] .app-header {
+    position: relative;
+}
+
+.body-wrapper>.container-fluid, .body-wrapper>.container-lg, .body-wrapper>.container-md, .body-wrapper>.container-sm, .body-wrapper>.container-xl, .body-wrapper>.container-xxl {
+    max-width: 1500px;
+}
+
+@media (min-width: 992px) {
+    #main-wrapper[data-layout=vertical][data-sidebartype=mini-sidebar] .left-sidebar {
+        width: 10px;
+    }
+
+    #main-wrapper[data-layout=vertical][data-sidebartype=mini-sidebar] .left-sidebar .scroll-sidebar {
+        padding: 0;
+    }
+
+    #main-wrapper[data-layout=vertical][data-sidebartype=mini-sidebar] .body-wrapper {
+        margin-left: 10px;
+    }
+
+    #main-wrapper[data-layout=vertical][data-header-position=fixed][data-sidebartype=mini-sidebar] .app-header {
+        width: 100%;
+    }
+
+    #main-wrapper[data-layout=vertical][data-header-position=fixed] .app-header {
+        width: 100%;
+    }
 }
 
 /*
@@ -139,6 +201,10 @@ a {
 
 .card-body {
     padding: 0.875rem;
+}
+
+.content-body .card {
+    box-shadow: 0px 1px 2px;
 }
 
 .content-header {
@@ -167,7 +233,20 @@ a {
  */
 
 .form-group {
-    margin-bottom: 1rem !important;
+    margin-bottom: .475rem !important;
+}
+
+.form-control {
+    color: #111827;
+}
+
+.form-control-sm {
+    min-height: calc(0.5em + 0.5rem + calc(var(--bs-border-width) * 2));
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: inherit;
+    padding: 0.1rem 0.1rem;
 }
 
 .form-control-vc {
@@ -214,4 +293,13 @@ a {
 .nav-tabs .nav-link {
     padding: .1rem;
     margin-right: 0.875rem;
+}
+
+/*
+ * ====================================================================
+ * SELECT2
+ * ====================================================================
+ */
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable a {
+    color: white;
 }
