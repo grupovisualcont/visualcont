@@ -12,7 +12,7 @@ class Ts27Vinculo extends Model
 
     protected $allowedFields = [];
 
-    public function getTs27Vinculo(string $columnas, array $join, string $where, string $orderBy)
+    public function getTs27Vinculo(string $CodVinculo, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;
@@ -24,6 +24,8 @@ class Ts27Vinculo extends Model
                     $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
                 }
             }
+
+            if (!empty($CodVinculo)) $result = $result->where('CodVinculo', $CodVinculo);
 
             if (!empty($where)) $result = $result->where($where);
 

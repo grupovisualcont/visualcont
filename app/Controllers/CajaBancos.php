@@ -12,39 +12,23 @@ use App\Models\PlanContable;
 class CajaBancos extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $cajaBancoModel;
-    protected $entidadFinancieraModel;
-    protected $planContableModel;
-    protected $monedaModel;
-    protected $chequeModel;
-
     public function __construct()
     {
         $this->page = 'Caja - Bancos';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->cajaBancoModel = new Banco();
-        $this->entidadFinancieraModel = new EntidadFinanciera();
-        $this->planContableModel = new PlanContable();
-        $this->monedaModel = new Moneda();
-        $this->chequeModel = new Cheque();
     }
 
     public function index()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->cajaBancoModel = new Banco();
-
-                $bancos = $this->cajaBancoModel->getBanco(
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $bancos = (new Banco())->getBanco(
                     $this->CodEmpresa,
                     '',
                     date('Y'),
@@ -63,7 +47,7 @@ class CajaBancos extends BaseController
                     'typeOrder' => 'string'
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -73,10 +57,8 @@ class CajaBancos extends BaseController
     public function create()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->cajaBancoModel = new Banco();
-
-                $caja_banco = $this->cajaBancoModel->getBanco($this->CodEmpresa, '', '', 'MAX(SUBSTRING(Codbanco, 3)) AS codigo', [], '', '');
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $caja_banco = (new Banco())->getBanco($this->CodEmpresa, '', '', 'MAX(SUBSTRING(Codbanco, 3)) AS codigo', [], '', '');
 
                 $codigo_maximo = 'BA001';
 
@@ -92,57 +74,15 @@ class CajaBancos extends BaseController
                     }
                 }
 
-                $this->entidadFinancieraModel = new EntidadFinanciera();
-
-                $entidades_financiera = $this->entidadFinancieraModel->getEntidadFinanciera('', [], '', '');
-
-                $options_entidad_financiera = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($entidades_financiera as $indice => $valor) {
-                    $options_entidad_financiera .= '<option value="' . $valor['CodEntidad'] . '">' . $valor['DescFinanciera'] . '</option>';
-                }
-
-                $this->planContableModel = new PlanContable();
-
-                $planes_contable = $this->planContableModel->getPlanContable(
-                    $this->CodEmpresa,
-                    '',
-                    '',
-                    'CodCuenta, DescCuenta, IF(Child = 0, "disabled", "") AS Disabled',
-                    '',
-                    ''
-                );
-
-                $options_plan_contable = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($planes_contable as $indice => $valor) {
-                    $options_plan_contable .= '<option value="' . $valor['CodCuenta'] . '" ' . $valor['Disabled'] . '>' . $valor['CodCuenta'] . ' - ' . $valor['DescCuenta'] . '</option>';
-                }
-
-                $this->monedaModel = new Moneda();
-
-                $monedas = $this->monedaModel->getMoneda('', '');
-
-                $options_moneda = '';
-
-                foreach ($monedas as $indice => $valor) {
-                    $options_moneda .= '<option value="' . $valor['CodMoneda'] . '">' . $valor['DescMoneda'] . '</option>';
-                }
-
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/box_banks/create.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/box_banks/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/box_banks/create', [
                     'codigo_maximo' => $codigo_maximo,
-                    'options_entidad_financiera' => $options_entidad_financiera,
-                    'options_plan_contable' => $options_plan_contable,
-                    'options_moneda' => $options_moneda,
                     'typeOrder' => 'num',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -152,86 +92,52 @@ class CajaBancos extends BaseController
     public function edit($CodBanco, $Periodo)
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->cajaBancoModel = new Banco();
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $banco = (new Banco())->getBanco($this->CodEmpresa, $CodBanco, $Periodo, '', [], '', '')[0];
 
-                $banco = $this->cajaBancoModel->getBanco($this->CodEmpresa, $CodBanco, $Periodo, '', [], '', '')[0];
+                $entidad_financiera = (new EntidadFinanciera())->getEntidadFinanciera($banco['CodEntidad'], '', [], '', '')[0];
 
-                $this->entidadFinancieraModel = new EntidadFinanciera();
+                $option_entidad_financiera = '<option value="' . $entidad_financiera['CodEntidad'] . '">' . $entidad_financiera['DescFinanciera'] . '</option>';
 
-                $entidades_financiera = $this->entidadFinancieraModel->getEntidadFinanciera('', [], '', '');
+                $option_plan_contable = '';
 
-                $options_entidad_financiera = '<option value="" disabled selected>Seleccione</option>';
+                if (isset($banco['codcuenta'])) {
+                    $plan_contable = (new PlanContable())->getPlanContable(
+                        $this->CodEmpresa,
+                        '',
+                        $banco['codcuenta'],
+                        'CodCuenta, DescCuenta, IF(Child = 0, "disabled", "") AS Disabled',
+                        [],
+                        '',
+                        ''
+                    )[0];
 
-                foreach ($entidades_financiera as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodEntidad'] == $banco['CodEntidad']) $selected = 'selected';
-
-                    $options_entidad_financiera .= '<option value="' . $valor['CodEntidad'] . '" ' . $selected . '>' . $valor['DescFinanciera'] . '</option>';
+                    $option_plan_contable = '<option value="' . $plan_contable['CodCuenta'] . '" ' . $plan_contable['Disabled'] . '>' . $plan_contable['CodCuenta'] . ' - ' . $plan_contable['DescCuenta'] . '</option>';
                 }
 
-                $this->planContableModel = new PlanContable();
+                $moneda = (new Moneda())->getMoneda($banco['CodMoneda'], '', [], '', '')[0];
 
-                $planes_contable = $this->planContableModel->getPlanContable(
-                    $this->CodEmpresa,
-                    '',
-                    '',
-                    'CodCuenta, DescCuenta, IF(Child = 0, "disabled", "") AS Disabled',
-                    '',
-                    ''
-                );
+                $option_moneda = '<option value="' . $moneda['CodMoneda'] . '">' . $moneda['DescMoneda'] . '</option>';
 
-                $options_plan_contable = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($planes_contable as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodCuenta'] == $banco['codcuenta']) $selected = 'selected';
-
-                    $options_plan_contable .= '<option value="' . $valor['CodCuenta'] . '" ' . $valor['Disabled'] . ' ' . $selected . '>' . $valor['CodCuenta'] . ' - ' . $valor['DescCuenta'] . '</option>';
-                }
-
-                $this->monedaModel = new Moneda();
-
-                $monedas = $this->monedaModel->getMoneda('', '');
-
-                $options_moneda = '';
-
-                foreach ($monedas as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodMoneda'] == $banco['CodMoneda']) $selected = 'selected';
-
-                    $options_moneda .= '<option value="' . $valor['CodMoneda'] . '" ' . $selected . '>' . $valor['DescMoneda'] . '</option>';
-                }
-
-                $this->chequeModel = new Cheque();
-
-                $cheques = $this->chequeModel->getCheque($this->CodEmpresa, $CodBanco, '', [], '', '');
-
-                $this->empresa = new Empresa();
+                $cheques = (new Cheque())->getCheque($this->CodEmpresa, $CodBanco, '', [], '', '');
 
                 $script = "
                     var id_cheque = " . (count($cheques) + 1) . ";
-                    $('#CodEntidad').val('" . $banco['CodEntidad'] . "');
-                    $('#codcuenta').val('" . $banco['codcuenta'] . "');
-                    $('#CodMoneda').val('" . $banco['CodMoneda'] . "');
                 ";
 
-                $script = $this->empresa->generar_script($script, ['app/mantenience/box_banks/edit.js']);
+                $script = (new Empresa())->generar_script($script, ['app/mantenience/box_banks/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/box_banks/edit', [
                     'banco' => $banco,
-                    'options_entidad_financiera' => $options_entidad_financiera,
-                    'options_plan_contable' => $options_plan_contable,
-                    'options_moneda' => $options_moneda,
+                    'option_entidad_financiera' => $option_entidad_financiera,
+                    'option_plan_contable' => $option_plan_contable,
+                    'option_moneda' => $option_moneda,
                     'cheques' => $cheques,
                     'typeOrder' => 'num',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -252,14 +158,10 @@ class CajaBancos extends BaseController
             $post['CodMoneda'] = isset($post['CodMoneda']) ? $post['CodMoneda'] : 'MO001';
             $post['PagoDetraccion'] = isset($post['PagoDetraccion']) ? $post['PagoDetraccion'] : 0;
 
-            $this->cajaBancoModel = new Banco();
-
-            $existe_codigo = $this->cajaBancoModel->getBanco($post['CodEmpresa'], $post['Codbanco'], '', '', [], '', '');
+            $existe_codigo = (new Banco())->getBanco($post['CodEmpresa'], $post['Codbanco'], '', '', [], '', '');
 
             if (count($existe_codigo) == 0) {
-                $this->cajaBancoModel = new Banco();
-
-                $this->cajaBancoModel->agregar($post);
+                (new Banco())->agregar($post);
 
                 if (isset($post['DescCheque'])) {
                     $codigo_cheque = '';
@@ -284,9 +186,7 @@ class CajaBancos extends BaseController
                             'Estado' => 1
                         ];
 
-                        $this->chequeModel = new Cheque();
-
-                        $this->chequeModel->agregar($data);
+                        (new Cheque())->agregar($data);
                     }
                 }
             }
@@ -328,21 +228,15 @@ class CajaBancos extends BaseController
             $post['Propio'] = isset($post['Propio']) ? $post['Propio'] : 0;
             $post['PagoDetraccion'] = isset($post['PagoDetraccion']) ? $post['PagoDetraccion'] : 0;
 
-            $this->cajaBancoModel = new Banco();
-
-            $this->cajaBancoModel->actualizar($post['CodEmpresa'], $post['Codbanco'], $post);
+            (new Banco())->actualizar($post['CodEmpresa'], $post['Codbanco'], $post);
 
             if (isset($post['DescCheque'])) {
                 if (isset($post['idCheque'])) {
                     $ids = implode(',', $post['idCheque']);
 
-                    $this->chequeModel = new Cheque();
-
-                    $this->chequeModel->eliminar($post['CodEmpresa'], $post['Codbanco'], 'idCheque NOT IN (' . $ids . ')');
+                    (new Cheque())->eliminar($post['CodEmpresa'], $post['Codbanco'], 'idCheque NOT IN (' . $ids . ')');
                 } else {
-                    $this->chequeModel = new Cheque();
-
-                    $this->chequeModel->eliminar($post['CodEmpresa'], $post['Codbanco'], '');
+                    (new Cheque())->eliminar($post['CodEmpresa'], $post['Codbanco'], '');
                 }
 
                 $codigo_cheque = '';
@@ -368,21 +262,15 @@ class CajaBancos extends BaseController
                     ];
 
                     if (isset($post['idCheque'][$indice]) && !empty($post['idCheque'][$indice])) {
-                        $this->chequeModel = new Cheque();
-
-                        $this->chequeModel->actualizar($post['CodEmpresa'], $post['idCheque'][$indice], $data);
+                        (new Cheque())->actualizar($post['CodEmpresa'], $post['idCheque'][$indice], $data);
 
                         $codigo_cheque = $post['CodCheque'][$indice];
                     } else {
-                        $this->chequeModel = new Cheque();
-
-                        $this->chequeModel->agregar($data);
+                        (new Cheque())->agregar($data);
                     }
                 }
             } else {
-                $this->chequeModel = new Cheque();
-
-                $this->chequeModel->eliminar($post['CodEmpresa'], $post['Codbanco'], '');
+                (new Cheque())->eliminar($post['CodEmpresa'], $post['Codbanco'], '');
             }
 
             if ($this->db->transStatus() === FALSE) {
@@ -414,13 +302,9 @@ class CajaBancos extends BaseController
 
             $this->db->transBegin();
 
-            $this->cajaBancoModel = new Banco();
+            (new Banco())->eliminar($this->CodEmpresa, $CodBanco, $Periodo);
 
-            $this->cajaBancoModel->eliminar($this->CodEmpresa, $CodBanco, $Periodo);
-
-            $this->chequeModel = new Cheque();
-
-            $this->chequeModel->eliminar($this->CodEmpresa, $CodBanco, '');
+            (new Cheque())->eliminar($this->CodEmpresa, $CodBanco, '');
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -457,9 +341,7 @@ class CajaBancos extends BaseController
 
             $excel->body(1, 'columnas');
 
-            $this->cajaBancoModel = new Banco();
-
-            $result = $this->cajaBancoModel->getBanco(
+            $result = (new Banco())->getBanco(
                 $this->CodEmpresa,
                 '',
                 '',
@@ -498,9 +380,7 @@ class CajaBancos extends BaseController
     public function pdf()
     {
         try {
-            $this->cajaBancoModel = new Banco();
-
-            $result = $this->cajaBancoModel->getBanco(
+            $result = (new Banco())->getBanco(
                 $this->CodEmpresa,
                 '',
                 '',
@@ -556,16 +436,12 @@ class CajaBancos extends BaseController
             if (isset($post['search'])) {
                 $search = $post['search'];
 
-                $this->cajaBancoModel = new Banco();
-
-                $caja_bancos = $this->cajaBancoModel->getBanco($this->CodEmpresa, '', '', 'Codbanco AS value, CONCAT(Codbanco, " - ", abreviatura) AS name', [], 'abreviatura LIKE "%' . $search . '%"', '');
+                $caja_banco = (new Banco())->getBanco($this->CodEmpresa, '', '', 'Codbanco AS id, CONCAT(Codbanco, " - ", abreviatura) AS text', [], 'abreviatura LIKE "%' . $search . '%"', '');
             } else {
-                $this->cajaBancoModel = new Banco();
-
-                $caja_bancos = $this->cajaBancoModel->getBanco($this->CodEmpresa, '', '', 'Codbanco AS value, CONCAT(Codbanco, " - ", abreviatura) AS name', [], '', '');
+                $caja_banco = (new Banco())->getBanco($this->CodEmpresa, '', '', 'Codbanco AS id, CONCAT(Codbanco, " - ", abreviatura) AS text', [], '', '');
             }
 
-            echo json_encode($caja_bancos);
+            echo json_encode($caja_banco);
         } catch (\Throwable $th) {
             throw $th;
         }

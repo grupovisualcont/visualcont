@@ -3,9 +3,9 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\Ts27Vinculo;
+use App\Models\EntidadFinanciera as ModelsEntidadFinanciera;
 
-class Ts27Vinculos extends BaseController
+class EntidadFinanciera extends BaseController
 {
     protected $page;
     protected $CodEmpresa;
@@ -14,7 +14,7 @@ class Ts27Vinculos extends BaseController
 
     public function __construct()
     {
-        $this->page = 'Ts27Vinculo';
+        $this->page = 'Entidad Financiera';
         $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
@@ -28,12 +28,12 @@ class Ts27Vinculos extends BaseController
             if (isset($post['search'])) {
                 $search = $post['search'];
 
-                $ts27Vinculo = (new Ts27Vinculo())->getTs27Vinculo('', 'CodVinculo AS id, DescVinculo AS text', [], 'DescVinculo LIKE "%' . $search . '%"', '');
+                $entidad_financiera = (new ModelsEntidadFinanciera())->getEntidadFinanciera('', 'CodEntidad AS id, DescFinanciera AS text', [], 'DescFinanciera LIKE "%' . $search . '%"', '');
             } else {
-                $ts27Vinculo = (new Ts27Vinculo())->getTs27Vinculo('', 'CodVinculo AS id, DescVinculo AS text', [], '', '');
+                $entidad_financiera = (new ModelsEntidadFinanciera())->getEntidadFinanciera('', 'CodEntidad AS id, DescFinanciera AS text', [], '', '');
             }
 
-            echo json_encode($ts27Vinculo);
+            echo json_encode($entidad_financiera);
         } catch (\Throwable $th) {
             throw $th;
         }

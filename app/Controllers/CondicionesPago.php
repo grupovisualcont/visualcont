@@ -9,40 +9,30 @@ use App\Models\CondicionPago;
 class CondicionesPago extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $condicionPagoModel;
-    protected $anexoModel;
-
     public function __construct()
     {
         $this->page = 'Condicion Pago';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->condicionPagoModel = new CondicionPago();
-        $this->anexoModel = new Anexo();  
     }
 
     public function index()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->condicionPagoModel = new CondicionPago();
-
-                $condicion_pago = $this->condicionPagoModel->getCondicionPago($this->CodEmpresa, '', '', [], '', '');
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $condicion_pago = (new CondicionPago())->getCondicionPago($this->CodEmpresa, '', '', [], '', '');
 
                 return viewApp($this->page, 'app/mantenience/payment_condition/index', [
                     'condicion_pago' => $condicion_pago,
                     'typeOrder' => 'string'
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -52,10 +42,8 @@ class CondicionesPago extends BaseController
     public function create()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->condicionPagoModel = new CondicionPago();
-
-                $condicion_pago = $this->condicionPagoModel->getCondicionPago(
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $condicion_pago = (new CondicionPago())->getCondicionPago(
                     $this->CodEmpresa,
                     '',
                     'MAX(SUBSTRING(codcondpago, 3)) AS codigo',
@@ -76,47 +64,25 @@ class CondicionesPago extends BaseController
                     }
                 }
 
-                $this->anexoModel = new Anexo();
+                $tipo_condicion = (new Anexo())->getAnexo($this->CodEmpresa, 0, 106, '', '', [], 'CodInterno = 1', '')[0];
 
-                $tipo_condicion = $this->anexoModel->getAnexo($this->CodEmpresa, 0, 106, '', '', '', '');
+                $option_tipo_condicion = '<option value="' . $tipo_condicion['IdAnexo'] . '">' . $tipo_condicion['DescAnexo'] . '</option>';
 
-                $options_tipo_condicion = '';
+                $estado = (new Anexo())->getAnexo($this->CodEmpresa, 0, 1, '', '', [], 'CodInterno = 1', '')[0];
 
-                foreach ($tipo_condicion as $indice => $valor) {
-                    $selected = '';
+                $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                    if ($valor['DescAnexo'] == 'Contado') $selected = 'selected';
-
-                    $options_tipo_condicion .= '<option value="' . $valor['IdAnexo'] . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->anexoModel = new Anexo();
-
-                $estado = $this->anexoModel->getAnexo($this->CodEmpresa, 0, 1, '', '', '', '');
-
-                $options_estado = '';
-
-                foreach ($estado as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['DescAnexo'] == 'Activo') $selected = 'selected';
-
-                    $options_estado .= '<option value="' . $valor['IdAnexo'] . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/payment_condition/create.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/payment_condition/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/payment_condition/create', [
                     'codigo_maximo' => $codigo_maximo,
-                    'options_tipo_condicion' => $options_tipo_condicion,
-                    'options_estado' => $options_estado,
+                    'option_tipo_condicion' => $option_tipo_condicion,
+                    'option_estado' => $option_estado,
                     'typeOrder' => 'string',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -126,52 +92,28 @@ class CondicionesPago extends BaseController
     public function edit($codcondpago)
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->condicionPagoModel = new CondicionPago();
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $condicion_pago = (new CondicionPago())->getCondicionPago($this->CodEmpresa, $codcondpago, '', [], '', '')[0];
 
-                $condicion_pago = $this->condicionPagoModel->getCondicionPago($this->CodEmpresa, $codcondpago, '', [], '', '')[0];
+                $tipo_condicion = (new Anexo())->getAnexo($this->CodEmpresa, $condicion_pago['Tipo'], 106, '', '', [], '', '')[0];
 
-                $this->anexoModel = new Anexo();
+                $option_tipo_condicion = '<option value="' . $tipo_condicion['IdAnexo'] . '">' . $tipo_condicion['DescAnexo'] . '</option>';
 
-                $tipo_condicion = $this->anexoModel->getAnexo($this->CodEmpresa, 0, 106, '', '', '', '');
+                $estado = (new Anexo())->getAnexo($this->CodEmpresa, $condicion_pago['Estado'], 1, '', '', [], '', '')[0];
 
-                $options_tipo_condicion = '';
+                $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                foreach ($tipo_condicion as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexo'] == $condicion_pago['Tipo']) $selected = 'selected';
-
-                    $options_tipo_condicion .= '<option value="' . $valor['IdAnexo'] . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->anexoModel = new Anexo();
-
-                $estado = $this->anexoModel->getAnexo($this->CodEmpresa, 0, 1, '', '', '', '');
-
-                $options_estado = '';
-
-                foreach ($estado as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexo'] == $condicion_pago['Estado']) $selected = 'selected';
-
-                    $options_estado .= '<option value="' . $valor['IdAnexo'] . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/payment_condition/edit.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/payment_condition/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/payment_condition/edit', [
                     'condicion_pago' => $condicion_pago,
-                    'options_tipo_condicion' => $options_tipo_condicion,
-                    'options_estado' => $options_estado,
+                    'option_tipo_condicion' => $option_tipo_condicion,
+                    'option_estado' => $option_estado,
                     'typeOrder' => 'string',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -197,14 +139,10 @@ class CondicionesPago extends BaseController
                 $post['con_cre'] = 'CP001';
             }
 
-            $this->condicionPagoModel = new CondicionPago();
-
-            $existe_codigo = $this->condicionPagoModel->getCondicionPago($post['CodEmpresa'], $post['codcondpago'], '', [], '', '');
+            $existe_codigo = (new CondicionPago())->getCondicionPago($post['CodEmpresa'], $post['codcondpago'], '', [], '', '');
 
             if (count($existe_codigo) == 0) {
-                $this->condicionPagoModel = new CondicionPago();
-
-                $this->condicionPagoModel->agregar($post);
+                (new CondicionPago())->agregar($post);
             }
 
             if ($this->db->transStatus() === FALSE) {
@@ -248,9 +186,7 @@ class CondicionesPago extends BaseController
                 $post['con_cre'] = 'CP001';
             }
 
-            $this->condicionPagoModel = new CondicionPago();
-
-            $this->condicionPagoModel->actualizar($post['CodEmpresa'], $post['codcondpago'], $post);
+            (new CondicionPago())->actualizar($post['CodEmpresa'], $post['codcondpago'], $post);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -281,9 +217,7 @@ class CondicionesPago extends BaseController
 
             $this->db->transBegin();
 
-            $this->condicionPagoModel = new CondicionPago();
-
-            $this->condicionPagoModel->eliminar($this->CodEmpresa, $codcondpago);
+            (new CondicionPago())->eliminar($this->CodEmpresa, $codcondpago);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -320,9 +254,7 @@ class CondicionesPago extends BaseController
 
             $excel->body(1, 'columnas');
 
-            $this->condicionPagoModel = new CondicionPago();
-
-            $result = $this->condicionPagoModel->getCondicionPago($this->CodEmpresa, '', '', [], '', '');
+            $result = (new CondicionPago())->getCondicionPago($this->CodEmpresa, '', '', [], '', '');
 
             foreach ($result as  $indice => $valor) {
                 $values = array(
@@ -345,9 +277,7 @@ class CondicionesPago extends BaseController
     public function pdf()
     {
         try {
-            $this->condicionPagoModel = new CondicionPago();
-
-            $result = $this->condicionPagoModel->getCondicionPago($this->CodEmpresa, '', '', [], '', '');
+            $result = (new CondicionPago())->getCondicionPago($this->CodEmpresa, '', '', [], '', '');
 
             $columnas = array('Código', 'Descripción', 'Comentario');
 

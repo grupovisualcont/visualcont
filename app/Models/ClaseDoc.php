@@ -12,7 +12,7 @@ class ClaseDoc extends Model
 
     protected $allowedFields = [];
 
-    public function getClaseDoc($columnas, $join, $where, $orderBy)
+    public function getClaseDoc(string $CodClaseDoc, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;
@@ -25,6 +25,8 @@ class ClaseDoc extends Model
                 }
             }
 
+            if (!empty($CodClaseDoc)) $result = $result->where('CodClaseDoc', $CodClaseDoc);
+            
             if (!empty($where)) $result = $result->where($where);
 
             if (!empty($orderBy)) $result = $result->orderBy($orderBy);

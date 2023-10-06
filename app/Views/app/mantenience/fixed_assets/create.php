@@ -11,10 +11,10 @@
             <div>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active text-link" id="tab1-tab" data-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Datos</a>
+                        <a class="nav-link active text-link" id="tab1-tab" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Datos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-link" id="tab2-tab" data-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Adicionales</a>
+                        <a class="nav-link text-link" id="tab2-tab" data-bs-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Adicionales</a>
                     </li>
                 </ul>
                 <form id="form" class="mt-3" method="POST" action="<?= base_url('app/mantenience/fixed_assets/save') ?>" onsubmit="return verificarFormulario()">
@@ -39,8 +39,8 @@
                                                 <label>Tipo</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="codTipoActivo" class="form-control form-control-sm">
-                                                    <?= $options_tipos_activos ?>
+                                                <select name="codTipoActivo" id="codTipoActivo" class="form-control form-control-sm">
+
                                                 </select>
                                             </div>
                                         </div>
@@ -144,8 +144,8 @@
                                                 <label>Depreciación</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8 d-flex">
-                                                <select name="depresiacion" class="form-control form-control-sm">
-                                                    <?= $options_depreciacion ?>
+                                                <select name="depresiacion" id="depresiacion" class="form-control form-control-sm">
+
                                                 </select>
                                                 <span class="ml-2 mt-1">
                                                     %
@@ -171,8 +171,8 @@
                                                 <label>Cta. de Gasto</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="CtaCtableGasto" class="form-control form-control-sm">
-                                                    <?= $options_cuentas_gasto ?>
+                                                <select name="CtaCtableGasto" id="CtaCtableGasto" class="form-control form-control-sm">
+
                                                 </select>
                                             </div>
                                         </div>
@@ -185,8 +185,8 @@
                                                 <label>Cta. de Depreciación</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="CtaCtableDepreciacion" class="form-control form-control-sm">
-                                                    <?= $options_cuentas_depreciacion ?>
+                                                <select name="CtaCtableDepreciacion" id="CtaCtableDepreciacion" class="form-control form-control-sm">
+
                                                 </select>
                                             </div>
                                         </div>
@@ -197,8 +197,8 @@
                                                 <label>Estado</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="estado" class="form-control form-control-sm">
-                                                    <?= $options_estado ?>
+                                                <select name="estado" id="estado" class="form-control form-control-sm">
+                                                    <?= $option_estado ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -215,8 +215,8 @@
                                                 <label>Centro de Costo</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="CodCcosto" class="form-control form-control-sm">
-                                                    <?= $options_centro_costo ?>
+                                                <select name="CodCcosto" id="CodCcosto" class="form-control form-control-sm">
+
                                                 </select>
                                             </div>
                                         </div>
@@ -227,8 +227,8 @@
                                                 <label>Ubigeo</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="codubigeo" class="form-control form-control-sm">
-                                                    <?= $options_ubigeos ?>
+                                                <select name="codubigeo" id="codubigeo" class="form-control form-control-sm">
+
                                                 </select>
                                             </div>
                                         </div>
@@ -287,8 +287,8 @@
                                                 <label>Catalogo existente</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="IdCatalogo" class="form-control form-control-sm">
-                                                    <?= $options_catalogo_existente ?>
+                                                <select name="IdCatalogo" id="IdCatalogo" class="form-control form-control-sm">
+                                                    <?= $option_catalogo_existente ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -313,8 +313,8 @@
                                                 <label>Tipo de activo</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="IdTipoActivo" class="form-control form-control-sm">
-                                                    <?= $options_tipo_activo ?>
+                                                <select name="IdTipoActivo" id="IdTipoActivo" class="form-control form-control-sm">
+                                                    <?= $option_tipo_activo ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -327,8 +327,8 @@
                                                 <label>Estado de Activo</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="IdEstadoActivo" class="form-control form-control-sm">
-                                                    <?= $options_estado_activo ?>
+                                                <select name="IdEstadoActivo" id="IdEstadoActivo" class="form-control form-control-sm">
+                                                    <?= $option_estado_activo ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -339,8 +339,8 @@
                                                 <label>Metd. depreciación</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="IdMetodo" class="form-control form-control-sm">
-                                                    <?= $options_metodo_depreciacion ?>
+                                                <select name="IdMetodo" id="IdMetodo" class="form-control form-control-sm">
+                                                    <?= $option_metodo_depreciacion ?>
                                                 </select>
                                             </div>
                                         </div>

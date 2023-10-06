@@ -22,6 +22,10 @@
     background-color: #eaecf4 !important;
 }
 
+.border-rojo {
+    border: 2px solid red !important;
+}
+
 .select2-results__option {
     white-space: wrap;
 }

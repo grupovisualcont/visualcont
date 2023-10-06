@@ -3,9 +3,9 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\Ts27Vinculo;
+use App\Models\ClaseDoc as ModelsClaseDoc;
 
-class Ts27Vinculos extends BaseController
+class ClaseDoc extends BaseController
 {
     protected $page;
     protected $CodEmpresa;
@@ -14,7 +14,7 @@ class Ts27Vinculos extends BaseController
 
     public function __construct()
     {
-        $this->page = 'Ts27Vinculo';
+        $this->page = 'ClaseDoc';
         $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
@@ -28,12 +28,12 @@ class Ts27Vinculos extends BaseController
             if (isset($post['search'])) {
                 $search = $post['search'];
 
-                $ts27Vinculo = (new Ts27Vinculo())->getTs27Vinculo('', 'CodVinculo AS id, DescVinculo AS text', [], 'DescVinculo LIKE "%' . $search . '%"', '');
+                $clase_doc = (new ModelsClaseDoc())->getClaseDoc('', 'CodClaseDoc AS id, DescClaseDoc AS text', [], 'DescClaseDoc LIKE "' . $search . '%"', '');
             } else {
-                $ts27Vinculo = (new Ts27Vinculo())->getTs27Vinculo('', 'CodVinculo AS id, DescVinculo AS text', [], '', '');
+                $clase_doc = (new ModelsClaseDoc())->getClaseDoc('', 'CodClaseDoc AS id, DescClaseDoc AS text', [], '', '');
             }
 
-            echo json_encode($ts27Vinculo);
+            echo json_encode($clase_doc);
         } catch (\Throwable $th) {
             throw $th;
         }

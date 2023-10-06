@@ -8,22 +8,16 @@ use App\Models\TipoDocumentoIdentidad as ModelsTipoDocumentoIdentidad;
 class TipoDocumentoIdentidad extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $tipoDocumentoIdentidadModel;
-
     public function __construct()
     {
         $this->page = 'Tipo Documento de Identidad';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->tipoDocumentoIdentidadModel = new ModelsTipoDocumentoIdentidad();
     }
 
     public function autocompletado()
@@ -31,42 +25,31 @@ class TipoDocumentoIdentidad extends BaseController
         try {
             $post = $this->request->getPost();
 
-            if (isset($post['search'])) {
-                $search = $post['search'];
+            if ($post['tipo'] == 'documento') {
+                if (isset($post['CodTipoDoc']) && !empty($post['CodTipoDoc'])) {
+                    $tipo_documento_identidad = (new ModelsTipoDocumentoIdentidad())->getTipoDocumentoIdentidad($post['CodTipoDoc'], 'CodTipoDoc AS id, DesDocumento AS text, TipoDato', [], '', '')[0];
+                } else {
+                    if (isset($post['search'])) {
+                        $search = $post['search'];
 
-                $this->tipoDocumentoIdentidadModel = new ModelsTipoDocumentoIdentidad();
+                        $tipo_documento_identidad = (new ModelsTipoDocumentoIdentidad())->getTipoDocumentoIdentidad('', 'CodTipoDoc AS id, DesDocumento AS text, TipoDato', [], 'DesDocumento LIKE "%' . $search . '%"', '');
+                    } else {
+                        $tipo_documento_identidad = (new ModelsTipoDocumentoIdentidad())->getTipoDocumentoIdentidad('', 'CodTipoDoc AS id, DesDocumento AS text, TipoDato', [], '', '');
+                    }
+                }
 
-                $tipo_documento_identidad = $this->tipoDocumentoIdentidadModel->getTipoDocumentoIdentidad('', 'CodTipoDoc AS value, DesDocumento AS name, TipoDato', [], 'DesDocumento LIKE "%' . $search . '%"', '');
-            } else {
-                $this->tipoDocumentoIdentidadModel = new ModelsTipoDocumentoIdentidad();
+                echo json_encode($tipo_documento_identidad);
+            } else if ($post['tipo'] == 'banco') {
+                if (isset($post['search'])) {
+                    $search = $post['search'];
 
-                $tipo_documento_identidad = $this->tipoDocumentoIdentidadModel->getTipoDocumentoIdentidad('', 'CodTipoDoc AS value, DesDocumento AS name, TipoDato', [], '', '');
+                    $tipo_documento_identidad = (new ModelsTipoDocumentoIdentidad())->getTipoDocumentoIdentidad('', 'CodTipoDoc AS id, DesDocumento AS text, TipoDato', [], '(bcp IS NOT NULL OR bbva IS NOT NULL) AND DesDocumento LIKE "%' . $search . '%"', '');
+                } else {
+                    $tipo_documento_identidad = (new ModelsTipoDocumentoIdentidad())->getTipoDocumentoIdentidad('', 'CodTipoDoc AS id, DesDocumento AS text, TipoDato', [], 'bcp IS NOT NULL OR bbva IS NOT NULL', '');
+                }
+
+                echo json_encode($tipo_documento_identidad);
             }
-
-            echo json_encode($tipo_documento_identidad);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
-    public function autocompletado_banco()
-    {
-        try {
-            $post = $this->request->getPost();
-
-            if (isset($post['search'])) {
-                $search = $post['search'];
-
-                $this->tipoDocumentoIdentidadModel = new ModelsTipoDocumentoIdentidad();
-
-                $tipo_documento_identidad = $this->tipoDocumentoIdentidadModel->getTipoDocumentoIdentidad('', 'CodTipoDoc AS value, DesDocumento AS name, TipoDato', [], '(bcp IS NOT NULL OR bbva IS NOT NULL) AND DesDocumento LIKE "%' . $search . '%"', '');
-            } else {
-                $this->tipoDocumentoIdentidadModel = new ModelsTipoDocumentoIdentidad();
-
-                $tipo_documento_identidad = $this->tipoDocumentoIdentidadModel->getTipoDocumentoIdentidad('', 'CodTipoDoc AS value, DesDocumento AS name, TipoDato', [], 'bcp IS NOT NULL OR bbva IS NOT NULL', '');
-            }
-
-            echo json_encode($tipo_documento_identidad);
         } catch (\Throwable $th) {
             throw $th;
         }

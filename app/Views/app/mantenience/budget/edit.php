@@ -36,7 +36,7 @@
                                                 <label>Código</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="CodConceptoPres1" class="form-control form-control-sm" value="<?= $presupuesto['CodConceptoPres'] ?>" readonly />
+                                                <input type="text" name="CodConceptoPres1" class="form-control form-control-sm" value="<?= $presupuesto['codigo'] ?>" readonly />
                                             </div>
                                         </div>
                                     </div>
@@ -46,7 +46,7 @@
                                                 <label>Categoría Principal</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="descConceptoPres1" id="Descripcion1" class="form-control form-control-sm" value="<?= $presupuesto['descConceptoPres'] ?>" />
+                                                <input type="text" name="descConceptoPres1" id="Descripcion1" class="form-control form-control-sm" value="<?= $presupuesto['descripcion'] ?>" />
                                             </div>
                                         </div>
                                     </div>
@@ -61,7 +61,7 @@
                                                 <label>Código</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="CodConceptoPres2" id="Codigo2" class="form-control form-control-sm" value="<?= $presupuesto['CodConceptoPres'] ?>" readonly />
+                                                <input type="text" name="CodConceptoPres2" id="Codigo2" class="form-control form-control-sm" value="<?= $presupuesto['codigo'] ?>" readonly />
                                             </div>
                                         </div>
                                     </div>
@@ -72,7 +72,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select id="Niveles1-2" class="form-control form-control-sm" onchange="setCodigo()" disabled>
-                                                    <?= $options_nivel_1 ?>
+                                                    <?= $option_nivel_1 ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -85,7 +85,7 @@
                                                 <label>Categoría 2</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="descConceptoPres2" id="Descripcion2" class="form-control form-control-sm" value="<?= $presupuesto['descConceptoPres'] ?>" />
+                                                <input type="text" name="descConceptoPres2" id="Descripcion2" class="form-control form-control-sm" value="<?= $presupuesto['descripcion'] ?>" />
                                             </div>
                                         </div>
                                     </div>
@@ -100,7 +100,7 @@
                                                 <label>Código</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="CodConceptoPres3" id="Codigo3" class="form-control form-control-sm" value="<?= $presupuesto['CodConceptoPres'] ?>" readonly />
+                                                <input type="text" name="CodConceptoPres3" id="Codigo3" class="form-control form-control-sm" value="<?= $presupuesto['codigo'] ?>" readonly />
                                             </div>
                                         </div>
                                     </div>
@@ -111,7 +111,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select id="Niveles1-3" class="form-control form-control-sm" onchange="get_options_nivel_2()" disabled>
-                                                    <?= $options_nivel_1 ?>
+                                                    <?= $option_nivel_1 ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -125,7 +125,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select id="Niveles2-3" class="form-control form-control-sm" onchange="setCodigo()" disabled>
-                                                    <?= $options_nivel_2 ?>
+                                                    <?= $option_nivel_2 ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -136,7 +136,7 @@
                                                 <label>Categoría 3</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="descConceptoPres3" id="Descripcion3" class="form-control form-control-sm" value="<?= $presupuesto['descConceptoPres'] ?>" />
+                                                <input type="text" name="descConceptoPres3" id="Descripcion3" class="form-control form-control-sm" value="<?= $presupuesto['descripcion'] ?>" />
                                             </div>
                                         </div>
                                     </div>
@@ -151,7 +151,7 @@
                                                 <label>Código</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="CodConceptoPres4" id="Codigo4" class="form-control form-control-sm" value="<?= $presupuesto['CodConceptoPres'] ?>" readonly />
+                                                <input type="text" name="CodConceptoPres4" id="Codigo4" class="form-control form-control-sm" value="<?= $presupuesto['codigo'] ?>" readonly />
                                             </div>
                                         </div>
                                     </div>
@@ -162,7 +162,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select id="Niveles1-4" class="form-control form-control-sm" onchange="get_options_nivel_2()" disabled>
-                                                    <?= $options_nivel_1 ?>
+                                                    <?= $option_nivel_1 ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -176,7 +176,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select id="Niveles2-4" class="form-control form-control-sm" onchange="get_options_nivel_3()" disabled>
-                                                    <?= $options_nivel_2 ?>
+                                                    <?= $option_nivel_2 ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -188,7 +188,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select id="Niveles3-4" class="form-control form-control-sm" onchange="setCodigo()" disabled>
-                                                    <?= $options_nivel_3 ?>
+                                                    <?= $option_nivel_3 ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -201,7 +201,7 @@
                                                 <label>Detalle</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="descConceptoPres4" id="Descripcion4" class="form-control form-control-sm" value="<?= $presupuesto['descConceptoPres'] ?>" />
+                                                <input type="text" name="descConceptoPres4" id="Descripcion4" class="form-control form-control-sm" value="<?= $presupuesto['descripcion'] ?>" />
                                             </div>
                                         </div>
                                     </div>
@@ -212,7 +212,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="CodCuenta" id="CodCuenta" class="form-control form-control-sm">
-                                                    <?= $options_planes_contable ?>
+                                                    <?= $option_plan_contable ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -228,7 +228,7 @@
                                                 <label>Código</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="CodVoucherPre" class="form-control form-control-sm" value="<?= $presupuesto['CodVoucherPre'] ?>" readonly />
+                                                <input type="text" name="CodVoucherPre" class="form-control form-control-sm" value="<?= $presupuesto['codigo'] ?>" readonly />
                                             </div>
                                         </div>
                                     </div>
@@ -238,7 +238,7 @@
                                                 <label>Concepto</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="DescVoucherPre" id="Descripcion5" class="form-control form-control-sm" value="<?= $presupuesto['DescVoucherPre'] ?>" />
+                                                <input type="text" name="DescVoucherPre" id="Descripcion5" class="form-control form-control-sm" value="<?= $presupuesto['descripcion'] ?>" />
                                             </div>
                                         </div>
                                     </div>

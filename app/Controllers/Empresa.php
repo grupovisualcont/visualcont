@@ -15,20 +15,10 @@ class Empresa extends BaseController
     protected $page;
     protected $CodEmpresa;
 
-    protected $empresaModel;
-    protected $sidebarModel;
-    protected $sidebarDetallesModel;
-    protected $tipoCambioModel;
-
     public function __construct()
     {
         $this->page = 'Inicio';
         $this->CodEmpresa = $_COOKIE['empresa'] ?? '';
-
-        $this->empresaModel = new ModelsEmpresa();
-        $this->sidebarModel = new Sidebar();
-        $this->sidebarDetallesModel = new SidebarDetalles();
-        $this->tipoCambioModel = new TipoCambio();
     }
 
     public function getCodEmpresa()
@@ -66,9 +56,7 @@ class Empresa extends BaseController
                 $usuario = strtoupper(strval($this->request->getPost('usuario')));
                 $password = trim(strval($this->request->getPost('password')));
 
-                $this->empresaModel = new ModelsEmpresa();
-
-                $result = $this->empresaModel->login($usuario, $password);
+                $result = (new ModelsEmpresa())->login($usuario, $password);
 
                 if (count($result) == 1) {
                     $_SESSION['empresa'] = $usuario;
@@ -120,7 +108,7 @@ class Empresa extends BaseController
     public function empresa()
     {
         try {
-            $result = $this->empresaModel->getEmpresaByCodEmpresa('RazonSocial, Ruc', $this->CodEmpresa);
+            $result = (new ModelsEmpresa())->getEmpresaByCodEmpresa('RazonSocial, Ruc', $this->CodEmpresa);
 
             return $result;
         } catch (\Throwable $th) {
@@ -131,7 +119,7 @@ class Empresa extends BaseController
     public function sidebars()
     {
         try {
-            $result = $this->sidebarModel->getSidebar();
+            $result = (new Sidebar())->getSidebar();
 
             return $result;
         } catch (\Throwable $th) {
@@ -142,7 +130,7 @@ class Empresa extends BaseController
     public function sidebardetalles()
     {
         try {
-            $result = $this->sidebarDetallesModel->getSidebarDetalles();
+            $result = (new SidebarDetalles())->getSidebarDetalles();
 
             return $result;
         } catch (\Throwable $th) {
@@ -223,9 +211,7 @@ class Empresa extends BaseController
         try {
             $fecha = date('Y-m-d');
 
-            $this->tipoCambioModel = new TipoCambio();
-
-            $tipo_cambio = $this->tipoCambioModel->getTipoCambio($this->getCodEmpresa(), $fecha, '', [], '', '');
+            $tipo_cambio = (new TipoCambio())->getTipoCambio($this->getCodEmpresa(), $fecha, '', [], '', '');
 
             if (count($tipo_cambio) == 0) {
                 $token = 'apis-token-1.aTSI1U7KEuT-6bbbCguH-4Y8TI6KS73N';
@@ -262,11 +248,9 @@ class Empresa extends BaseController
                     $post['ValorVenta'] = $tipoCambioSunat->venta;
                     $post['Estado'] = 1;
 
-                    $this->tipoCambioModel = new TipoCambio();
+                    $tipo_cambio = (new TipoCambio())->getTipoCambio($this->getCodEmpresa(), $post['FechaTipoCambio'], '', [], '', '');
 
-                    $tipo_cambio = $this->tipoCambioModel->getTipoCambio($this->getCodEmpresa(), $post['FechaTipoCambio'], '', [], '', '');
-
-                    if (count($tipo_cambio) == 0) $this->tipoCambioModel->insertar($post);
+                    if (count($tipo_cambio) == 0) (new TipoCambio())->agregar($post);
                 }
             } else {
                 $tipoCambioSunat = json_decode(json_encode(array('compra' => $tipo_cambio[0]['ValorCompra'], 'venta' => $tipo_cambio[0]['ValorVenta'])));

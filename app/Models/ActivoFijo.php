@@ -43,18 +43,28 @@ class ActivoFijo extends Model
         'ArrMonto'
     ];
 
-    public function getActivoFijo($CodEmpresa, $columnas, $where)
+    public function getActivoFijo(string $CodEmpresa, int $IdActivo, string $codActivo, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;
 
-            if (!empty($columnas)) {
-                $result = $this->select($columnas);
+            if (!empty($columnas)) $result = $this->select($columnas);
+
+            if (is_array($join) && count($join) > 0) {
+                foreach ($join as $indice => $valor) {
+                    $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
+                }
             }
 
-            $result = $result->where('CodEmpresa', $CodEmpresa);
+            $result = $result->where('activosfijos.CodEmpresa', $CodEmpresa);
+            
+            if (!empty($IdActivo)) $result = $result->where('activosfijos.IdActivo', $IdActivo);
 
-            if (!empty($where)) $result->where($where);
+            if (!empty($codActivo)) $result = $result->where('activosfijos.codActivo', $codActivo);
+
+            if (!empty($where)) $result = $result->where($where);
+
+            if (!empty($orderBy)) $result = $result->orderBy($orderBy);
 
             $result = $result->findAll();
 
@@ -98,9 +108,9 @@ class ActivoFijo extends Model
     public function getActivoFijoPDF($CodEmpresa)
     {
         try {
-            $result = $this->select('activosfijos.codActivo, activosfijos.descripcion, t.descTipoActivo, activosfijos.marca, activosfijos.modelo, activosfijos.serie')
-                ->join('tipoactivo t', 'activosfijos.codTipoActivo = t.codTipoActivo AND activosfijos.CodEmpresa = t.CodEmpresa')
-                ->where('activosfijos.CodEmpresa', $CodEmpresa)
+            $result = $this->select()
+                ->join('', '')
+                ->where('CodEmpresa', $CodEmpresa)
                 ->orderBy('activosfijos.IdActivo', 'ASC')
                 ->findAll();
 
@@ -116,7 +126,7 @@ class ActivoFijo extends Model
             $result = $this->select('activosfijos.codActivo, activosfijos.descripcion, t.descTipoActivo, activosfijos.marca, activosfijos.modelo, activosfijos.serie')
                 ->join('tipoactivo t', 'activosfijos.codTipoActivo = t.codTipoActivo AND activosfijos.CodEmpresa = t.CodEmpresa')
                 ->where('activosfijos.CodEmpresa', $CodEmpresa)
-                ->orderBy('activosfijos.IdActivo', 'ASC')
+                ->orderBy('', 'ASC')
                 ->findAll();
 
             return $result;

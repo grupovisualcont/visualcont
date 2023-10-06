@@ -1,6 +1,18 @@
-verificarTipoDocumentoIdentidad();
+$('select').select2({
+    width: 'auto', dropdownAutoWidth: true
+});
 
-var estado_razonsocial = false;
+autocompletado($('#CodTipPer'), {}, BASE_URL + "app/type_person/autocompletado");
+autocompletado($('#CodTipoDoc'), { tipo: 'documento'}, BASE_URL + "app/identity_document_type/autocompletado");
+autocompletado($('#IdCondicion'), { IdAnexo: 0, TipoAnexo: 2, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado($('#Idestado'), { IdAnexo: 0, TipoAnexo: 1, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado($('#IdSexo'), { IdAnexo: 0, TipoAnexo: 3, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado($('#CodTipoDoc_Tele'), { tipo: 'banco' }, BASE_URL + "app/identity_document_type/autocompletado");
+autocompletado($('#CodVinculo'), {}, BASE_URL + "app/ts27Vinculo/autocompletado");
+autocompletado($('#pais'), { tipo: 'pais' }, BASE_URL + "app/ubigeo/autocompletado");
+autocompletado($('#select_codubigeo'), { tipo: 'ubigeo' }, BASE_URL + "app/ubigeo/autocompletado");
+
+verificarTipoDocumentoIdentidad();
 
 function cambiarInputByPais() {
     var pais = $('#pais').val();
@@ -62,10 +74,12 @@ function consulta_sunat(tipo_documento) {
 
                 if (!datos.error) {
                     if (tipo_documento == 'ruc') {
-                        $('#CodTipPer').val('02');
+                        nuevo_option('#CodTipPer',  { CodTipPer: '02' }, BASE_URL + "app/type_person/autocompletado");
+
                         $('#docidentidad').val('');
                     } else {
-                        $('#CodTipPer').val('01');
+                        nuevo_option('#CodTipPer', { CodTipPer: '01' }, BASE_URL + "app/type_person/autocompletado");
+
                         $('#ruc').val('');
                     }
 
@@ -84,11 +98,10 @@ function consulta_sunat(tipo_documento) {
                         $('#Nom1').css('textTransform', 'capitalize');
                     }
 
-                    $('#CodTipoDoc').val(datos.tipoDocumento);
-                    $('#razonsocial').val(datos.nombre);
+                    nuevo_option('#CodTipoDoc', { tipo: 'documento', CodTipoDoc: datos.tipoDocumento }, BASE_URL + "app/identity_document_type/autocompletado");
 
-                    if (datos.nombre.length > 0) {
-                        estado_razonsocial = true;
+                    if (datos.nombre) {
+                        $('#razonsocial').val(datos.nombre);
                     }
 
                     var condiciones = $('#IdCondicion')[0];
@@ -133,9 +146,11 @@ function consulta_sunat(tipo_documento) {
 }
 
 function verificarTipoDocumentoIdentidad() {
-    var CodTipPer = $('#CodTipPer option:selected').val();
-    var CodTipoDoc = $('#CodTipoDoc option:selected').val();
-    var TipoDato = $('#CodTipoDoc option:selected').attr('data-tipo-dato').split('|');
+    var CodTipPer = $('#CodTipPer option:selected') ? $('#CodTipPer option:selected').val() : '';
+    var CodTipoDoc = $('#CodTipoDoc option:selected') ? $('#CodTipoDoc option:selected').val() : '';
+    var TipoDato = $('#CodTipoDoc option:selected').attr('data-tipo-dato');
+
+    if (TipoDato) TipoDato = TipoDato.split('|');
 
     if (CodTipPer == datos_ruc_CodTipPer) {
         $('#ApePat').val('');
@@ -221,12 +236,12 @@ function nuevoBanco() {
             <tr id="tr_banco${id_banco}" class="clase_banco">
                 <td>
                     <select name="CodBanco[]" class="CodBanco form-control form-control-sm" id="CodBanco${id_banco}">
-                        ${options_banco}
+
                     </select>
                 </td>
                 <td>
                     <select name="idTipoCuenta[]" class="idTipoCuenta form-control form-control-sm" id="idTipoCuenta${id_banco}">
-                        ${options_tipo_cuenta}
+
                     </select>
                 </td>
                 <td>
@@ -240,20 +255,16 @@ function nuevoBanco() {
                 </td>
                 <td></td>
                 <td>
-                    <button type="button" class="Buttons btn btn-sm btn-danger shadow-sm" onclick="eliminarBanco('${id_banco}')">Eliminar</button>
+                    <button type="button" class="Buttons btn btn-sm btn-danger shadow-sm" onclick="eliminar('${id_banco}')">Eliminar</button>
                 </td>
             </tr>
         `;
 
     $('#tablaBanco > tbody').append(nuevo);
 
-    $('#CodBanco' + id_banco).select2({
-        width: 'auto', dropdownAutoWidth: true
-    });
+    autocompletado($('#CodBanco' + id_banco), {}, BASE_URL + "app/mantenience/box_banks/autocompletado");
+    autocompletado($('#idTipoCuenta' + id_banco), { IdAnexo: 0, TipoAnexo: 54, OtroDato: '02' }, BASE_URL + "app/attached/autocompletado");
 
-    $('#idTipoCuenta' + id_banco).select2({
-        width: 'auto', dropdownAutoWidth: true
-    });
 
     id_banco++;
 }
@@ -268,21 +279,21 @@ function cambiarPredeterminado(id) {
     });
 }
 
-function eliminarBanco(id) {
+function eliminar(id) {
     $('#tr_banco' + id).remove();
 
     $(".clase_banco").each(function (i) {
         this.id = 'tr_banco' + (i + 1);
     });
 
-    $(".CodBanco > select").each(function (i) {
+    $(".CodBanco").each(function (i) {
         this.id = 'CodBanco' + (i + 1);
         $(this).select2({
             width: 'auto', dropdownAutoWidth: true
         });
     });
 
-    $(".idTipoCuenta > select").each(function (i) {
+    $(".idTipoCuenta").each(function (i) {
         this.id = 'idTipoCuenta' + (i + 1);
         $(this).select2({
             width: 'auto', dropdownAutoWidth: true
@@ -298,7 +309,7 @@ function eliminarBanco(id) {
     });
 
     $(".Buttons").each(function (i) {
-        $(this).attr('onclick', 'eliminarBanco(' + (i + 1) + ')');
+        $(this).attr('onclick', 'eliminar(' + (i + 1) + ')');
     });
 
     if ($('.clase_banco').length == 0) {
@@ -404,7 +415,7 @@ function verificarFormulario() {
 
     $.ajax({
         'url': BASE_URL + 'app/mantenience/business_partner/consulta_duplicados',
-        'data': { tipo: 'editar', ruc, docidentidad, razonsocial, Notruc: socionegocio_ruc, Notdocidentidad: socionegocio_docidentidad, Notrazonsocial: socionegocio_razonsocial },
+        'data': { tipo: 'editar', ruc, docidentidad, razonsocial, Notruc: socio_negocio_ruc, Notdocidentidad: socio_negocio_docidentidad, Notrazonsocial: socio_negocio_razonsocial },
         'type': 'POST',
         'async': false,
         success: function (data) {

@@ -38,15 +38,4 @@ class TipoDocumentoIdentidad extends Model
             throw $th;
         }
     }
-
-    public function getTipoDocumentoIdentidadByCodTipoDoc($CodTipoDoc, $columnas)
-    {
-        try {
-            $result = $this->select($columnas)->where('CodTipoDoc', $CodTipoDoc)->findAll();
-
-            return $result;
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
 }

@@ -2,7 +2,8 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
-autocompletado($('#CodCuenta'), BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+autocompletado($('.Niveles1'), { length: 2 }, BASE_URL + "app/conceptoPres/autocompletado");
+autocompletado($('#CodCuenta'), { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
 
 function cambiarPorNivel() {
     var Nivel = (parseInt($('#Tipo option:selected').val()) + 1);
@@ -27,9 +28,6 @@ function get_options_nivel_2() {
         success: function (data) {
             estado = true;
             $('#Niveles2-' + Nivel).html(data);
-            $('#Niveles2-' + Nivel).select2({
-                width: 'auto', dropdownAutoWidth: true
-            });
         }
     });
 
@@ -51,9 +49,6 @@ function get_options_nivel_3() {
         success: function (data) {
             estado = true;
             $('#Niveles3-' + Nivel).html(data);
-            $('#Niveles3-' + Nivel).select2({
-                width: 'auto', dropdownAutoWidth: true
-            });
         }
     });
 
@@ -85,16 +80,10 @@ function setCodigo() {
 
     if ($('#Niveles1-' + Nivel + ' option:selected').val() != '') {
         $('#Niveles2-' + Nivel).removeAttr('disabled');
-        $('#Niveles2-' + Nivel).select2({
-            width: 'auto', dropdownAutoWidth: true
-        });
     }
 
     if ($('#Niveles2-' + Nivel + ' option:selected').val() != '') {
         $('#Niveles3-' + Nivel).removeAttr('disabled');
-        $('#Niveles3-' + Nivel).select2({
-            width: 'auto', dropdownAutoWidth: true
-        });
     }
 }
 
@@ -107,7 +96,7 @@ function verificarFormulario() {
 
     switch (Nivel) {
         case 2:
-            if (Niveles1.length == 0) {
+            if (Niveles1 == null || Niveles1.length == 0) {
                 alertify.alert('Debe de Seleccionar la Categoría Principal!', function () { }).set({ title: "Error" });
 
                 return false;
@@ -115,13 +104,13 @@ function verificarFormulario() {
 
             break;
         case 3:
-            if (Niveles1.length == 0) {
+            if (Niveles1 == null || Niveles1.length == 0) {
                 alertify.alert('Debe de Seleccionar la Categoría Principal!', function () { }).set({ title: "Error" });
 
                 return false;
             }
 
-            if (Niveles2.length == 0) {
+            if (Niveles2 == null || Niveles2.length == 0) {
                 alertify.alert('Debe de Seleccionar la Categoría 2!', function () { }).set({ title: "Error" });
 
                 return false;
@@ -129,19 +118,19 @@ function verificarFormulario() {
 
             break;
         case 4:
-            if (Niveles1.length == 0) {
+            if (Niveles1 == null || Niveles1.length == 0) {
                 alertify.alert('Debe de Seleccionar la Categoría Principal!', function () { }).set({ title: "Error" });
 
                 return false;
             }
 
-            if (Niveles2.length == 0) {
+            if (Niveles2 == null || Niveles2.length == 0) {
                 alertify.alert('Debe de Seleccionar la Categoría 2!', function () { }).set({ title: "Error" });
 
                 return false;
             }
 
-            if (Niveles3.length == 0) {
+            if (Niveles3 == null || Niveles3.length == 0) {
                 alertify.alert('Debe de Seleccionar la Categoría 3!', function () { }).set({ title: "Error" });
 
                 return false;

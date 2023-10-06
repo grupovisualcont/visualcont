@@ -68,8 +68,8 @@
                                             <label>Categoría Principal</label>
                                         </div>
                                         <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                            <select id="Niveles1-2" class="form-control form-control-sm" onchange="setCodigo()">
-                                                <?= $options_nivel_1 ?>
+                                            <select id="Niveles1-2" class="Niveles1 form-control form-control-sm" onchange="setCodigo()">
+
                                             </select>
                                         </div>
                                     </div>
@@ -106,8 +106,8 @@
                                             <label>Categoría Principal</label>
                                         </div>
                                         <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                            <select id="Niveles1-3" class="form-control form-control-sm" onchange="get_options_nivel_2()">
-                                                <?= $options_nivel_1 ?>
+                                            <select id="Niveles1-3" class="Niveles1 form-control form-control-sm" onchange="get_options_nivel_2()">
+
                                             </select>
                                         </div>
                                     </div>
@@ -156,8 +156,8 @@
                                             <label>Categoría Principal</label>
                                         </div>
                                         <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                            <select id="Niveles1-4" class="form-control form-control-sm" onchange="get_options_nivel_2()">
-                                                <?= $options_nivel_1 ?>
+                                            <select id="Niveles1-4" class="Niveles1 form-control form-control-sm" onchange="get_options_nivel_2()">
+
                                             </select>
                                         </div>
                                     </div>

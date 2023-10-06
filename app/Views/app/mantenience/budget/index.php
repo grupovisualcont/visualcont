@@ -40,19 +40,19 @@
                         foreach ($datos as $indice => $valor) {
                         ?>
                             <tr>
-                                <td><?= $valor['Nivel'] ?></td>
-                                <td><?= $valor['Codigo'] ?></td>
-                                <td><?= $valor['Descripcion'] ?></td>
-                                <td><?= $valor['Cuenta'] ?></td>
+                                <td><?= $valor['nivel'] ?></td>
+                                <td><?= $valor['codigo'] ?></td>
+                                <td><?= $valor['descripcion'] ?></td>
+                                <td><?= $valor['cuenta'] ?></td>
                                 <td align="center">
                                     <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-boundary="viewport" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-bars"></i>
                                     </button>
                                     <div class="dropdown-menu" x-placement="left-start">
-                                        <a class="dropdown-item" href="<?= base_url('app/mantenience/budget/edit/' . $valor['Id'] . '/' . $valor['Codigo']) ?>">
+                                        <a class="dropdown-item" href="<?= base_url('app/mantenience/budget/edit/' . $valor['id'] . '/' . $valor['codigo']) ?>">
                                             <i class="fa fa-edit"></i> Editar
                                         </a>
-                                        <a class="dropdown-item" href="<?= base_url('app/mantenience/budget/delete/' . $valor['Id'] . '/' . $valor['Codigo']) ?>" onclick="return confirm('¿Está seguro de eliminar?')">
+                                        <a class="dropdown-item" href="<?= base_url('app/mantenience/budget/delete/' . $valor['id'] . '/' . $valor['codigo']) ?>" onclick="return confirm('¿Está seguro de eliminar?')">
                                             <i class="fa fa-trash"></i> Eliminar
                                         </a>
                                     </div>

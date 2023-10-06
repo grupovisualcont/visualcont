@@ -12,7 +12,7 @@ class TipoComprobante extends Model
 
     protected $allowedFields = [];
 
-    public function getTipoComprobante($join, $columnas, $where, $orderBy)
+    public function getTipoComprobante(string $CodComprobante, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;
@@ -24,6 +24,8 @@ class TipoComprobante extends Model
                     $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
                 }
             }
+
+            if (!empty($CodComprobante)) $result = $result->where('CodComprobante', $CodComprobante);
 
             if (!empty($where)) $result = $result->where($where);
 

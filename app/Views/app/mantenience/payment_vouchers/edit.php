@@ -19,8 +19,8 @@
                                         <label>Clase Documento</label>
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                        <select name="CodClaseDoc" class="form-control form-control-sm" disabled>
-                                            <?= $options_clases_documento ?>
+                                        <select name="CodClaseDoc" id="CodClaseDoc" class="form-control form-control-sm" disabled>
+                                            <?= $option_clase_documento ?>
                                         </select>
                                     </div>
                                 </div>
@@ -88,7 +88,7 @@
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                         <select name="CodSunat" id="CodSunat" class="form-control form-control-sm">
-                                            <?= $options_tipos_comprobantes ?>
+                                            <?= $option_tipo_comprobante ?>
                                         </select>
                                     </div>
                                 </div>
@@ -127,8 +127,8 @@
                                         <label>Estado</label>
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                        <select name="Estado" class="form-control form-control-sm">
-                                            <?= $options_estados ?>
+                                        <select name="Estado" id="Estado" class="form-control form-control-sm">
+                                            <?= $option_estado ?>
                                         </select>
                                     </div>
                                 </div>

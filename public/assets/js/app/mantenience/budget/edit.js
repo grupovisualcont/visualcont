@@ -1,4 +1,4 @@
-autocompletado($('#CodCuenta'), BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+autocompletado($('#CodCuenta'), { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
 
 function verificarFormulario() {
     var Nivel = (parseInt($('#Tipo option:selected').val()) + 1);

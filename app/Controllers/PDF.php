@@ -9,11 +9,13 @@ class PDF extends BaseController
     protected $objPDF;
     protected $filename;
 
-    public function setFilename($filename){
+    public function setFilename($filename)
+    {
         $this->filename = $filename;
     }
 
-    public function getFilename(){
+    public function getFilename()
+    {
         return $this->filename;
     }
 
@@ -21,7 +23,7 @@ class PDF extends BaseController
     {
         $this->objPDF = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => $hoja]);
 
-		$html = view('pdf/reporte', [
+        $html = view('pdf/reporte', [
             'titulo' => $titulo,
             'mostrar_titulo' => $mostrar_titulo,
             'html' => $html,
@@ -31,12 +33,13 @@ class PDF extends BaseController
         $stylesheet = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/assets/css/reporte.css');
 
         $this->objPDF->WriteHTML($stylesheet, 1);
-		$this->objPDF->WriteHTML($html);
-        
+        $this->objPDF->WriteHTML($html);
+
         service('response')->setHeader("Content-Type", "application/pdf");
     }
 
-    public function imprimir(){
+    public function imprimir()
+    {
         $this->objPDF->Output($this->getFilename() . '.pdf', 'I');
     }
 }

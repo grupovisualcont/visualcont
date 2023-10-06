@@ -2,6 +2,10 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
+autocompletado($('#CodClaseDoc'), { }, BASE_URL + "app/claseDoc/autocompletado");
+autocompletado($('#CodSunat'), { }, BASE_URL + "app/tipoComprobante/autocompletado");
+autocompletado($('#Estado'), { IdAnexo: 0, TipoAnexo: 1, OtroDato: '', Value: 'CodInterno' }, BASE_URL + "app/attached/autocompletado");
+
 function setNumeroDocumento() {
     var Serie = $('#Serie').val().toUpperCase();
     var Numero = $('#Numero').val();
@@ -49,7 +53,7 @@ function verificarFormulario() {
     var DescDocumento = $('#DescDocumento').val();
     var Serie = $('#Serie').val();
     var Numero = $('#Numero').val();
-    var CodSunat = $('#CodSunat').val();
+    var CodSunat = $('#CodSunat option:selected').val();
     var existe_codigo_documento = false;
 
     if (CodDocumento.length == 0) {
@@ -100,7 +104,7 @@ function verificarFormulario() {
         return false;
     }
 
-    if (CodSunat.length == 0) {
+    if (CodSunat == null) {
         alertify.alert('Debe de Registrar Código de Sunat!', function () { }).set({ title: "Error" });
 
         return false;

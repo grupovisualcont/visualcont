@@ -11,44 +11,30 @@ use App\Models\TipoVoucherDet;
 class PlanContable extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $planContableModel;
-    protected $amarreModel;
-    protected $tipoVoucherDetModel;
-    protected $planContableEquivModel;
-
     public function __construct()
     {
         $this->page = 'Plan Contable';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->planContableModel = new ModelsPlanContable();
-        $this->amarreModel = new Amarre();
-        $this->tipoVoucherDetModel = new TipoVoucherDet();
-        $this->planContableEquivModel = new PlanContableEquiv();
     }
 
     public function index()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/accounting_plan/index.js']);
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $script = (new Empresa())->generar_script('', ['app/mantenience/accounting_plan/index.js']);
 
                 return viewApp($this->page, 'app/mantenience/accounting_plan/index', [
                     'typeOrder' => 'string',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -58,7 +44,7 @@ class PlanContable extends BaseController
     public function create()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
+            if ((new Empresa())->verificar_inicio_sesion()) {
                 $relacion_cuentas = array('Ninguno', 'Cuenta Corriente', 'Centro de Costo', 'Ambos', 'Activo Fijo');
 
                 $options_relacion_cuentas = '';
@@ -124,9 +110,7 @@ class PlanContable extends BaseController
                         </div>';
                 }
 
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/accounting_plan/create.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/accounting_plan/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/accounting_plan/create', [
                     'options_relacion_cuentas' => $options_relacion_cuentas,
@@ -138,7 +122,7 @@ class PlanContable extends BaseController
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -148,18 +132,12 @@ class PlanContable extends BaseController
     public function edit($CodCuenta, $Periodo)
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->planContableModel = new ModelsPlanContable();
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $plan_contable = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, $Periodo, $CodCuenta, '', [], '', '')[0];
 
-                $plan_contable = $this->planContableModel->getPlanContable($this->CodEmpresa, $Periodo, $CodCuenta, '', '', '')[0];
+                $amarres = (new Amarre())->getAmarre($this->CodEmpresa, $Periodo, $CodCuenta, '', [], '', 'Porcentaje DESC');
 
-                $this->amarreModel = new Amarre();
-
-                $amarres = $this->amarreModel->getAmarre($this->CodEmpresa, $Periodo, $CodCuenta, '', '');
-
-                $this->planContableEquivModel = new PlanContableEquiv();
-
-                $plan_contable_equiv = $this->planContableEquivModel->getPlanContableEquiv($this->CodEmpresa, $Periodo, $CodCuenta, '', '');
+                $plan_contable_equiv = (new PlanContableEquiv())->getPlanContableEquiv($this->CodEmpresa, $Periodo, $CodCuenta, '', [], '', '');
 
                 $equivalente = array();
 
@@ -167,9 +145,7 @@ class PlanContable extends BaseController
                     $equivalente = $equivalente[0];
                 }
 
-                $this->planContableModel = new ModelsPlanContable();
-
-                $planes_contable = $this->planContableModel->getPlanContable($this->CodEmpresa, $Periodo, '', 'CodCuenta, DescCuenta, IF(Child = 0, "disabled", "") AS Disabled', '', 'CodCuenta ASC');
+                $planes_contable = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, $Periodo, '', 'CodCuenta, DescCuenta, IF(Child = 0, "disabled", "") AS Disabled', [], '', 'CodCuenta ASC');
 
                 $options_planes_contable = '<option value="" disabled selected>Seleccione</option>';
 
@@ -264,8 +240,6 @@ class PlanContable extends BaseController
                         </div>';
                 }
 
-                $this->empresa = new Empresa();
-
                 $script = "
                     var id_amarre = " . (count($amarres) + 1) . ";
                     var plan_contable_TipoDebeHaber = '" . $plan_contable['TipoDebeHaber'] . "';
@@ -274,11 +248,20 @@ class PlanContable extends BaseController
                 ";
 
                 foreach ($amarres as $indice => $valor) {
-                    $script .= "$('#CuentaDebe" . ($indice + 1) . "').val('" . $valor['CuentaDebe'] . "');";
-                    $script .= "$('#CuentaHaber" . ($indice + 1) . "').val('" . $valor['CuentaHaber'] . "');";
+                    $plan_contable_amarre = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, date('Y'), $valor['CuentaDebe'], '', [], '', '')[0];
+
+                    $option = '<option value="' . $plan_contable_amarre['CodCuenta'] . '">' . $plan_contable_amarre['CodCuenta'] . ' - ' . $plan_contable_amarre['DescCuenta'] . '</option>';
+
+                    $amarres[$indice]['CuentaDebe'] = $option;
+
+                    $plan_contable_amarre = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, date('Y'), $valor['CuentaHaber'], '', [], '', '')[0];
+
+                    $option = '<option value="' . $plan_contable_amarre['CodCuenta'] . '">' . $plan_contable_amarre['CodCuenta'] . ' - ' . $plan_contable_amarre['DescCuenta'] . '</option>';
+
+                    $amarres[$indice]['CuentaHaber'] = $option;
                 }
 
-                $script = $this->empresa->generar_script($script, ['app/mantenience/accounting_plan/edit.js']);
+                $script = (new Empresa())->generar_script($script, ['app/mantenience/accounting_plan/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/accounting_plan/edit', [
                     'plan_contable' => $plan_contable,
@@ -294,7 +277,7 @@ class PlanContable extends BaseController
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -316,18 +299,12 @@ class PlanContable extends BaseController
             $post['Child'] = 1;
             $post['AjusteDC'] = isset($post['AjusteDC']) ? $post['AjusteDC'] : 0;
 
-            $this->planContableModel = new ModelsPlanContable();
+            (new ModelsPlanContable())->agregar($post);
 
-            $this->planContableModel->agregar($post);
-
-            $this->planContableModel = new ModelsPlanContable();
-
-            $this->planContableModel->actualizar($post['CodEmpresa'], $post['Periodo'], $post['CuentaPadre'], '', ['Child' => 0]);
+            (new ModelsPlanContable())->actualizar($post['CodEmpresa'], $post['Periodo'], $post['CuentaPadre'], '', ['Child' => 0]);
 
             if (count($items) > 0) {
-                $this->amarreModel = new Amarre();
-
-                $this->amarreModel->eliminar($post['CodEmpresa'], $post['Periodo'], $post['CodCuenta']);
+                (new Amarre())->eliminar($post['CodEmpresa'], $post['Periodo'], $post['CodCuenta']);
 
                 foreach ($items as $indice => $valor) {
                     $data = [
@@ -339,22 +316,16 @@ class PlanContable extends BaseController
                         'Porcentaje' => $post['Porcentaje'][$indice]
                     ];
 
-                    $this->amarreModel = new Amarre();
-
-                    $this->amarreModel->agregar($data);
+                    (new Amarre())->agregar($data);
                 }
             } else {
-                $this->amarreModel = new Amarre();
-
-                $this->amarreModel->eliminar($post['CodEmpresa'], $post['Periodo'], $post['CodCuenta']);
+                (new Amarre())->eliminar($post['CodEmpresa'], $post['Periodo'], $post['CodCuenta']);
             }
 
             if (!empty($post['CodCuentaEquiv']) || !empty($post['Descripcion'])) {
                 $post['DescCuenta'] = $post['Descripcion'];
 
-                $this->planContableEquivModel = new PlanContableEquiv();
-
-                $this->planContableEquivModel->agregar($post);
+                (new PlanContableEquiv())->agregar($post);
             }
 
             if ($this->db->transStatus() === FALSE) {
@@ -394,9 +365,7 @@ class PlanContable extends BaseController
 
             $post['AjusteDC'] = isset($post['AjusteDC']) ? $post['AjusteDC'] : 0;
 
-            $this->planContableModel = new ModelsPlanContable();
-
-            $existe_codcuentas = $this->planContableModel->getPlanContable($this->CodEmpresa, $post['Periodo'], '', '', 'CuentaPadre = "' . $post['CodCuenta'] . '"', '');
+            $existe_codcuentas = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, $post['Periodo'], '', '', [], 'CuentaPadre = "' . $post['CodCuenta'] . '"', '');
 
             if (count($existe_codcuentas) == 0) {
                 $post['Child'] = 1;
@@ -404,18 +373,12 @@ class PlanContable extends BaseController
                 $post['Child'] = 0;
             }
 
-            $this->planContableModel = new ModelsPlanContable();
+            (new ModelsPlanContable())->actualizar($this->CodEmpresa, $post['Periodo'], $post['CuentaPadre'], '', ['Child' => 0]);
 
-            $this->planContableModel->actualizar($this->CodEmpresa, $post['Periodo'], $post['CuentaPadre'], '', ['Child' => 0]);
-
-            $this->planContableModel = new ModelsPlanContable();
-
-            $this->planContableModel->actualizar($this->CodEmpresa, $post['Periodo'], $post['CodCuentaPrincipal'], '', $post);
+            (new ModelsPlanContable())->actualizar($this->CodEmpresa, $post['Periodo'], $post['CodCuentaPrincipal'], '', $post);
 
             if (count($items) > 0) {
-                $this->amarreModel = new Amarre();
-
-                $this->amarreModel->eliminar($this->CodEmpresa, $post['Periodo'], $post['CodCuentaPrincipal']);
+                (new Amarre())->eliminar($this->CodEmpresa, $post['Periodo'], $post['CodCuentaPrincipal']);
 
                 foreach ($items as $indice => $valor) {
                     $data = [
@@ -427,32 +390,22 @@ class PlanContable extends BaseController
                         'Porcentaje' => $post['Porcentaje'][$indice]
                     ];
 
-                    $this->amarreModel = new Amarre();
-
-                    $this->amarreModel->agregar($data);
+                    (new Amarre())->agregar($data);
                 }
             } else {
-                $this->amarreModel = new Amarre();
-
-                $this->amarreModel->eliminar($this->CodEmpresa, $post['Periodo'], $post['CodCuentaPrincipal']);
+                (new Amarre())->eliminar($this->CodEmpresa, $post['Periodo'], $post['CodCuentaPrincipal']);
             }
 
             if (!isset($post['Amarres'])) {
-                $this->amarreModel = new Amarre();
-
-                $this->amarreModel->eliminar($this->CodEmpresa, $post['Periodo'], $post['CodCuentaPrincipal']);
+                (new Amarre())->eliminar($this->CodEmpresa, $post['Periodo'], $post['CodCuentaPrincipal']);
             }
 
             if (!empty($post['CodCuentaEquiv']) || !empty($post['Descripcion'])) {
-                $this->planContableEquivModel = new PlanContableEquiv();
-
-                $this->planContableEquivModel->eliminar($this->CodEmpresa, $post['Periodo'], $post['CodCuentaPrincipal']);
+                (new PlanContableEquiv())->eliminar($this->CodEmpresa, $post['Periodo'], $post['CodCuentaPrincipal']);
 
                 $post['DescCuenta'] = $post['Descripcion'];
 
-                $this->planContableEquivModel = new PlanContableEquiv();
-
-                $this->planContableEquivModel->agregar($post);
+                (new PlanContableEquiv())->agregar($post);
             }
 
             if ($this->db->transStatus() === FALSE) {
@@ -484,37 +437,23 @@ class PlanContable extends BaseController
 
             $this->db->transBegin();
 
-            $this->planContableModel = new ModelsPlanContable();
-
-            $CuentaPadre = $this->planContableModel->getPlanContable($this->CodEmpresa, $Periodo, $CodCuenta, 'CuentaPadre', '', '');
+            $CuentaPadre = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, $Periodo, $CodCuenta, 'CuentaPadre', [], '', '');
 
             $CuentaPadre = $CuentaPadre[0]['CuentaPadre'];
 
-            $this->planContableModel = new ModelsPlanContable();
+            $existe_codcuentas = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, $Periodo, '', '', [], 'CuentaPadre = "' . $CodCuenta . '" AND CodCuenta != "' . $CodCuenta . '"', '');
 
-            $existe_codcuentas = $this->planContableModel->getPlanContable($this->CodEmpresa, $Periodo, '', '', 'CuentaPadre = "' . $CodCuenta . '" AND CodCuenta != "' . $CodCuenta . '"', '');
-
-            $this->tipoVoucherDetModel = new TipoVoucherDet();
-
-            $existe_referencias = $this->tipoVoucherDetModel->getTipoVoucherDet($this->CodEmpresa, $Periodo, $CodCuenta, '', '', [], '', '');
+            $existe_referencias = (new TipoVoucherDet())->getTipoVoucherDet($this->CodEmpresa, $Periodo, $CodCuenta, '', '', [], '', '');
 
             if (count($existe_codcuentas) == 0) {
                 if (count($existe_referencias) == 0) {
-                    $this->planContableModel = new ModelsPlanContable();
+                    (new ModelsPlanContable())->actualizar($this->CodEmpresa, $Periodo, $CuentaPadre, '', ['Child' => 1]);
 
-                    $this->planContableModel->actualizar($this->CodEmpresa, $Periodo, $CuentaPadre, '', ['Child' => 1]);
+                    (new ModelsPlanContable())->eliminar($this->CodEmpresa, $Periodo, $CodCuenta, '');
 
-                    $this->planContableModel = new ModelsPlanContable();
+                    (new Amarre())->eliminar($this->CodEmpresa, $Periodo, $CodCuenta);
 
-                    $this->planContableModel->eliminar($this->CodEmpresa, $Periodo, $CodCuenta, '');
-
-                    $this->amarreModel = new Amarre();
-
-                    $this->amarreModel->eliminar($this->CodEmpresa, $Periodo, $CodCuenta);
-
-                    $this->planContableEquivModel = new PlanContableEquiv();
-
-                    $this->planContableEquivModel->eliminar($this->CodEmpresa, $Periodo, $CodCuenta);
+                    (new PlanContableEquiv())->eliminar($this->CodEmpresa, $Periodo, $CodCuenta);
 
                     if ($this->db->transStatus() === FALSE) {
                         $this->db->transRollback();
@@ -561,9 +500,7 @@ class PlanContable extends BaseController
 
             $excel->body(1, 'columnas');
 
-            $this->planContableModel = new ModelsPlanContable();
-
-            $result = $this->planContableModel->excel($this->CodEmpresa);
+            $result = (new ModelsPlanContable())->excel($this->CodEmpresa);
 
             $index = 0;
 
@@ -581,9 +518,7 @@ class PlanContable extends BaseController
 
                 $excel->body($index + 2, 'valor');
 
-                $this->amarreModel = new Amarre();
-
-                $result_2 = $this->amarreModel->getAmarre($this->CodEmpresa, $valor['Periodo'], $valor['CodCuenta'], 'CuentaDebe, CuentaHaber', '');
+                $result_2 = (new Amarre())->getAmarre($this->CodEmpresa, $valor['Periodo'], $valor['CodCuenta'], 'CuentaDebe, CuentaHaber', [], '', 'Porcentaje DESC');
 
                 foreach ($result_2 as $indice_2 => $valor_2) {
                     $index++;
@@ -607,9 +542,7 @@ class PlanContable extends BaseController
     public function pdf()
     {
         try {
-            $this->planContableModel = new ModelsPlanContable();
-
-            $result = $this->planContableModel->pdf($this->CodEmpresa);
+            $result = (new ModelsPlanContable())->pdf($this->CodEmpresa);
 
             $columnas = array('Cuenta', 'Descripción', 'Cta. Padre', 'Cta. Ajuste', 'Relación Cta.', 'Tipo Resultado', 'Amarre Debe', 'Amarre Haber');
 
@@ -633,9 +566,7 @@ class PlanContable extends BaseController
                 <tr>
             ';
 
-                $this->amarreModel = new Amarre();
-
-                $result_2 = $this->amarreModel->getAmarre($this->CodEmpresa, $valor['Periodo'], $valor['CodCuenta'], 'CuentaDebe, CuentaHaber', '');
+                $result_2 = (new Amarre())->getAmarre($this->CodEmpresa, $valor['Periodo'], $valor['CodCuenta'], 'CuentaDebe, CuentaHaber', [], '', 'Porcentaje DESC');
 
                 foreach ($result_2 as $indice_2 => $valor_2) {
                     $tr .= '
@@ -737,9 +668,7 @@ class PlanContable extends BaseController
 
                 $existe = array('existe' => false, 'codigo' => '');
 
-                $this->planContableModel = new ModelsPlanContable();
-
-                $CuentaPadre = $this->planContableModel->getPlanContable($this->CodEmpresa, '', $CodCuenta, 'CodCuenta', '', '');
+                $CuentaPadre = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, '', $CodCuenta, 'CodCuenta', [], '', '');
 
                 if (count($CuentaPadre) > 0) {
                     $existe = array('existe' => true, 'codigo' => $CuentaPadre[0]['CodCuenta']);
@@ -752,16 +681,12 @@ class PlanContable extends BaseController
 
                 $existe = array('existe' => false);
 
-                $this->planContableModel = new ModelsPlanContable();
-
-                $CuentaPadre = $this->planContableModel->getPlanContable($this->CodEmpresa, '', $CodCuenta, 'CodCuenta', '', '');
+                $CuentaPadre = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, '', $CodCuenta, 'CodCuenta', [], '', '');
 
                 if (count($CuentaPadre) > 0) {
                     $existe = array('existe' => true, 'tipo' => 'codigo', 'codigo' => $CuentaPadre[0]['CodCuenta']);
                 } else {
-                    $this->planContableModel = new ModelsPlanContable();
-
-                    $DescripcionHijo = $this->planContableModel->getPlanContable($this->CodEmpresa, '', '', 'DescCuenta', 'DescCuenta = "' . $DescCuenta . '"', '');
+                    $DescripcionHijo = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, '', '', 'DescCuenta', [], 'DescCuenta = "' . $DescCuenta . '"', '');
 
                     if (count($DescripcionHijo) > 0) {
                         $existe = array('existe' => true, 'tipo' => 'descripcion', 'codigo' => $DescripcionHijo[0]['DescCuenta']);
@@ -777,16 +702,12 @@ class PlanContable extends BaseController
 
                 $existe = array('existe' => false);
 
-                $this->planContableModel = new ModelsPlanContable();
-
-                $CuentaHijo = $this->planContableModel->getPlanContable($this->CodEmpresa, '', $CodCuenta, 'CodCuenta', 'CodCuenta != ' . $NotCodCuenta . '"', '');
+                $CuentaHijo = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, '', $CodCuenta, 'CodCuenta', [], 'CodCuenta != ' . $NotCodCuenta . '"', '');
 
                 if (count($CuentaHijo) > 0) {
                     $existe = array('existe' => true, 'tipo' => 'codigo', 'codigo' => $CuentaHijo[0]['CodCuenta']);
                 } else {
-                    $this->planContableModel = new ModelsPlanContable();
-
-                    $DescripcionHijo = $this->planContableModel->getPlanContable($this->CodEmpresa, '', '', 'DescCuenta', 'DescCuenta = "' . $DescCuenta . '" AND DescCuenta != "' . $NotDescCuenta . '"', '');
+                    $DescripcionHijo = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, '', '', 'DescCuenta', [], 'DescCuenta = "' . $DescCuenta . '" AND DescCuenta != "' . $NotDescCuenta . '"', '');
 
                     if (count($DescripcionHijo) > 0) {
                         $existe = array('existe' => true, 'tipo' => 'descripcion', 'codigo' => $DescripcionHijo[0]['DescCuenta']);
@@ -801,16 +722,12 @@ class PlanContable extends BaseController
                 $permite_amarre = array('permite' => false);
 
                 if (strlen($CodCuenta) >= 3) {
-                    $this->planContableModel = new ModelsPlanContable();
-
-                    $es_cuenta_hija = $this->planContableModel->getPlanContable($this->CodEmpresa, '', $CodCuenta, 'CodCuenta', 'Child = 1', '');
+                    $es_cuenta_hija = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, '', $CodCuenta, 'CodCuenta', [], 'Child = 1', '');
 
                     if (count($es_cuenta_hija) > 0) {
                         $permite_amarre = array('permite' => true);
                     } else {
-                        $this->planContableModel = new ModelsPlanContable();
-
-                        $existe_cuentas_hijas = $this->planContableModel->getPlanContable($this->CodEmpresa, '', '', 'CodCuenta', 'CuentaPadre = "' . $CodCuenta . '"', '');
+                        $existe_cuentas_hijas = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, '', '', 'CodCuenta', [], 'CuentaPadre = "' . $CodCuenta . '"', '');
 
                         if (count($existe_cuentas_hijas) == 0 && !empty($CuentaPadre)) {
                             $permite_amarre = array('permite' => true);
@@ -830,16 +747,20 @@ class PlanContable extends BaseController
         try {
             $post = $this->request->getPost();
 
-            if (isset($post['search'])) {
+            if (isset($post['tipo']) && $post['tipo'] == 'gasto') {
+                $search = !empty($post['search']) ? ' AND CodCuenta LIKE "' . $post['search']  . '%"' : '';
+
+                $plan_contable = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, date('Y'), '', 'CodCuenta AS id, CONCAT(CodCuenta, " - ", DescCuenta) AS text, IF(Child = 0, CodCuenta, "") AS disabled, RelacionCuenta', [], 'CodCuenta LIKE "6%"' . $search, 'CodCuenta ASC');
+            } else if (isset($post['tipo']) && $post['tipo'] == 'depresiacion') {
+                $search = !empty($post['search']) ? ' AND CodCuenta LIKE "' . $post['search']  . '%"' : '';
+
+                $plan_contable = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, date('Y'), '', 'CodCuenta AS id, CONCAT(CodCuenta, " - ", DescCuenta) AS text, IF(Child = 0, CodCuenta, "") AS disabled, RelacionCuenta', [], 'CodCuenta LIKE "3%"' . $search, 'CodCuenta ASC');
+            } else if (isset($post['search'])) {
                 $search = $post['search'];
 
-                $this->planContableModel = new ModelsPlanContable();
-
-                $plan_contable = $this->planContableModel->getPlanContable($this->CodEmpresa, date('Y'), '', 'CodCuenta AS value, CONCAT(CodCuenta, " - ", DescCuenta) AS name, IF(Child = 0, CodCuenta, "") AS disabled', 'CodCuenta LIKE "' . $search . '%"', '');
+                $plan_contable = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, date('Y'), '', 'CodCuenta AS id, CONCAT(CodCuenta, " - ", DescCuenta) AS text, IF(Child = 0, CodCuenta, "") AS disabled, RelacionCuenta', [], 'CodCuenta LIKE "' . $search . '%"', '');
             } else {
-                $this->planContableModel = new ModelsPlanContable();
-
-                $plan_contable = $this->planContableModel->getPlanContable($this->CodEmpresa, date('Y'), '', 'CodCuenta AS value, CONCAT(CodCuenta, " - ", DescCuenta) AS name, IF(Child = 0, CodCuenta, "") AS disabled', '', '');
+                $plan_contable = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, date('Y'), '', 'CodCuenta AS id, CONCAT(CodCuenta, " - ", DescCuenta) AS text, IF(Child = 0, CodCuenta, "") AS disabled, RelacionCuenta', [], '', '');
             }
 
             echo json_encode($plan_contable);

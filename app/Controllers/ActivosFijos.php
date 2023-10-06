@@ -9,52 +9,35 @@ use App\Models\CentroCosto;
 use App\Models\I_AnexoSunat;
 use App\Models\PlanContable;
 use App\Models\TipoActivo;
+use App\Models\Ubigeo;
 
 class ActivosFijos extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $activoFijoModel;
-    protected $tipoActivoModel;
-    protected $anexoModel;
-    protected $planContableModel;
-    protected $centroCostoModel;
-    protected $i_AnexoSunatModel;
-
     public function __construct()
     {
         $this->page = 'Activos Fijos';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->activoFijoModel = new ActivoFijo();
-        $this->tipoActivoModel = new TipoActivo();
-        $this->anexoModel = new Anexo();
-        $this->planContableModel = new PlanContable();
-        $this->centroCostoModel = new CentroCosto();
-        $this->i_AnexoSunatModel = new I_AnexoSunat();
     }
 
     public function index()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->activoFijoModel = new ActivoFijo();
-
-                $activos_fijos = $this->activoFijoModel->getActivoFijo($this->CodEmpresa, 'IdActivo, codActivo, descripcion, marca, modelo, serie', '');
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $activos_fijos = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', 'IdActivo, codActivo, descripcion, marca, modelo, serie', [], '', '');
 
                 return viewApp($this->page, 'app/mantenience/fixed_assets/index', [
                     'activos_fijos' => $activos_fijos,
                     'typeOrder' => 'string'
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -64,10 +47,8 @@ class ActivosFijos extends BaseController
     public function create()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->activoFijoModel = new ActivoFijo();
-
-                $activo_fijo = $this->activoFijoModel->getActivoFijo($this->CodEmpresa, 'MAX(SUBSTRING(codActivo, 3)) AS codigo', '');
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $activo_fijo = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', 'MAX(SUBSTRING(codActivo, 3)) AS codigo', [], '', '');
 
                 $codigo_maximo = 'AC0001';
 
@@ -85,172 +66,40 @@ class ActivosFijos extends BaseController
                     }
                 }
 
-                $this->tipoActivoModel = new TipoActivo();
+                $estado = (new Anexo())->getAnexo($this->CodEmpresa, 0, 1, '', '', [], 'CodInterno = 1', '')[0];
 
-                $tipos_activo = $this->tipoActivoModel->getTipoActivo($this->CodEmpresa, '', '');
+                $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $options_tipos_activos = '';
+                $catalogo_existente = (new I_AnexoSunat())->getI_AnexoSunat(2, 13, '', [], '', '')[0];
 
-                foreach ($tipos_activo as $indice => $valor) {
-                    $selected = '';
+                $option_catalogo_existente = '<option value="' . $catalogo_existente['IdAnexoS'] . '">' . $catalogo_existente['DescAnexoS'] . '</option>';
 
-                    if ($valor['codTipoActivo'] == 'TA002') $selected = 'selected';
+                $tipo_activo = (new I_AnexoSunat())->getI_AnexoSunat(4, 18, '', [], '', '')[0];
 
-                    $options_tipos_activos .= '<option value="' . $valor['codTipoActivo'] . '" ' . $selected . '>' . $valor['descTipoActivo'] . '</option>';
-                }
+                $option_tipo_activo = '<option value="' . $tipo_activo['IdAnexoS'] . '">' . $tipo_activo['DescAnexoS'] . '</option>';
 
-                $this->anexoModel = new Anexo();
+                $estado_activo = (new I_AnexoSunat())->getI_AnexoSunat(8, 19, '', [], '', '')[0];
 
-                $depreciaciones = $this->anexoModel->getAnexo($this->CodEmpresa, '', 15, '', '', '', '');
+                $option_estado_activo = '<option value="' . $estado_activo['IdAnexoS'] . '">' . $estado_activo['DescAnexoS'] . '</option>';
 
-                $options_depreciacion = '<option value="" disabled selected>Seleccione</option>';
+                $metodo_depreciacion = (new I_AnexoSunat())->getI_AnexoSunat(9, 20, '', [], '', '')[0];
 
-                foreach ($depreciaciones as $indice => $valor) {
-                    $options_depreciacion .= '<option value="' . $valor['OtroDato'] . '">' . $valor['DescAnexo'] . ' (' . $valor['OtroDato'] . ')' . '</option>';
-                }
+                $option_metodo_depreciacion = '<option value="' . $metodo_depreciacion['IdAnexoS'] . '">' . $metodo_depreciacion['DescAnexoS'] . '</option>';
 
-                $this->planContableModel = new PlanContable();
-
-                $cuentas_gasto = $this->planContableModel->getCuentasGastos($this->CodEmpresa);
-
-                $options_cuentas_gasto = '';
-
-                foreach ($cuentas_gasto as $indice => $valor) {
-                    $options_cuentas_gasto .= '<option value="' . $valor['CodCuenta'] . '" ' . $valor['Disabled'] . '>' . $valor['CodCuenta'] . ' - ' . $valor['DescCuenta'] . '</option>';
-                }
-
-                $this->planContableModel = new PlanContable();
-
-                $cuentas_depreciacion = $this->planContableModel->getCuentasDepreciacion($this->CodEmpresa);
-
-                $options_cuentas_depreciacion = '';
-
-                foreach ($cuentas_depreciacion as $indice => $valor) {
-                    $options_cuentas_depreciacion .= '<option value="' . $valor['CodCuenta'] . '" ' . $valor['Disabled'] . '>' . $valor['CodCuenta'] . ' - ' . $valor['DescCuenta'] . '</option>';
-                }
-
-                $this->anexoModel = new Anexo();
-
-                $estados = $this->anexoModel->getAnexo($this->CodEmpresa, '', 1, '', '', '', '');
-
-                $options_estado = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($estados as $indice => $valor) {
-                    $selected = '';
-
-                    if ($indice == 1) $selected = 'selected';
-
-                    $options_estado .= '<option value="' . $indice . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->centroCostoModel = new CentroCosto();
-
-                $centro_costo = $this->centroCostoModel->getCentroCosto($this->CodEmpresa, '', '', [], '', '', '', '');
-
-                $options_centro_costo = '';
-
-                foreach ($centro_costo as $indice => $valor) {
-                    $options_centro_costo .= '<option value="' . $valor['CodcCosto'] . '">' . $valor['CodcCosto'] . ' - ' . $valor['DesccCosto'] . '</option>';
-                }
-
-                $ubigeos = $this->db
-                    ->query('SELECT dist.codubigeo, (
-                                SELECT (
-                                    SELECT CONCAT(dept.descubigeo, " \\\ ", prov.descubigeo, " \\\ ", dist.descubigeo) 
-                                    FROM ubigeo dept WHERE dept.codubigeo = SUBSTRING(prov.codubigeo, 1, 4)
-                                )
-                                FROM ubigeo prov
-                                WHERE prov.codubigeo = SUBSTRING(dist.codubigeo, 1, 6)
-                            )
-                            AS descubigeo
-                            FROM ubigeo dist
-                            WHERE LENGTH(dist.codubigeo) = 9 AND LENGTH(dist.codubigeo) != 2 AND dist.codubigeo NOT LIKE "9%"
-                        ')->getResult();
-
-                $options_ubigeos = '';
-
-                foreach ($ubigeos as $indice => $valor) {
-                    $options_ubigeos .= '<option value="' . $valor->codubigeo . '">' . htmlspecialchars($valor->descubigeo, ENT_QUOTES) . '</option>';
-                }
-
-                $this->i_AnexoSunatModel = new I_AnexoSunat();
-
-                $catalogo_existente = $this->i_AnexoSunatModel->getI_AnexoSunatByTipoAnexoS(13);
-
-                $options_catalogo_existente = '';
-
-                foreach ($catalogo_existente as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexoS'] == 2) $selected = 'selected';
-
-                    $options_catalogo_existente .= '<option value="' . $valor['IdAnexoS'] . '" ' . $selected . '>' . $valor['DescAnexoS'] . '</option>';
-                }
-
-                $this->i_AnexoSunatModel = new I_AnexoSunat();
-
-                $tipo_activo = $this->i_AnexoSunatModel->getI_AnexoSunatByTipoAnexoS(18);
-
-                $options_tipo_activo = '';
-
-                foreach ($tipo_activo as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexoS'] == 4) $selected = 'selected';
-
-                    $options_tipo_activo .= '<option value="' . $valor['IdAnexoS'] . '" ' . $selected . '>' . $valor['DescAnexoS'] . '</option>';
-                }
-
-                $this->i_AnexoSunatModel = new I_AnexoSunat();
-
-                $estado_activo = $this->i_AnexoSunatModel->getI_AnexoSunatByTipoAnexoS(19);
-
-                $options_estado_activo = '';
-
-                foreach ($estado_activo as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexoS'] == 8) $selected = 'selected';
-
-                    $options_estado_activo .= '<option value="' . $valor['IdAnexoS'] . '" ' . $selected . '>' . $valor['DescAnexoS'] . '</option>';
-                }
-
-                $this->i_AnexoSunatModel = new I_AnexoSunat();
-
-                $metodo_depreciacion = $this->i_AnexoSunatModel->getI_AnexoSunatByTipoAnexoS(20);
-
-                $options_metodo_depreciacion = '';
-
-                foreach ($metodo_depreciacion as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexoS'] == 9) $selected = 'selected';
-
-                    $options_metodo_depreciacion .= '<option value="' . $valor['IdAnexoS'] . '" ' . $selected . '>' . $valor['DescAnexoS'] . '</option>';
-                }
-
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/fixed_assets/create.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/fixed_assets/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/fixed_assets/create', [
                     'codigo_maximo' => $codigo_maximo,
-                    'options_tipos_activos' => $options_tipos_activos,
-                    'options_depreciacion' => $options_depreciacion,
-                    'options_cuentas_gasto' => $options_cuentas_gasto,
-                    'options_cuentas_depreciacion' => $options_cuentas_depreciacion,
-                    'options_estado' => $options_estado,
-                    'options_centro_costo' => $options_centro_costo,
-                    'options_ubigeos' => $options_ubigeos,
-                    'options_catalogo_existente' => $options_catalogo_existente,
-                    'options_tipo_activo' => $options_tipo_activo,
-                    'options_estado_activo' => $options_estado_activo,
-                    'options_metodo_depreciacion' => $options_metodo_depreciacion,
+                    'option_estado' => $option_estado,
+                    'option_catalogo_existente' => $option_catalogo_existente,
+                    'option_tipo_activo' => $option_tipo_activo,
+                    'option_estado_activo' => $option_estado_activo,
+                    'option_metodo_depreciacion' => $option_metodo_depreciacion,
                     'typeOrder' => 'num',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -260,201 +109,78 @@ class ActivosFijos extends BaseController
     public function edit($IdActivo)
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->activoFijoModel = new ActivoFijo();
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $activo_fijo = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, $IdActivo, '', '', [], '', '')[0];
 
-                $activo_fijo = $this->activoFijoModel->getActivoFijo($this->CodEmpresa, '', 'IdActivo = ' . $IdActivo)[0];
+                $tipo_activo = (new TipoActivo())->getTipoActivo($this->CodEmpresa, $activo_fijo['codTipoActivo'] ?? '', '', [], '', '')[0];
 
-                $this->tipoActivoModel = new TipoActivo();
+                $option_tipo = $activo_fijo['codTipoActivo'] ? '<option value="' . $tipo_activo['codTipoActivo'] . '">' . $tipo_activo['descTipoActivo'] . '</option>' : '';
 
-                $tipos_activo = $this->tipoActivoModel->getTipoActivo($this->CodEmpresa, '', '');
+                $depreciacion = (new Anexo())->getAnexo($this->CodEmpresa, $activo_fijo['depresiacion'] ?? 0, 15, '', '', [], '', '')[0];
 
-                $options_tipos_activos = '';
+                $option_depreciacion = $activo_fijo['depresiacion'] ? '<option value="' . $depreciacion['IdAnexo'] . '">' . $depreciacion['DescAnexo'] . '</option>' : '';
 
-                foreach ($tipos_activo as $indice => $valor) {
-                    $selected = '';
+                $cuenta_gasto = (new PlanContable())->getPlanContable($this->CodEmpresa, '', $activo_fijo['CtaCtableGasto'] ?? '', '', [], '', '')[0];
 
-                    if ($valor['codTipoActivo'] == $activo_fijo['codTipoActivo']) $selected = 'selected';
+                $option_cuenta_gasto = $activo_fijo['CtaCtableGasto'] ? '<option value="' . $cuenta_gasto['CodCuenta'] . '">' . $cuenta_gasto['CodCuenta'] . ' - ' . $cuenta_gasto['DescCuenta'] . '</option>' : '';
 
-                    $options_tipos_activos .= '<option value="' . $valor['codTipoActivo'] . '" ' . $selected . '>' . $valor['descTipoActivo'] . '</option>';
-                }
+                $cuenta_depreciacion = (new PlanContable())->getPlanContable($this->CodEmpresa, '', $activo_fijo['CtaCtableDepreciacion'] ?? '', '', [], '', '')[0];
 
-                $this->anexoModel = new Anexo();
+                $option_cuenta_depreciacion = $activo_fijo['CtaCtableDepreciacion'] ? '<option value="' . $cuenta_depreciacion['CodCuenta'] . '">' . $cuenta_depreciacion['CodCuenta'] . ' - ' . $cuenta_depreciacion['DescCuenta'] . '</option>' : '';
 
-                $depreciaciones = $this->anexoModel->getAnexo($this->CodEmpresa, '', 15, '', '', '', '');
+                $estado = (new Anexo())->getAnexo($this->CodEmpresa, $activo_fijo['estado'], 1, '', '', [], '', '')[0];
 
-                $options_depreciacion = '<option value="" disabled selected>Seleccione</option>';
+                $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                foreach ($depreciaciones as $indice => $valor) {
-                    $selected = '';
+                $centro_costo = (new CentroCosto())->getCentroCosto($this->CodEmpresa, $activo_fijo['CodCcosto'] ?? '', 0, '', [], '', '', '')[0];
 
-                    if ($valor['OtroDato'] == $activo_fijo['depresiacion']) $selected = 'selected';
+                $option_centro_costo = $activo_fijo['CodCcosto'] ? '<option value="' . $centro_costo['CodcCosto'] . '">' . $centro_costo['CodcCosto'] . ' - ' . $centro_costo['DesccCosto'] . '</option>' : '';
 
-                    $options_depreciacion .= '<option value="' . $valor['OtroDato'] . '" ' . $selected . '>' . $valor['DescAnexo'] . ' (' . $valor['OtroDato'] . ')' . '</option>';
-                }
+                $ubigeo = (new Ubigeo())->getUbigeoQuery($this->db, $activo_fijo['codubigeo'] ?? '', '')[0];
 
-                $this->planContableModel = new PlanContable();
+                $option_ubigeo = $activo_fijo['codubigeo'] ? '<option value="' . $ubigeo->id . '">' . htmlspecialchars($ubigeo->text, ENT_QUOTES) . '</option>' : '';
 
-                $cuentas_gasto = $this->planContableModel->getCuentasGastos($this->CodEmpresa);
+                $catalogo_existente = (new I_AnexoSunat())->getI_AnexoSunat($activo_fijo['IdCatalogo'], 13, '', [], '', '')[0];
 
-                $options_cuentas_gasto = '';
+                $option_catalogo_existente = '<option value="' . $catalogo_existente['IdAnexoS'] . '">' . $catalogo_existente['DescAnexoS'] . '</option>';
 
-                foreach ($cuentas_gasto as $indice => $valor) {
-                    $selected = '';
+                $tipo_activo = (new I_AnexoSunat())->getI_AnexoSunat($activo_fijo['IdTipoActivo'] ?? '', 18, '', [], '', '')[0];
 
-                    if ($valor['CodCuenta'] == $activo_fijo['CtaCtableGasto']) $selected = 'selected';
+                $option_tipo_activo = $activo_fijo['IdTipoActivo'] ? '<option value="' . $tipo_activo['IdAnexoS'] . '">' . $tipo_activo['DescAnexoS'] . '</option>' : '';
 
-                    $options_cuentas_gasto .= '<option value="' . $valor['CodCuenta'] . '" ' . $valor['Disabled'] . ' ' . $selected . '>' . $valor['CodCuenta'] . ' - ' . $valor['DescCuenta'] . '</option>';
-                }
+                $estado_activo = (new I_AnexoSunat())->getI_AnexoSunat($activo_fijo['IdEstadoActivo'], 19, '', [], '', '')[0];
 
-                $this->planContableModel = new PlanContable();
+                $option_estado_activo = '<option value="' . $estado_activo['IdAnexoS'] . '">' . $estado_activo['DescAnexoS'] . '</option>';
 
-                $cuentas_depreciacion = $this->planContableModel->getCuentasDepreciacion($this->CodEmpresa);
+                $metodo_depreciacion = (new I_AnexoSunat())->getI_AnexoSunat($activo_fijo['IdMetodo'], 20, '', [], '', '')[0];
 
-                $options_cuentas_depreciacion = '';
-
-                foreach ($cuentas_depreciacion as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodCuenta'] == $activo_fijo['CtaCtableDepreciacion']) $selected = 'selected';
-
-                    $options_cuentas_depreciacion .= '<option value="' . $valor['CodCuenta'] . '" ' . $valor['Disabled'] . ' ' . $selected . '>' . $valor['CodCuenta'] . ' - ' . $valor['DescCuenta'] . '</option>';
-                }
-
-                $this->anexoModel = new Anexo();
-
-                $estados = $this->anexoModel->getAnexo($this->CodEmpresa, '', 1, '', '', '', '');
-
-                $options_estado = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($estados as $indice => $valor) {
-                    $selected = '';
-
-                    if ($indice == $activo_fijo['estado']) $selected = 'selected';
-
-                    $options_estado .= '<option value="' . $indice . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->centroCostoModel = new CentroCosto();
-
-                $centro_costo = $this->centroCostoModel->getCentroCosto($this->CodEmpresa, '', '', [], '', '', '', '');
-
-                $options_centro_costo = '';
-
-                foreach ($centro_costo as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodcCosto'] == $activo_fijo['CodCcosto']) $selected = 'selected';
-
-                    $options_centro_costo .= '<option value="' . $valor['CodcCosto'] . '" ' . $selected . '>' . $valor['CodcCosto'] . ' - ' . $valor['DesccCosto'] . '</option>';
-                }
-
-                $ubigeos = $this->db
-                    ->query('SELECT dist.codubigeo, (
-                                SELECT (
-                                    SELECT CONCAT(dept.descubigeo, " \\\ ", prov.descubigeo, " \\\ ", dist.descubigeo) 
-                                    FROM ubigeo dept WHERE dept.codubigeo = SUBSTRING(prov.codubigeo, 1, 4)
-                                )
-                                FROM ubigeo prov
-                                WHERE prov.codubigeo = SUBSTRING(dist.codubigeo, 1, 6)
-                            )
-                            AS descubigeo
-                            FROM ubigeo dist
-                            WHERE LENGTH(dist.codubigeo) = 9 AND LENGTH(dist.codubigeo) != 2 AND dist.codubigeo NOT LIKE "9%"
-                        ')->getResult();
-
-                $options_ubigeos = '';
-
-                foreach ($ubigeos as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor->codubigeo == $activo_fijo['codubigeo']) $selected = 'selected';
-
-                    $options_ubigeos .= '<option value="' . $valor->codubigeo . '" ' . $selected . '>' . htmlspecialchars($valor->descubigeo, ENT_QUOTES) . '</option>';
-                }
-
-                $this->i_AnexoSunatModel = new I_AnexoSunat();
-
-                $catalogo_existente = $this->i_AnexoSunatModel->getI_AnexoSunatByTipoAnexoS(13);
-
-                $options_catalogo_existente = '';
-
-                foreach ($catalogo_existente as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexoS'] == $activo_fijo['IdCatalogo']) $selected = 'selected';
-
-                    $options_catalogo_existente .= '<option value="' . $valor['IdAnexoS'] . '" ' . $selected . '>' . $valor['DescAnexoS'] . '</option>';
-                }
-
-                $this->i_AnexoSunatModel = new I_AnexoSunat();
-
-                $tipo_activo = $this->i_AnexoSunatModel->getI_AnexoSunatByTipoAnexoS(18);
-
-                $options_tipo_activo = '';
-
-                foreach ($tipo_activo as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexoS'] == $activo_fijo['IdTipoActivo']) $selected = 'selected';
-
-                    $options_tipo_activo .= '<option value="' . $valor['IdAnexoS'] . '" ' . $selected . '>' . $valor['DescAnexoS'] . '</option>';
-                }
-
-                $this->i_AnexoSunatModel = new I_AnexoSunat();
-
-                $estado_activo = $this->i_AnexoSunatModel->getI_AnexoSunatByTipoAnexoS(19);
-
-                $options_estado_activo = '';
-
-                foreach ($estado_activo as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexoS'] == $activo_fijo['IdEstadoActivo']) $selected = 'selected';
-
-                    $options_estado_activo .= '<option value="' . $valor['IdAnexoS'] . '" ' . $selected . '>' . $valor['DescAnexoS'] . '</option>';
-                }
-
-                $this->i_AnexoSunatModel = new I_AnexoSunat();
-
-                $metodo_depreciacion = $this->i_AnexoSunatModel->getI_AnexoSunatByTipoAnexoS(20);
-
-                $options_metodo_depreciacion = '';
-
-                foreach ($metodo_depreciacion as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexoS'] == $activo_fijo['IdMetodo']) $selected = 'selected';
-
-                    $options_metodo_depreciacion .= '<option value="' . $valor['IdAnexoS'] . '" ' . $selected . '>' . $valor['DescAnexoS'] . '</option>';
-                }
-
-                $this->empresa = new Empresa();
+                $option_metodo_depreciacion = '<option value="' . $metodo_depreciacion['IdAnexoS'] . '">' . $metodo_depreciacion['DescAnexoS'] . '</option>';
 
                 $script = "
                     var activo_fijo_descripcion = '" . $activo_fijo['descripcion'] . "';
                 ";
 
-                $script = $this->empresa->generar_script($script, ['app/mantenience/fixed_assets/edit.js']);
+                $script = (new Empresa())->generar_script($script, ['app/mantenience/fixed_assets/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/fixed_assets/edit', [
                     'activo_fijo' => $activo_fijo,
-                    'options_tipos_activos' => $options_tipos_activos,
-                    'options_depreciacion' => $options_depreciacion,
-                    'options_cuentas_gasto' => $options_cuentas_gasto,
-                    'options_cuentas_depreciacion' => $options_cuentas_depreciacion,
-                    'options_estado' => $options_estado,
-                    'options_centro_costo' => $options_centro_costo,
-                    'options_ubigeos' => $options_ubigeos,
-                    'options_catalogo_existente' => $options_catalogo_existente,
-                    'options_tipo_activo' => $options_tipo_activo,
-                    'options_estado_activo' => $options_estado_activo,
-                    'options_metodo_depreciacion' => $options_metodo_depreciacion,
+                    'option_tipo' => $option_tipo,
+                    'option_tipo_activo' => $option_tipo_activo,
+                    'option_depreciacion' => $option_depreciacion,
+                    'option_cuenta_gasto' => $option_cuenta_gasto,
+                    'option_cuenta_depreciacion' => $option_cuenta_depreciacion,
+                    'option_estado' => $option_estado,
+                    'option_centro_costo' => $option_centro_costo,
+                    'option_ubigeo' => $option_ubigeo,
+                    'option_catalogo_existente' => $option_catalogo_existente,
+                    'option_tipo_activo' => $option_tipo_activo,
+                    'option_estado_activo' => $option_estado_activo,
+                    'option_metodo_depreciacion' => $option_metodo_depreciacion,
                     'typeOrder' => 'num',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -476,14 +202,10 @@ class ActivosFijos extends BaseController
             $post['fechaRetiro'] = !empty($post['fechaRetiro']) ? date('Y-m-d', strtotime(str_replace('/', '-', $post['fechaRetiro']))) : NULL;
             $post['ArrFecha'] = !empty($post['ArrFecha']) ? date('Y-m-d', strtotime(str_replace('/', '-', $post['ArrFecha']))) : NULL;
 
-            $this->activoFijoModel = new ActivoFijo();
-
-            $existe_codigo = $this->activoFijoModel->getActivoFijo($post['CodEmpresa'], '', 'codActivo = "' . $post['codActivo'] . '"');
+            $existe_codigo = (new ActivoFijo())->getActivoFijo($post['CodEmpresa'], 0, $post['codActivo'], '', [], '', '');
 
             if (count($existe_codigo) == 0) {
-                $this->activoFijoModel = new ActivoFijo();
-
-                $this->activoFijoModel->agregar($post);
+                (new ActivoFijo())->agregar($post);
 
                 if ($this->db->transStatus() === FALSE) {
                     $this->db->transRollback();
@@ -525,9 +247,7 @@ class ActivosFijos extends BaseController
             $post['fechaRetiro'] = !empty($post['fechaRetiro']) ? date('Y-m-d', strtotime(str_replace('/', '-', $post['fechaRetiro']))) : NULL;
             $post['ArrFecha'] = !empty($post['ArrFecha']) ? date('Y-m-d', strtotime(str_replace('/', '-', $post['ArrFecha']))) : NULL;
 
-            $this->activoFijoModel = new ActivoFijo();
-
-            $this->activoFijoModel->actualizar($post['CodEmpresa'], $post['IdActivo'], $post);
+            (new ActivoFijo())->actualizar($post['CodEmpresa'], $post['IdActivo'], $post);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -558,9 +278,7 @@ class ActivosFijos extends BaseController
 
             $this->db->transBegin();
 
-            $this->activoFijoModel = new ActivoFijo();
-
-            $this->activoFijoModel->eliminar($this->CodEmpresa, $IdActivo);
+            (new ActivoFijo())->eliminar($this->CodEmpresa, $IdActivo);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -597,9 +315,17 @@ class ActivosFijos extends BaseController
 
             $excel->body(1, 'columnas');
 
-            $this->activoFijoModel = new ActivoFijo();
-
-            $result = $this->activoFijoModel->getActivoFijoExcel($this->CodEmpresa);
+            $result = (new ActivoFijo())->getActivoFijo(
+                $this->CodEmpresa,
+                0,
+                '',
+                'activosfijos.codActivo, activosfijos.descripcion, t.descTipoActivo, activosfijos.marca, activosfijos.modelo, activosfijos.serie',
+                [
+                    array('tabla' => 'tipoactivo t', 'on' => 'activosfijos.codTipoActivo = t.codTipoActivo AND activosfijos.CodEmpresa = t.CodEmpresa', 'tipo' => 'inner')
+                ],
+                '',
+                'activosfijos.IdActivo ASC'
+            );
 
             foreach ($result as  $indice => $valor) {
                 $values = array(
@@ -625,9 +351,17 @@ class ActivosFijos extends BaseController
     public function pdf()
     {
         try {
-            $this->activoFijoModel = new ActivoFijo();
-
-            $result = $this->activoFijoModel->getActivoFijoPDF($this->CodEmpresa);
+            $result = (new ActivoFijo())->getActivoFijo(
+                $this->CodEmpresa,
+                0,
+                '',
+                'activosfijos.codActivo, activosfijos.descripcion, t.descTipoActivo, activosfijos.marca, activosfijos.modelo, activosfijos.serie',
+                [
+                    array('tabla' => 'tipoactivo t', 'on' => 'activosfijos.codTipoActivo = t.codTipoActivo AND activosfijos.CodEmpresa = t.CodEmpresa', 'tipo' => 'inner')
+                ],
+                '',
+                'activosfijos.IdActivo ASC'
+            );
 
             $columnas = array('CodActivo', 'Descripción', 'Tipo de Activo', 'Marca', 'Modelo', 'Serie');
 
@@ -670,9 +404,7 @@ class ActivosFijos extends BaseController
             if ($tipo == 'nuevo') {
                 $descripcion = strtoupper(trim(strval($this->request->getPost('descripcion'))));
 
-                $this->activoFijoModel = new ActivoFijo();
-
-                $activos_fijos = $this->activoFijoModel->getActivoFijo($this->CodEmpresa, '', 'UPPER(descripcion) = "' . $descripcion . '"');
+                $activos_fijos = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', '', [], 'UPPER(descripcion) = "' . $descripcion . '"', '');
 
                 $existe = array('existe' => false);
 
@@ -685,9 +417,7 @@ class ActivosFijos extends BaseController
                 $descripcion = strtoupper(trim(strval($this->request->getPost('descripcion'))));
                 $Notdescripcion = strtoupper(trim(strval($this->request->getPost('Notdescripcion'))));
 
-                $this->activoFijoModel = new ActivoFijo();
-
-                $activos_fijos = $this->activoFijoModel->getActivoFijo($this->CodEmpresa, '', 'UPPER(descripcion) != "' . $Notdescripcion . '" AND UPPER(descripcion) = "' . $descripcion . '"');
+                $activos_fijos = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', '', [], 'UPPER(descripcion) != "' . $Notdescripcion . '" AND UPPER(descripcion) = "' . $descripcion . '"', '');
 
                 $existe = array('existe' => false);
 
@@ -697,6 +427,25 @@ class ActivosFijos extends BaseController
 
                 echo json_encode($existe);
             }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function autocompletado()
+    {
+        try {
+            $post = $this->request->getPost();
+
+            if (isset($post['search'])) {
+                $search = $post['search'];
+
+                $activo_fijo = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', 'IdActivo AS id, CONCAT(codActivo, " - ", descripcion) AS text', [], 'descripcion LIKE "%' . $search . '%"', '');
+            } else {
+                $activo_fijo = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', 'IdActivo AS id, CONCAT(codActivo, " - ", descripcion) AS text', [], '', '');
+            }
+
+            echo json_encode($activo_fijo);
         } catch (\Throwable $th) {
             throw $th;
         }

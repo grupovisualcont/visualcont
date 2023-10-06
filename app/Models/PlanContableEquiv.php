@@ -18,16 +18,28 @@ class PlanContableEquiv extends Model
         'DescCuenta'
     ];
 
-    public function getPlanContableEquiv($CodEmpresa, $Periodo, $CodCuenta, $columnas, $where)
+    public function getPlanContableEquiv(string $CodEmpresa, string $Periodo, string $CodCuenta, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;
 
             if (!empty($columnas)) $result = $this->select($columnas);
 
-            $result = $result->where('CodEmpresa', $CodEmpresa)->where('Periodo', $Periodo)->where('CodCuenta', $CodCuenta);
+            if (is_array($join) && count($join) > 0) {
+                foreach ($join as $indice => $valor) {
+                    $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
+                }
+            }
+
+            $result = $result->where('CodEmpresa', $CodEmpresa);
+
+            if (!empty($Periodo)) $result = $result->where('Periodo', $Periodo);
+
+            if (!empty($CodCuenta)) $result = $result->where('CodCuenta', $CodCuenta);
 
             if (!empty($where)) $result = $result->where($where);
+
+            if (!empty($orderBy)) $result = $result->orderBy($orderBy);
 
             $result = $result->findAll();
 

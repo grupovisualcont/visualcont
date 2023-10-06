@@ -21,7 +21,7 @@ class SocioNegocioBanco extends Model
         'Predeterminado'
     ];
 
-    public function getSocioNegocioBanco($IdSocioN){
+    public function getSocioNegocioBanco(int $IdSocioN){
         try {
             $result = $this->where('IdSocioN', $IdSocioN)->findAll();
 

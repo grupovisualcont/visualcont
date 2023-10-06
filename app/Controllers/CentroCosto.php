@@ -9,40 +9,30 @@ use App\Models\CentroCosto as ModelsCentroCosto;
 class CentroCosto extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $centroCostoModel;
-    protected $anexoModel;
-
     public function __construct()
     {
         $this->page = 'Centro de Costo';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->centroCostoModel = new ModelsCentroCosto();
-        $this->anexoModel = new Anexo();
     }
 
     public function index()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->centroCostoModel = new ModelsCentroCosto();
-
-                $centro_costo = $this->centroCostoModel->getCentroCosto($this->CodEmpresa, '', '', [], '', '', '', '');
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $centro_costo = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, '', 0, '', [], '', '', '');
 
                 return viewApp($this->page, 'app/mantenience/cost_center/index', [
                     'centro_costo' => $centro_costo,
                     'typeOrder' => 'string'
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -52,33 +42,13 @@ class CentroCosto extends BaseController
     public function create()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->centroCostoModel = new ModelsCentroCosto();
-
-                $centro_costo_superior = $this->centroCostoModel->getCentroCosto($this->CodEmpresa, '', '', [], '', 'Estado = 11', '', 'CodcCosto ASC');
-
-                $options_centro_costo_superior = '<option value="" disabled selected>Seleccione</option>';
-
-                $descripcion = '';
-
-                foreach ($centro_costo_superior as $indice => $valor) {
-                    if (strlen($valor['CodcCosto']) > 6) {
-                        $descripcion .= ' \\ ' . $valor['DesccCosto'];
-                    } else {
-                        $descripcion = $valor['DesccCosto'];
-                    }
-
-                    $options_centro_costo_superior .= '<option value="' . $valor['CodcCosto'] . '">' . $descripcion . '</option>';
-                }
-
-                $this->centroCostoModel = new ModelsCentroCosto();
-
-                $codigo_maximo = $this->centroCostoModel->getCentroCosto(
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $codigo_maximo = (new ModelsCentroCosto())->getCentroCosto(
                     $this->CodEmpresa,
                     '',
-                    '',
-                    [],
+                    0,
                     'CAST(MAX(SUBSTRING(CodcCosto, 3)) AS UNSIGNED) AS CodcCosto',
+                    [],
                     'LENGTH(CodcCosto) = 6',
                     '',
                     ''
@@ -103,33 +73,20 @@ class CentroCosto extends BaseController
                         break;
                 }
 
-                $this->anexoModel = new Anexo();
+                $estado = (new Anexo())->getAnexo($this->CodEmpresa, 11, 1, '', '', [], '', '')[0];
 
-                $estados = $this->anexoModel->getAnexo($this->CodEmpresa, '', 1, '', '', '', '');
+                $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $options_estados = '';
-
-                foreach ($estados as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['DescAnexo'] == 'Activo') $selected = 'selected';
-
-                    $options_estados .= '<option value="' . $valor['IdAnexo'] . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/cost_center/create.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/cost_center/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/cost_center/create', [
-                    'options_centro_costo_superior' => $options_centro_costo_superior,
                     'codigo_maximo' => $codigo_maximo,
-                    'options_estados' => $options_estados,
+                    'option_estado' => $option_estado,
                     'typeOrder' => 'string',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -139,62 +96,34 @@ class CentroCosto extends BaseController
     public function edit($CodcCosto)
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->centroCostoModel = new ModelsCentroCosto();
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $centro_costo = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, $CodcCosto, 0, '', [], '', '', '')[0];
 
-                $centro_costo = $this->centroCostoModel->getCentroCosto($this->CodEmpresa, $CodcCosto, '', [], '', '', '', '')[0];
+                $option_centro_costo_superior = '';
 
-                $this->centroCostoModel = new ModelsCentroCosto();
+                if (strlen($centro_costo['CodcCosto']) > 6) {
+                    $codigo_inferior = substr($centro_costo['CodcCosto'], 0, strlen($centro_costo['CodcCosto']) - 3);
 
-                $centro_costo_superior = $this->centroCostoModel->getCentroCosto($this->CodEmpresa, '', 11, [], '', '', '', 'CodcCosto ASC');
+                    $centro_costo_superior = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, $codigo_inferior, 0, '', [], '', '', '')[0];
 
-                $codigo_inferior = substr($centro_costo['CodcCosto'], 0, strlen($centro_costo['CodcCosto']) - 3);
-
-                $options_centro_costo_superior = '';
-
-                $descripcion = '';
-
-                foreach ($centro_costo_superior as $indice => $valor) {
-                    $selected = '';
-
-                    if (strlen($valor['CodcCosto']) > 6) {
-                        $descripcion .= ' \\ ' . $valor['DesccCosto'];
-                    } else {
-                        $descripcion = $valor['DesccCosto'];
-                    }
-
-                    if ($valor['CodcCosto'] == $codigo_inferior) $selected = 'selected';
-
-                    $options_centro_costo_superior .= '<option value="' . $valor['CodcCosto'] . '" ' . $selected . '>' . $descripcion . '</option>';
+                    $option_centro_costo_superior = '<option value="' . $centro_costo_superior['CodcCosto'] . '">' . $centro_costo_superior['CodcCosto'] . ' - ' . $centro_costo_superior['DesccCosto'] . '</option>';
                 }
 
-                $this->anexoModel = new Anexo();
+                $estado = (new Anexo())->getAnexo($this->CodEmpresa, $centro_costo['Estado'], 1, '', '', [], '', '')[0];
 
-                $estados = $this->anexoModel->getAnexo($this->CodEmpresa, '', 1, '', '', '', '');
+                $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $options_estados = '';
-
-                foreach ($estados as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexo'] == $centro_costo['Estado']) $selected = 'selected';
-
-                    $options_estados .= '<option value="' . $valor['IdAnexo'] . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/cost_center/edit.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/cost_center/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/cost_center/edit', [
                     'centro_costo' => $centro_costo,
-                    'options_centro_costo_superior' => $options_centro_costo_superior,
-                    'options_estados' => $options_estados,
+                    'option_centro_costo_superior' => $option_centro_costo_superior,
+                    'option_estado' => $option_estado,
                     'typeOrder' => 'string',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -212,14 +141,10 @@ class CentroCosto extends BaseController
 
             $post['DesccCosto'] = strtoupper(trim($post['DesccCosto']));
 
-            $this->centroCostoModel = new ModelsCentroCosto();
-
-            $existe_codigo = $this->centroCostoModel->getCentroCosto($post['CodEmpresa'], $post['CodcCosto'], '', [], '', '', '', '');
+            $existe_codigo = (new ModelsCentroCosto())->getCentroCosto($post['CodEmpresa'], $post['CodcCosto'], 0, '', [], '', '', '');
 
             if (count($existe_codigo) == 0) {
-                $this->centroCostoModel = new ModelsCentroCosto();
-
-                $this->centroCostoModel->agregar($post);
+                (new ModelsCentroCosto())->agregar($post);
             }
 
             if ($this->db->transStatus() === FALSE) {
@@ -255,9 +180,7 @@ class CentroCosto extends BaseController
 
             $post['DesccCosto'] = strtoupper(trim($post['DesccCosto']));
 
-            $this->centroCostoModel = new ModelsCentroCosto();
-
-            $this->centroCostoModel->actualizar($post['CodEmpresa'], $post['CodcCosto'], $post);
+            (new ModelsCentroCosto())->actualizar($post['CodEmpresa'], $post['CodcCosto'], $post);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -288,9 +211,7 @@ class CentroCosto extends BaseController
 
             $this->db->transBegin();
 
-            $this->centroCostoModel = new ModelsCentroCosto();
-
-            $this->centroCostoModel->eliminar($this->CodEmpresa, $CodcCosto);
+            (new ModelsCentroCosto())->eliminar($this->CodEmpresa, $CodcCosto);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -327,9 +248,7 @@ class CentroCosto extends BaseController
 
             $excel->body(1, 'columnas');
 
-            $this->centroCostoModel = new ModelsCentroCosto();
-
-            $result = $this->centroCostoModel->getCentroCosto($this->CodEmpresa, '', '', [], '', '', '', '');
+            $result = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, '', 0, '', [], '', '', '');
 
             foreach ($result as  $indice => $valor) {
                 $values = array(
@@ -352,9 +271,7 @@ class CentroCosto extends BaseController
     public function pdf()
     {
         try {
-            $this->centroCostoModel = new ModelsCentroCosto();
-
-            $result = $this->centroCostoModel->getCentroCosto($this->CodEmpresa, '', '', [], '', '', '', '');
+            $result = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, '', 0, '', [], '', '', '');
 
             $columnas = array('Código', 'Descripción', 'Porcentaje');
 
@@ -394,16 +311,14 @@ class CentroCosto extends BaseController
             if ($tipo == 'nuevo') {
                 $CodcCosto = strtoupper(trim(strval($this->request->getPost('CodcCosto'))));
 
-                $this->centroCostoModel = new ModelsCentroCosto();
-
-                $centro_costo = $this->centroCostoModel->getCentroCosto(
+                $centro_costo = (new ModelsCentroCosto())->getCentroCosto(
                     $this->CodEmpresa,
                     '',
-                    '',
-                    [],
+                    0,
                     'CAST(MAX(SUBSTRING(CodcCosto, IF(LENGTH(CodcCosto) = 6, 3, LENGTH(CodcCosto) - 2))) AS UNSIGNED) AS CodcCosto',
+                    [],
                     'LENGTH(CodcCosto) = ' . (strlen($CodcCosto) + 3),
-                    $CodcCosto,
+                    '',
                     ''
                 );
 
@@ -432,6 +347,25 @@ class CentroCosto extends BaseController
 
                 echo json_encode($datos);
             }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function autocompletado()
+    {
+        try {
+            $post = $this->request->getPost();
+
+            if (isset($post['search'])) {
+                $search = $post['search'];
+
+                $centro_costo = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, '', $post['Estado'] ?? 0, 'CodcCosto AS id, CONCAT(CodcCosto, " - ", DesccCosto) AS text', [], 'DesccCosto LIKE "%' . $search . '%"', '', '');
+            } else {
+                $centro_costo = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, '', $post['Estado'] ?? 0, 'CodcCosto AS id, CONCAT(CodcCosto, " - ", DesccCosto) AS text', [], '', '', '');
+            }
+
+            echo json_encode($centro_costo);
         } catch (\Throwable $th) {
             throw $th;
         }

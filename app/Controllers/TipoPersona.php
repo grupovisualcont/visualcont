@@ -8,22 +8,16 @@ use App\Models\TipoPersona as ModelsTipoPersona;
 class TipoPersona extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $tipoPersonaModel;
-
     public function __construct()
     {
         $this->page = 'Tipo de Persona';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->tipoPersonaModel = new ModelsTipoPersona();
     }
 
     public function autocompletado()
@@ -31,16 +25,16 @@ class TipoPersona extends BaseController
         try {
             $post = $this->request->getPost();
 
-            if (isset($post['search'])) {
-                $search = $post['search'];
-
-                $this->tipoPersonaModel = new ModelsTipoPersona();
-
-                $tipo_persona = $this->tipoPersonaModel->getTipoPersona('', 'CodTipPer AS value, DescPer AS name', [], 'DescPer LIKE "%' . $search . '%"', '');
+            if (isset($post['CodTipPer']) && !empty($post['CodTipPer'])) {
+                $tipo_persona = (new ModelsTipoPersona())->getTipoPersona($post['CodTipPer'], 'CodTipPer AS id, DescPer AS text', [], '', '')[0];
             } else {
-                $this->tipoPersonaModel = new ModelsTipoPersona();
+                if (isset($post['search'])) {
+                    $search = $post['search'];
 
-                $tipo_persona = $this->tipoPersonaModel->getTipoPersona('', 'CodTipPer AS value, DescPer AS name', [], '', '');
+                    $tipo_persona = (new ModelsTipoPersona())->getTipoPersona('', 'CodTipPer AS id, DescPer AS text', [], 'DescPer LIKE "%' . $search . '%"', '');
+                } else {
+                    $tipo_persona = (new ModelsTipoPersona())->getTipoPersona('', 'CodTipPer AS id, DescPer AS text', [], '', '');
+                }
             }
 
             echo json_encode($tipo_persona);

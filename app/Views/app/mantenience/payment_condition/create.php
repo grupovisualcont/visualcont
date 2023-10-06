@@ -52,7 +52,7 @@
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                         <select name="Tipo" id="Tipo" class="form-control form-control-sm">
-                                            <?= $options_tipo_condicion ?>
+                                            <?= $option_tipo_condicion ?>
                                         </select>
                                     </div>
                                 </div>
@@ -75,8 +75,8 @@
                                         <label>Estado</label>
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                        <select name="Estado" class="form-control form-control-sm">
-                                            <?= $options_estado ?>
+                                        <select name="Estado" id="Estado" class="form-control form-control-sm">
+                                            <?= $option_estado ?>
                                         </select>
                                     </div>
                                 </div>

@@ -24,18 +24,28 @@ class TipoVoucherCab extends Model
         'FlagInterno'
     ];
 
-    public function getTipoVoucherCab($CodEmpresa, $CodTV, $columnas, $where)
+    public function getTipoVoucherCab(string $CodEmpresa, string $CodTV, int $Tipo, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;
 
             if (!empty($columnas)) $result = $this->select($columnas);
 
+            if (is_array($join) && count($join) > 0) {
+                foreach ($join as $indice => $valor) {
+                    $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
+                }
+            }
+
             $result = $result->where('CodEmpresa', $CodEmpresa);
 
             if (!empty($CodTV)) $result = $result->where('CodTV', $CodTV);
 
+            if (!empty($Tipo)) $result = $result->where('Tipo', $Tipo);
+
             if (!empty($where)) $result->where($where);
+
+            if (!empty($orderBy)) $result = $result->orderBy($orderBy);
 
             $result = $result->asArray()->findAll();
 

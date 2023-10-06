@@ -54,7 +54,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="CodEntidad" id="CodEntidad" class="form-control form-control-sm">
-                                                    <?= $options_entidad_financiera ?>
+
                                                 </select>
                                             </div>
                                         </div>
@@ -88,7 +88,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="codcuenta" id="codcuenta" class="form-control form-control-sm" disabled>
-                                                    <?= $options_plan_contable ?>
+
                                                 </select>
                                             </div>
                                         </div>
@@ -102,7 +102,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="CodMoneda" id="CodMoneda" class="form-control form-control-sm" disabled>
-                                                    <?= $options_moneda ?>
+
                                                 </select>
                                             </div>
                                         </div>
@@ -147,7 +147,7 @@
                                     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <div class="row mb-3">
                                             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                                <button type="button" class="btn btn-sm btn-success shadow-sm float-right" onclick="nuevaFilaCheque()">
+                                                <button type="button" class="btn btn-sm btn-success shadow-sm float-right" onclick="agregar()">
                                                     Agregar <i class="fas fa-plus-circle text-white"></i>
                                                 </button>
                                             </div>

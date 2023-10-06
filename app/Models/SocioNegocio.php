@@ -69,6 +69,12 @@ class SocioNegocio extends Model
         }
     }
 
+    public function getRazonSocial(bool $documento){
+        $documento = $documento ? 'CONCAT(IF(LENGTH(ruc) = 0 OR ruc IS NULL, docidentidad, ruc), " - ")' : '""';
+
+        return 'CONCAT(' . $documento . ', IF(LENGTH(razonsocial) = 0, CONCAT(Nom1, " ", IF(LENGTH(Nom2) = 0, "", CONCAT(Nom2, " ")), ApePat, " ", ApeMat), razonsocial))';
+    }
+
     public function agregar($data)
     {
         try {

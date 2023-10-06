@@ -1,12 +1,15 @@
+$('select').select2({
+    width: 'auto', dropdownAutoWidth: true
+});
+
+autocompletado($('.CuentaDebe'), {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+autocompletado($('.CuentaHaber'), {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+
 mostrarActivoFijo();
 
 mostrarTipoDebeHaber();
 
 mostrarAjusteDC();
-
-$('select').select2({
-    width: 'auto', dropdownAutoWidth: true
-});
 
 function getCuentaPadre() {
     var CodCuenta = $('#CodCuenta').val();
@@ -143,12 +146,12 @@ function nuevaFilaAmarre() {
             </td>
             <td>
                 <select name="CuentaDebe[]" class="CuentaDebe form-control form-control-sm" id="CuentaDebe${id_amarre}">
-                    <option value="" disabled selected>Seleccione</option>
+
                 </select>
             </td>
             <td>
                 <select name="CuentaHaber[]" class="CuentaHaber form-control form-control-sm" id="CuentaHaber${id_amarre}">
-                    <option value="" disabled selected>Seleccione</option>
+
                 </select>
             </td>
             <td>
@@ -162,8 +165,8 @@ function nuevaFilaAmarre() {
 
     $('#tabla_amarres > tbody').append(nuevo);
 
-    autocompletado($('#CuentaDebe' + id_amarre), BASE_URL + "app/mantenience/accounting_plan/autocompletado");
-    autocompletado($('#CuentaHaber' + id_amarre), BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+    autocompletado($('#CuentaDebe' + id_amarre), {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+    autocompletado($('#CuentaHaber' + id_amarre), {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
 
     id_amarre++;
 }
@@ -181,16 +184,10 @@ function eliminarFilaAmarre(id) {
 
     $(".CuentaDebe > select").each(function (i) {
         this.id = 'CuentaDebe' + (i + 1);
-        $(this).select2({
-            width: 'auto', dropdownAutoWidth: true
-        });
     });
 
     $(".CuentaHaber > select").each(function (i) {
         this.id = 'CuentaHaber' + (i + 1);
-        $(this).select2({
-            width: 'auto', dropdownAutoWidth: true
-        });
     });
 
     $(".Porcentaje").each(function (i) {
@@ -303,9 +300,6 @@ function verificarFormulario() {
 
         if (falta_cuenta_debe) {
             $('#CuentaDebe' + index).addClass('border-rojo');
-            $('#CuentaDebe' + index).select2({
-                width: 'auto', dropdownAutoWidth: true
-            });
 
             alertify.alert('Falta Registrar la Cuenta del Debe<br>Modifique y Vuelva Intentarlo!!', function () { }).set({ title: "Error" });
 
@@ -314,9 +308,6 @@ function verificarFormulario() {
 
         if (falta_cuenta_haber) {
             $('#CuentaHaber' + index).addClass('border-rojo');
-            $('#CuentaHaber' + index).select2({
-                width: 'auto', dropdownAutoWidth: true
-            });
 
             alertify.alert('Falta Registrar la Cuenta del Haber<br>Modifique y Vuelva Intentarlo!!', function () { }).set({ title: "Error" });
 
@@ -360,13 +351,8 @@ function verificarFormulario() {
 
         if (repetir_debe_haber) {
             $('#CuentaDebe' + index).addClass('border-rojo');
-            $('#CuentaDebe' + index).select2({
-                width: 'auto', dropdownAutoWidth: true
-            });
+
             $('#CuentaHaber' + index).addClass('border-rojo');
-            $('#CuentaHaber' + index).select2({
-                width: 'auto', dropdownAutoWidth: true
-            });
 
             alertify.alert(mensaje_error, function () { }).set({ title: "Error" });
 
@@ -375,13 +361,8 @@ function verificarFormulario() {
 
         if (existe_cuenta_debe) {
             $('#CuentaDebe' + index).addClass('border-rojo');
-            $('#CuentaDebe' + index).select2({
-                width: 'auto', dropdownAutoWidth: true
-            });
+
             $('#CuentaHaber' + array_index).addClass('border-rojo');
-            $('#CuentaHaber' + array_index).select2({
-                width: 'auto', dropdownAutoWidth: true
-            });
 
             alertify.alert(mensaje_error, function () { }).set({ title: "Error" });
 
@@ -396,9 +377,6 @@ function verificarFormulario() {
                 $('.CuentaDebe > select').each(function (j) {
                     if (this.value == array_Cuenta_Debe[i]) {
                         $(this).addClass('border-rojo');
-                        $(this).select2({
-                            width: 'auto', dropdownAutoWidth: true
-                        });
                     }
                 });
 
@@ -412,9 +390,6 @@ function verificarFormulario() {
                 $('.CuentaHaber > select').each(function(j) {
                     if(this.value == array_Cuenta_Haber[i]){
                         $(this).addClass('border-rojo');
-                        $(this).select2({
-                            width: 'auto', dropdownAutoWidth: true
-                        });
                     }
                 });
 

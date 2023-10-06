@@ -20,7 +20,7 @@
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                         <select id="CodcCostoSuperior" class="form-control form-control-sm" onchange="setCodigo()">
-                                            <?= $options_centro_costo_superior ?>
+
                                         </select>
                                     </div>
                                 </div>
@@ -54,7 +54,7 @@
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8 d-flex">
                                         <input type="text" name="Porcentaje" class="form-control form-control-sm" onkeypress="esNumero(event)" />
-                                        <span class="ml-2 mt-1">%</span>
+                                        <span class="ms-2 mt-1">%</span>
                                     </div>
                                 </div>
                             </div>
@@ -66,8 +66,8 @@
                                         <label>Estado</label>
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                        <select name="Estado" class="form-control form-control-sm">
-                                            <?= $options_estados ?>
+                                        <select name="Estado" id="Estado" class="form-control form-control-sm">
+                                            <?= $option_estado ?>
                                         </select>
                                     </div>
                                 </div>

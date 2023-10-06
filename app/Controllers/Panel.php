@@ -9,14 +9,12 @@ session_start();
 class Panel extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     public function __construct()
     {
         $this->page = 'Inicio';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
     }
 
     public function index()

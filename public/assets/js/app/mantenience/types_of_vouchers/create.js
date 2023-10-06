@@ -3,35 +3,30 @@ $('select').select2({
     dropdownAutoWidth: true
 });
 
+autocompletado($('#CodEFE'), { CodEFE: 'true' }, BASE_URL + "app/attached/autocompletado");
+
 var id_tipo_vouchers = 1;
 var td_tipo_1 = '';
 
 cambiarTabla();
 
-nuevaFilaTipoVouchers();
-
 function cambiarTabla() {
     var thead = '';
     var Tipo = parseInt($('#Tipo option:selected').val());
 
-    /* if(Tipo == 1){
+    if(Tipo == 1){
         $('#CodTVcaja').attr('disabled', false);
-        $('#CodTVcaja').html(options_tipo_1);
+        $('#CodTVcaja').html(autocompletado($('#CodTVcaja'), { Tipo: 5 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_"));
     }else if(Tipo == 3){
         $('#CodTVcaja').attr('disabled', false);
-        $('#CodTVcaja').html(options_tipo_3);
+        $('#CodTVcaja').html(autocompletado($('#CodTVcaja'), { Tipo: 6 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_"));
     }else if(Tipo == 7){
         $('#CodTVcaja').attr('disabled', false);
-        $('#CodTVcaja').html(options_tipo_7);
+        $('#CodTVcaja').html(autocompletado($('#CodTVcaja'), { Tipo: 6 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_"));
     }else{
         $('#CodTVcaja').attr('disabled', true);
         $('#CodTVcaja').html('');
     }
-
-    $('#CodTVcaja').select2({
-        width: 'auto',
-dropdownAutoWidth : true
-    }); */
 
     switch (Tipo) {
         case 0:
@@ -95,32 +90,20 @@ dropdownAutoWidth : true
                 case 0:
                     $(this).children('td').removeClass('background-readonly');
 
-                    $('.tdTipo0').show();
-                    $('.tdTipo1').hide();
+                    $('.tdTipo0').removeClass('display-none');
+                    $('.tdTipo0').show()
 
-                    $('.MontoD').removeClass('display-none');
+                    $('.tdTipo1').removeClass('display-block');
+                    $('.tdTipo1').hide()
+
                     $('.MontoD').addClass('display-block');
+                    $('.MontoD').removeClass('display-none');
 
-                    $('.CodCcosto').removeClass('display-none');
-                    $('.CodCcosto').addClass('display-block');
-                    $('.CodCcosto').select2({
-                        width: 'auto',
-                        dropdownAutoWidth: true
-                    });
+                    $('.CodCcosto').next(".select2-container").show();
 
-                    $('.IdActivo').removeClass('display-none');
-                    $('.IdActivo').addClass('display-block');
-                    $('.IdActivo').select2({
-                        width: 'auto',
-                        dropdownAutoWidth: true
-                    });
+                    $('.IdActivo').next(".select2-container").show();
 
-                    $('.IdSocioN').removeClass('display-none');
-                    $('.IdSocioN').addClass('display-block');
-                    $('.IdSocioN').select2({
-                        width: 'auto',
-                        dropdownAutoWidth: true
-                    });
+                    $('.IdSocioN').next(".select2-container").show();
 
                     break;
 
@@ -137,44 +120,27 @@ dropdownAutoWidth : true
 
                     $('.tdTipoBackground1').addClass('background-readonly');
 
+                    $('.tdTipo0').removeClass('display-none');
                     $('.tdTipo0').show();
+
+                    $('.tdTipo1').removeClass('display-none');
                     $('.tdTipo1').show();
 
-                    $('.CodMoneda').removeClass('display-block');
-                    $('.CodMoneda').addClass('display-none');
+                    $('.CodMoneda').next(".select2-container").hide();
 
-                    $('.DescCuenta').removeClass('display-none');
-                    $('.DescCuenta').addClass('display-block');
-
-                    $('.MontoD').removeClass('display-block');
                     $('.MontoD').addClass('display-none');
+                    $('.MontoD').removeClass('display-block');
 
-                    $('.CodCcosto').removeClass('display-block');
-                    $('.CodCcosto').addClass('display-none');
-                    $('.CodCcosto').select2({
-                        width: 'auto',
-                        dropdownAutoWidth: true
-                    });
+                    $('.CodCcosto').next(".select2-container").hide();
 
-                    $('.IdActivo').removeClass('display-block');
-                    $('.IdActivo').addClass('display-none');
-                    $('.IdActivo').select2({
-                        width: 'auto',
-                        dropdownAutoWidth: true
-                    });
+                    $('.IdActivo').next(".select2-container").hide();
 
-                    $('.IdSocioN').removeClass('display-block');
-                    $('.IdSocioN').addClass('display-none');
-                    $('.IdSocioN').select2({
-                        width: 'auto',
-                        dropdownAutoWidth: true
-                    });
+                    $('.IdSocioN').next(".select2-container").hide();
 
                     if (Tipo == 5 || Tipo == 6) {
                         $('.tdTipo9').removeClass('background-readonly');
 
-                        $('.CodMoneda').removeClass('display-none');
-                        $('.CodMoneda').addClass('display-block');
+                        $('.CodMoneda').next(".select2-container").show();
                     }
 
                     if (Tipo == 9) $('.tdTipo9').hide();
@@ -186,12 +152,10 @@ dropdownAutoWidth : true
 
                         if (RelacionCuenta == '1' || RelacionCuenta == '3') {
                             $('#td_CodMoneda_' + index).removeClass('background-readonly');
-                            $('#CodMoneda' + index).removeClass('display-none');
-                            $('#CodMoneda' + index).addClass('display-block');
+                            $('#CodMoneda' + index).next(".select2-container").show();
                         } else {
                             $('#td_CodMoneda_' + index).addClass('background-readonly');
-                            $('#CodMoneda' + index).removeClass('display-block');
-                            $('#CodMoneda' + index).addClass('display-none');
+                            $('#CodMoneda' + index).next(".select2-container").hide();
                         }
                     });
 
@@ -206,16 +170,14 @@ function cambiar_cuenta(id) {
 
     if (RelacionCuenta == '1' || RelacionCuenta == '3') {
         $('#td_CodMoneda_' + id).removeClass('background-readonly');
-        $('#CodMoneda' + id).removeClass('display-none');
-        $('#CodMoneda' + id).addClass('display-block');
+        $('#CodMoneda' + id).next(".select2-container").show();
     } else {
         $('#td_CodMoneda_' + id).addClass('background-readonly');
-        $('#CodMoneda' + id).removeClass('display-block');
-        $('#CodMoneda' + id).addClass('display-none');
+        $('#CodMoneda' + id).next(".select2-container").hide();
     }
 }
 
-function nuevaFilaTipoVouchers() {
+function agregar() {
     $('#tr_vacio_tipo_vouchers').remove();
 
     var Tipo = parseInt($('#Tipo option:selected').val());
@@ -236,7 +198,7 @@ function nuevaFilaTipoVouchers() {
                 </td>
                 <td>
                     <select name="Debe_Haber[]" class="Debe_Haber form-control form-control-sm" id="Debe_Haber${id_tipo_vouchers}">
-                        ${options_debe_haber}
+
                     </select>
                 </td>
             `;
@@ -249,12 +211,12 @@ function nuevaFilaTipoVouchers() {
     td_tipo_1 = `
                 <td class="tdTipo1">
                     <select name="Parametro[]" class="Parametro form-control form-control-sm" id="Parametro${id_tipo_vouchers}">
-                        ${options_parametro}
+
                     </select>
                 </td>
                 <td class="tdTipo1 tdTipo9 tdTipoBackground1 ${background}" id="td_CodMoneda_${id_tipo_vouchers}">
                     <select name="CodMoneda[]" class="CodMoneda form-control form-control-sm ${display}" id="CodMoneda${id_tipo_vouchers}">
-                        ${options_moneda}
+
                     </select>
                 </td>
             `;
@@ -266,47 +228,34 @@ function nuevaFilaTipoVouchers() {
                 </td>
                 <td class="tdTipo0 tdTipoBackground1 ${background}">
                     <select name="CodCcosto[]" class="CodCcosto form-control form-control-sm ${display}" id="CodCcosto${id_tipo_vouchers}">
-                        ${options_centro_costo}
+
                     </select>
                 </td>
                 <td class="tdTipo0 tdTipoBackground1 ${background}">
                     <select name="IdActivo[]" class="IdActivo form-control form-control-sm ${display}" id="IdActivo${id_tipo_vouchers}">
-                        ${options_activo_fijo}
+
                     </select>
                 </td>
                 <td class="tdTipo0 tdTipoBackground1 ${background}">
                     <select name="IdSocioN[]" class="IdSocioN form-control form-control-sm ${display}" id="IdSocioN${id_tipo_vouchers}">
-                        ${options_socio_negocio}
+
                     </select>
                 </td>
                 <td align="center">
-                    <button type="button" class="Buttons btn btn-sm btn-danger shadow-sm" onclick="eliminarFilaTipoVouchers('${id_tipo_vouchers}')">Eliminar</button>
+                    <button type="button" class="Buttons btn btn-sm btn-danger shadow-sm" onclick="eliminar(${id_tipo_vouchers})">Eliminar</button>
                 </td>
             </tr>
         `;
 
     $('#tabla_tipo_vouchers > tbody').append(nuevo);
 
-    autocompletado($('#CodCuenta' + id_tipo_vouchers), BASE_URL + "app/mantenience/accounting_plan/autocompletado");
-
-    $('#Parametro' + id_tipo_vouchers).select2({
-        width: 'auto', dropdownAutoWidth: true
-    });
-
-    $('#CodCcosto' + id_tipo_vouchers).select2({
-        width: 'auto',
-        dropdownAutoWidth: true
-    });
-
-    $('#IdActivo' + id_tipo_vouchers).select2({
-        width: 'auto',
-        dropdownAutoWidth: true
-    });
-
-    $('#IdSocioN' + id_tipo_vouchers).select2({
-        width: 'auto',
-        dropdownAutoWidth: true
-    });
+    autocompletado($('#CodCuenta' + id_tipo_vouchers), { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+    autocompletado($('#Debe_Haber' + id_tipo_vouchers), { }, BASE_URL + "app/debeHaber/autocompletado");
+    autocompletado($('#CodCcosto' + id_tipo_vouchers), { }, BASE_URL + "app/mantenience/cost_center/autocompletado");
+    autocompletado($('#IdActivo' + id_tipo_vouchers), { }, BASE_URL + "app/mantenience/fixed_assets/autocompletado");
+    autocompletado($('#IdSocioN' + id_tipo_vouchers), { }, BASE_URL + "app/mantenience/business_partner/autocompletado_");
+    autocompletado($('#Parametro' + id_tipo_vouchers), { }, BASE_URL + "app/parametro/autocompletado");
+    autocompletado($('#CodMoneda' + id_tipo_vouchers), { }, BASE_URL + "app/moneda/autocompletado_");
 
     switch (Tipo) {
         case 0:
@@ -321,8 +270,7 @@ function nuevaFilaTipoVouchers() {
         case 6:
             $('.tdTipo9').removeClass('background-readonly');
 
-            $('.CodMoneda').removeClass('display-none');
-            $('.CodMoneda').addClass('display-block');
+            $('.CodMoneda').next(".select2-container").show();
 
             break;
         case 9:
@@ -334,7 +282,7 @@ function nuevaFilaTipoVouchers() {
     id_tipo_vouchers++;
 }
 
-function eliminarFilaTipoVouchers(id) {
+function eliminar(id) {
     var Tipo = parseInt($('#Tipo option:selected').val());
 
     $('#tr_tipo_vouchers' + id).remove();
@@ -347,12 +295,9 @@ function eliminarFilaTipoVouchers(id) {
         this.value = i + 1;
     });
 
-    $(".CodCuenta > select").each(function (i) {
+    $(".CodCuenta").each(function (i) {
         this.id = this.name.split('[]')[0] + (i + 1);
-        $(this).select2({
-            width: 'auto',
-            dropdownAutoWidth: true
-        });
+        $(this).attr('onchange', 'cambiar_cuenta(' + (i + 1) + ')');
     });
 
     $(".DescCuenta").each(function (i) {
@@ -363,12 +308,8 @@ function eliminarFilaTipoVouchers(id) {
         this.id = this.name.split('[]')[0] + (i + 1);
     });
 
-    $(".Parametro > select").each(function (i) {
+    $(".Parametro").each(function (i) {
         this.id = this.name.split('[]')[0] + (i + 1);
-        $(this).select2({
-            width: 'auto',
-            dropdownAutoWidth: true
-        });
     });
 
     $(".tdTipo9").each(function (i) {
@@ -383,32 +324,20 @@ function eliminarFilaTipoVouchers(id) {
         this.id = this.name.split('[]')[0] + (i + 1);
     });
 
-    $(".CodCcosto > select").each(function (i) {
+    $(".CodCcosto").each(function (i) {
         this.id = this.name.split('[]')[0] + (i + 1);
-        $(this).select2({
-            width: 'auto',
-            dropdownAutoWidth: true
-        });
     });
 
-    $(".IdActivo > select").each(function (i) {
+    $(".IdActivo").each(function (i) {
         this.id = this.name.split('[]')[0] + (i + 1);
-        $(this).select2({
-            width: 'auto',
-            dropdownAutoWidth: true
-        });
     });
 
-    $(".IdSocioN > select").each(function (i) {
+    $(".IdSocioN").each(function (i) {
         this.id = this.name.split('[]')[0] + (i + 1);
-        $(this).select2({
-            width: 'auto',
-            dropdownAutoWidth: true
-        });
     });
 
     $(".Buttons").each(function (i) {
-        $(this).attr('onclick', 'eliminarFilaTipoVouchers(' + (i + 1) + ')')
+        $(this).attr('onclick', 'eliminar(' + (i + 1) + ')')
     });
 
     if ($('.clase_tipo_vouchers').length == 0) {
@@ -508,10 +437,6 @@ function verificarFormulario() {
 
     if (existe_cod_cuenta) {
         $('#CodCuenta' + index).addClass('border-rojo');
-        $('#CodCuenta' + index).select2({
-            width: 'auto',
-            dropdownAutoWidth: true
-        });
 
         alertify.alert('Indique el Código de Cuenta!!', function () { }).set({ title: "Error" });
 
@@ -528,10 +453,6 @@ function verificarFormulario() {
 
     if (existe_parametro) {
         $('#Parametro' + index).addClass('border-rojo');
-        $('#Parametro' + index).select2({
-            width: 'auto',
-            dropdownAutoWidth: true
-        });
 
         alertify.alert('Indique el tipo de Parametro!!', function () { }).set({ title: "Error" });
 
@@ -558,10 +479,7 @@ function verificarFormulario() {
     //             if(array_objetos.filter(x => x.debe_haber == array_objetos[index]['debe_haber']).length > 1){
     //                 repite_valor_cuenta++;
     //                 $('#CodCuenta' + array_objetos[index]['index']).addClass('border-rojo');
-    //                 $('#CodCuenta' + array_objetos[index]['index']).select2({
-    //                        width: 'auto',
-    dropdownAutoWidth: true
-    //                    });
+    //                 
     //                 $('#Debe_Haber' + array_objetos[index]['index']).addClass('border-rojo');
     //             }
     //         }

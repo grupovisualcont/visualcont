@@ -9,30 +9,22 @@ use App\Models\TipoCambio as ModelsTipoCambio;
 class TipoCambio extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $tipoCambioModel;
-    protected $monedaModel;
-
     public function __construct()
     {
         $this->page = 'Tipo de Cambio';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->tipoCambioModel = new ModelsTipoCambio();
-        $this->monedaModel = new Moneda();
     }
 
     public function index()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
+            if ((new Empresa())->verificar_inicio_sesion()) {
                 $anio = date('Y');
 
                 $meses = $this->meses();
@@ -43,14 +35,12 @@ class TipoCambio extends BaseController
 
                 krsort($meses);
 
-                $this->empresa = new Empresa();
-
                 $script = "
                     var anio_hoy = " . $anio . ";
                     var mes_hoy = " . date('m') . ";
                 ";
 
-                $script = $this->empresa->generar_script($script, ['app/mantenience/exchange_rate/index.js']);
+                $script = (new Empresa())->generar_script($script, ['app/mantenience/exchange_rate/index.js']);
 
                 return viewApp($this->page, 'app/mantenience/exchange_rate/index', [
                     'anio' => $anio,
@@ -59,7 +49,7 @@ class TipoCambio extends BaseController
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -69,32 +59,12 @@ class TipoCambio extends BaseController
     public function edit($anio, $mes)
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->monedaModel = new Moneda();
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $moneda = (new Moneda())->getMoneda('MO002', '', [], '', '')[0];
 
-                $monedas = $this->monedaModel->getMoneda('', '');
+                $option_moneda = '<option value="' . $moneda['CodMoneda'] . '">' . $moneda['DescMoneda'] . '</option>';
 
-                $options_moneda = '';
-
-                foreach ($monedas as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodMoneda'] == 'MO002') $selected = 'selected';
-
-                    $options_moneda .= '<option value="' . $valor['CodMoneda'] . '" ' . $selected . '>' . $valor['DescMoneda'] . '</option>';
-                }
-
-                $meses = $this->meses();
-
-                $options_meses = '';
-
-                foreach ($meses as $indice => $valor) {
-                    $selected = '';
-
-                    if ($indice == $mes) $selected = 'selected';
-
-                    $options_meses .= '<option value="' . $indice . '" ' . $selected . '>' . $valor . '</option>';
-                }
+                $option_mes = '<option value="' . $mes . '">' . $this->meses()[$mes] . '</option>';
 
                 $fecha = $anio . '-' . $mes . '-01';
 
@@ -103,9 +73,7 @@ class TipoCambio extends BaseController
                 $datos = '';
 
                 for ($dia = 1; $dia <= $ultimo_dia; $dia++) {
-                    $this->tipoCambioModel = new ModelsTipoCambio();
-
-                    $tipo_cambio = $this->tipoCambioModel->getTipoCambio(
+                    $tipo_cambio = (new ModelsTipoCambio())->getTipoCambio(
                         $this->CodEmpresa,
                         '',
                         'FechaTipoCambio, ValorCompra, ValorVenta',
@@ -163,21 +131,19 @@ class TipoCambio extends BaseController
                     }
                 }
 
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/exchange_rate/edit.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/exchange_rate/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/exchange_rate/edit', [
                     'datos' => $datos,
-                    'options_moneda' => $options_moneda,
-                    'options_meses' => $options_meses,
+                    'option_moneda' => $option_moneda,
+                    'option_mes' => $option_mes,
                     'anio' => $anio,
                     'mes' => $mes,
                     'typeOrder' => 'string',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -210,20 +176,13 @@ class TipoCambio extends BaseController
                     'Estado' => 1
                 ];
 
-                $this->tipoCambioModel = new ModelsTipoCambio();
-
-
                 if (!empty($post['FechaTipoCambio'][$indice])) {
-                    $tipo_cambio = $this->tipoCambioModel->getTipoCambio($post['CodEmpresa'], $post['FechaTipoCambio'][$indice], '', [], '', '');
+                    $tipo_cambio = (new ModelsTipoCambio())->getTipoCambio($post['CodEmpresa'], $post['FechaTipoCambio'][$indice], '', [], '', '');
 
                     if (count($tipo_cambio) > 0) {
-                        $this->tipoCambioModel = new ModelsTipoCambio();
-
-                        $this->tipoCambioModel->actualizar($post['CodEmpresa'], $post['FechaTipoCambio'][$indice], $data);
+                        (new ModelsTipoCambio())->actualizar($post['CodEmpresa'], $post['FechaTipoCambio'][$indice], $data);
                     } else {
-                        $this->tipoCambioModel = new ModelsTipoCambio();
-
-                        $this->tipoCambioModel->agregar($data);
+                        (new ModelsTipoCambio())->agregar($data);
                     }
                 }
             }
@@ -270,9 +229,7 @@ class TipoCambio extends BaseController
             $indice = 0;
 
             for ($dia = 1; $dia <= $ultimo_dia; $dia++) {
-                $this->tipoCambioModel = new ModelsTipoCambio();
-
-                $result = $this->tipoCambioModel->getTipoCambio(
+                $result = (new ModelsTipoCambio())->getTipoCambio(
                     $this->CodEmpresa,
                     '',
                     '',
@@ -328,9 +285,7 @@ class TipoCambio extends BaseController
             $tr .= '</tr>';
 
             for ($dia = 1; $dia <= $ultimo_dia; $dia++) {
-                $this->tipoCambioModel = new ModelsTipoCambio();
-
-                $result = $this->tipoCambioModel->getTipoCambio(
+                $result = (new ModelsTipoCambio())->getTipoCambio(
                     $this->CodEmpresa,
                     '',
                     '',

@@ -2,6 +2,10 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
+autocompletado($('#CodEntidad'), { }, BASE_URL + "app/entidadFinanciera/autocompletado");
+autocompletado($('#CodMoneda'), { }, BASE_URL + "app/moneda/autocompletado_");
+autocompletado($('#codcuenta'), { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+
 var id_cheque = 1;
 
 function cambiar_estado_checkbox(id) {
@@ -13,22 +17,16 @@ function cambiar_estado_checkbox(id) {
 
     if ($('#Propio').is(':checked')) {
         $('#codcuenta').attr('disabled', false);
-        $('#codcuenta').select2({
-            width: 'auto', dropdownAutoWidth: true
-        });
         $('#CodMoneda').attr('disabled', false);
         $('#ctacte').attr('disabled', false);
     } else if (!$('#Propio').is(':checked')) {
         $('#codcuenta').attr('disabled', true);
-        $('#codcuenta').select2({
-            width: 'auto', dropdownAutoWidth: true
-        });
         $('#CodMoneda').attr('disabled', true);
         $('#ctacte').attr('disabled', true);
     }
 }
 
-function nuevaFilaCheque() {
+function agregar() {
     $('#tr_vacio_cheque').remove();
 
     var nuevo = `
@@ -46,7 +44,7 @@ function nuevaFilaCheque() {
                     <input type="text" name="numerador[]" class="numerador form-control form-control-sm" id="numerador${id_cheque}" oninput="esMayorCero(this)" onkeypress="esNumero(event)" />
                 </td>
                 <td align="center">
-                    <button type="button" class="Buttons btn btn-sm btn-danger shadow-sm" onclick="eliminarFilaCheque('${id_cheque}')">Eliminar</button>
+                    <button type="button" class="Buttons btn btn-sm btn-danger shadow-sm" onclick="eliminar(${id_cheque})">Eliminar</button>
                 </td>
             </tr>
         `;
@@ -56,7 +54,7 @@ function nuevaFilaCheque() {
     id_cheque++;
 }
 
-function eliminarFilaCheque(id) {
+function eliminar(id) {
     $('#tr_cheque' + id).remove();
 
     $(".clase_cheque").each(function (i) {
@@ -80,7 +78,7 @@ function eliminarFilaCheque(id) {
     });
 
     $(".Buttons").each(function (i) {
-        $(this).attr('onclick', 'eliminarFilaCheque(' + (i + 1) + ')');
+        $(this).attr('onclick', 'eliminar(' + (i + 1) + ')');
     });
 
     if ($('.clase_cheque').length == 0) {
@@ -105,7 +103,7 @@ function verificarFormulario() {
     $('.nrOfinal').removeClass('border-rojo');
     $('.numerador').removeClass('border-rojo');
 
-    if (CodEntidad.length == 0) {
+    if (CodEntidad == null) {
         alertify.alert('Debe seleccionar el Banco!', function () { }).set({ title: "Error" });
 
         return false;

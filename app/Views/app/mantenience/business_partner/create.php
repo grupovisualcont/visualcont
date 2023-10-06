@@ -57,7 +57,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="CodTipPer" id="CodTipPer" class="form-control form-control-sm" onchange="verificarTipoDocumentoIdentidad()">
-                                                    <?= $option_tipos_persona ?>
+                                                    <?= $option_tipo_persona ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -137,7 +137,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="CodTipoDoc" id="CodTipoDoc" class="form-control form-control-sm" onchange="verificarTipoDocumentoIdentidad()">
-                                                    <?= $option_tipos_documento_identidad ?>
+                                                    <?= $option_tipo_documento_identidad ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -166,7 +166,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="IdCondicion" id="IdCondicion" class="form-control form-control-sm">
-                                                    <?= $option_condiciones ?>
+                                                    <?= $option_condicion ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -207,7 +207,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select id="pais" class="form-control form-control-sm" onchange="cambiarInputByPais()">
-                                                    <?= $options_paises ?>
+                                                    <?= $option_pais ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -220,7 +220,7 @@
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <input type="text" name="codubigeo" id="input_codubigeo" class="form-control form-control-sm display-none">
                                                 <select name="codubigeo" id="select_codubigeo" class="form-control form-control-sm">
-                                                    <?= $options_ubigeos ?>
+                                                    <?= $option_ubigeo ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -266,7 +266,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="Idestado" id="Idestado" class="form-control form-control-sm">
-                                                    <?= $option_estados ?>
+                                                    <?= $option_estado ?>
                                                 </select>
                                             </div>
                                         </div>

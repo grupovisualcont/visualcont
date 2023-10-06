@@ -3,9 +3,9 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\Ts27Vinculo;
+use App\Models\I_AnexoSunat;
 
-class Ts27Vinculos extends BaseController
+class IAnexoSunat extends BaseController
 {
     protected $page;
     protected $CodEmpresa;
@@ -14,7 +14,7 @@ class Ts27Vinculos extends BaseController
 
     public function __construct()
     {
-        $this->page = 'Ts27Vinculo';
+        $this->page = 'IAnexoSunat';
         $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
@@ -28,12 +28,12 @@ class Ts27Vinculos extends BaseController
             if (isset($post['search'])) {
                 $search = $post['search'];
 
-                $ts27Vinculo = (new Ts27Vinculo())->getTs27Vinculo('', 'CodVinculo AS id, DescVinculo AS text', [], 'DescVinculo LIKE "%' . $search . '%"', '');
+                $I_AnexoSunat = (new I_AnexoSunat())->getI_AnexoSunat($post['IdAnexoS'], $post['TipoAnexoS'], 'IdAnexoS AS id, DescAnexoS AS text', [], 'DescAnexoS LIKE "%' . $search . '%"', '');
             } else {
-                $ts27Vinculo = (new Ts27Vinculo())->getTs27Vinculo('', 'CodVinculo AS id, DescVinculo AS text', [], '', '');
+                $I_AnexoSunat = (new I_AnexoSunat())->getI_AnexoSunat($post['IdAnexoS'], $post['TipoAnexoS'], 'IdAnexoS AS id, DescAnexoS AS text', [], '', '');
             }
 
-            echo json_encode($ts27Vinculo);
+            echo json_encode($I_AnexoSunat);
         } catch (\Throwable $th) {
             throw $th;
         }

@@ -26,12 +26,18 @@ class PlanContable extends Model
         'Child'
     ];
 
-    public function getPlanContable(string $CodEmpresa, string $Periodo, string $CodCuenta, string $columnas, string $where, string $orderBy)
+    public function getPlanContable(string $CodEmpresa, string $Periodo, string $CodCuenta, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;
 
             if (!empty($columnas)) $result = $this->select($columnas);
+
+            if (is_array($join) && count($join) > 0) {
+                foreach ($join as $indice => $valor) {
+                    $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
+                }
+            }
 
             $result = $result->where('CodEmpresa', $CodEmpresa);
 
@@ -44,38 +50,6 @@ class PlanContable extends Model
             if (!empty($orderBy)) $result = $result->orderBy($orderBy);
 
             $result = $result->findAll();
-
-            return $result;
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
-    public function getCuentasGastos($CodEmpresa)
-    {
-        try {
-            $result = $this->select('CodCuenta, DescCuenta, IF(Child = 0, "disabled", "") AS Disabled')
-                ->where('CodEmpresa', $CodEmpresa)
-                ->where('Periodo', date('Y'))
-                ->where('CodCuenta LIKE "6%"')
-                ->orderBy('CodCuenta', 'ASC')
-                ->findAll();
-
-            return $result;
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
-    public function getCuentasDepreciacion($CodEmpresa)
-    {
-        try {
-            $result = $this->select('CodCuenta, DescCuenta, IF(Child = 0, "disabled", "") AS Disabled')
-                ->where('CodEmpresa', $CodEmpresa)
-                ->where('Periodo', date('Y'))
-                ->where('CodCuenta LIKE "3%"')
-                ->orderBy('CodCuenta', 'ASC')
-                ->findAll();
 
             return $result;
         } catch (\Throwable $th) {

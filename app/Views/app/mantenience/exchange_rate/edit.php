@@ -22,7 +22,7 @@
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                                         <select class="form-control form-control-sm" disabled>
-                                            <?= $options_moneda ?>
+                                            <?= $option_moneda ?>
                                         </select>
                                     </div>
                                 </div>
@@ -34,7 +34,7 @@
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                                         <select id="Mes" class="form-control form-control-sm" disabled>
-                                            <?= $options_meses ?>
+                                            <?= $option_mes ?>
                                         </select>
                                     </div>
                                 </div>

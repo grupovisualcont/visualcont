@@ -10,35 +10,23 @@ use App\Models\VoucherPres;
 class Presupuesto extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $conceptoPresModel;
-    protected $voucherPresModel;
-    protected $planContableModel;
-
     public function __construct()
     {
         $this->page = 'Presupuesto';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->conceptoPresModel = new ConceptoPres();
-        $this->voucherPresModel = new VoucherPres();
-        $this->planContableModel = new PlanContable();
     }
 
     public function index()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $concepto_pres = $this->conceptoPresModel->getConceptoPres(
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $concepto_pres = (new ConceptoPres())->getConceptoPres(
                     $this->CodEmpresa,
                     '',
                     '
@@ -48,40 +36,30 @@ class Presupuesto extends BaseController
                             WHEN LENGTH(CodConceptoPres) = 7 THEN 3
                             WHEN LENGTH(CodConceptoPres) = 10 THEN 4
                         END
-                        AS Id,
+                        AS id,
                         CASE
                             WHEN LENGTH(CodConceptoPres) = 2 THEN "Nivel 1"
                             WHEN LENGTH(CodConceptoPres) = 4 THEN "Nivel 2"
                             WHEN LENGTH(CodConceptoPres) = 7 THEN "Nivel 3"
                             WHEN LENGTH(CodConceptoPres) = 10 THEN "Concepto Presupuestal"
                         END
-                        AS Nivel, CodConceptoPres, descConceptoPres, CodCuenta
+                        AS nivel, CodConceptoPres AS codigo, descConceptoPres AS descripcion, CodCuenta As cuenta
                         ',
                     [],
                     '',
                     'CodConceptoPres ASC'
                 );
 
-                $this->voucherPresModel = new VoucherPres();
+                $voucher_pres = (new VoucherPres())->getVoucherPres($this->CodEmpresa, '', '5 AS id, "Proyectos" AS nivel, CodVoucherPre AS codigo, DescVoucherPre AS descripcion, "" AS cuenta', [], '', '');
 
-                $voucher_pres = $this->voucherPresModel->getVoucherPres($this->CodEmpresa, '', '', [], '', '');
-
-                $datos = array();
-
-                foreach ($concepto_pres as $indice => $valor) {
-                    $datos[] = array('Id' => $valor['Id'], 'Nivel' => $valor['Nivel'], 'Codigo' => $valor['CodConceptoPres'], 'Descripcion' => $valor['descConceptoPres'], 'Cuenta' => $valor['CodCuenta']);
-                }
-
-                foreach ($voucher_pres as $indice => $valor) {
-                    $datos[] = array('Id' => 5, 'Nivel' => 'Proyectos', 'Codigo' => $valor['CodVoucherPre'], 'Descripcion' => $valor['DescVoucherPre'], 'Cuenta' => '');
-                }
+                $datos = array_merge($concepto_pres, $voucher_pres);
 
                 return viewApp($this->page, 'app/mantenience/budget/index', [
                     'datos' => $datos,
                     'typeOrder' => 'string'
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -91,7 +69,7 @@ class Presupuesto extends BaseController
     public function create()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
+            if ((new Empresa())->verificar_inicio_sesion()) {
                 $niveles = array('Nivel 1', 'Nivel 2', 'Nivel 3', 'Concepto Presupuestal', 'Proyectos');
 
                 $options_niveles = '';
@@ -104,9 +82,7 @@ class Presupuesto extends BaseController
                     $options_niveles .= '<option value="' . $indice . '" ' . $selected . '>' . $valor . '</option>';
                 }
 
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $nivel_1 = $this->conceptoPresModel->getConceptoPres(
+                $nivel_1 = (new ConceptoPres())->getConceptoPres(
                     $this->CodEmpresa,
                     '',
                     'CAST(MAX(CodConceptoPres) AS UNSIGNED) AS CodConceptoPres',
@@ -130,9 +106,7 @@ class Presupuesto extends BaseController
                     }
                 }
 
-                $this->voucherPresModel = new VoucherPres();
-
-                $nivel_5 = $this->voucherPresModel->getVoucherPres(
+                $nivel_5 = (new VoucherPres())->getVoucherPres(
                     $this->CodEmpresa,
                     '',
                     'CAST(MAX(CodVoucherPre) AS UNSIGNED) AS CodVoucherPre',
@@ -156,73 +130,17 @@ class Presupuesto extends BaseController
                     }
                 }
 
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $nivel_1 = $this->conceptoPresModel->getConceptoPres(
-                    $this->CodEmpresa,
-                    '',
-                    '',
-                    [],
-                    'LENGTH(CodConceptoPres) = 2',
-                    ''
-                );
-
-                $options_nivel_1 = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($nivel_1 as $indice => $valor) {
-                    $options_nivel_1 .= '<option value="' . $valor['CodConceptoPres'] . '">' . $valor['descConceptoPres'] . '</option>';
-                }
-
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $nivel_2 = $this->conceptoPresModel->getConceptoPres(
-                    $this->CodEmpresa,
-                    '',
-                    '',
-                    [],
-                    'LENGTH(CodConceptoPres) = 4',
-                    ''
-                );
-
-                $options_nivel_2 = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($nivel_2 as $indice => $valor) {
-                    $options_nivel_2 .= '<option value="' . $valor['CodConceptoPres'] . '">' . $valor['descConceptoPres'] . '</option>';
-                }
-
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $nivel_3 = $this->conceptoPresModel->getConceptoPres(
-                    $this->CodEmpresa,
-                    '',
-                    '',
-                    [],
-                    'LENGTH(CodConceptoPres) = 7',
-                    ''
-                );
-
-                $options_nivel_3 = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($nivel_3 as $indice => $valor) {
-                    $options_nivel_3 .= '<option value="' . $valor['CodConceptoPres'] . '">' . $valor['descConceptoPres'] . '</option>';
-                }
-
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/budget/create.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/budget/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/budget/create', [
                     'options_niveles' => $options_niveles,
                     'codigo_nivel_1' => $codigo_nivel_1,
                     'codigo_nivel_5' => $codigo_nivel_5,
-                    'options_nivel_1' => $options_nivel_1,
-                    'options_nivel_2' => $options_nivel_2,
-                    'options_nivel_3' => $options_nivel_3,
                     'typeOrder' => 'string',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -232,15 +150,11 @@ class Presupuesto extends BaseController
     public function edit($Nivel, $Codigo)
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
+            if ((new Empresa())->verificar_inicio_sesion()) {
                 if ($Nivel <= 4) {
-                    $this->conceptoPresModel = new ConceptoPres();
-
-                    $presupuesto = $this->conceptoPresModel->getConceptoPres($this->CodEmpresa, $Codigo, '', [], '', '')[0];
+                    $presupuesto = (new ConceptoPres())->getConceptoPres($this->CodEmpresa, $Codigo, 'CodEmpresa, CodConceptoPres AS codigo, descConceptoPres AS descripcion, CodCuenta', [], '', '')[0];
                 } else if ($Nivel == 5) {
-                    $this->voucherPresModel = new VoucherPres();
-
-                    $presupuesto = $this->voucherPresModel->getVoucherPres($this->CodEmpresa, $Codigo, '', [], '', '')[0];
+                    $presupuesto = (new VoucherPres())->getVoucherPres($this->CodEmpresa, $Codigo, 'CodEmpresa, CodVoucherPre AS codigo, DescVoucherPre AS descripcion', [], '', '')[0];
                 }
 
                 $niveles = array('Nivel 1', 'Nivel 2', 'Nivel 3', 'Concepto Presupuestal', 'Proyectos');
@@ -255,86 +169,49 @@ class Presupuesto extends BaseController
                     $options_niveles .= '<option value="' . $indice . '" ' . $selected . '>' . $valor . '</option>';
                 }
 
-                $this->conceptoPresModel = new ConceptoPres();
+                $nivel_1 = (new ConceptoPres())->getConceptoPres($this->CodEmpresa, substr($presupuesto['codigo'], 0, 2), '', [], 'LENGTH(CodConceptoPres) = 2', '');
 
-                $nivel_1 = $this->conceptoPresModel->getConceptoPres($this->CodEmpresa, '', '', [], 'LENGTH(CodConceptoPres) = 2', '');
+                $option_nivel_1 = count($nivel_1) > 0 ? '<option value="' . $nivel_1[0]['CodConceptoPres'] . '">' . $nivel_1[0]['descConceptoPres'] . '</option>' : '';
 
-                $options_nivel_1 = '<option value="" disabled selected>Seleccione</option>';
+                $nivel_2 = (new ConceptoPres())->getConceptoPres($this->CodEmpresa, substr($presupuesto['codigo'], 0, 4), '', [], 'LENGTH(CodConceptoPres) = 4', '');
 
-                foreach ($nivel_1 as $indice => $valor) {
-                    $selected = '';
+                $option_nivel_2 = count($nivel_2) > 0 ? '<option value="' . $nivel_2[0]['CodConceptoPres'] . '">' . $nivel_2[0]['descConceptoPres'] . '</option>' : '';
 
-                    if ($valor['CodConceptoPres'] == substr($presupuesto['CodConceptoPres'], 0, 2)) $selected = 'selected';
+                $nivel_3 = (new ConceptoPres())->getConceptoPres($this->CodEmpresa, substr($presupuesto['codigo'], 0, 7), '', [], 'LENGTH(CodConceptoPres) = 7', '');
 
-                    $options_nivel_1 .= '<option value="' . $valor['CodConceptoPres'] . '" ' . $selected . '>' . $valor['descConceptoPres'] . '</option>';
+                $option_nivel_3 = count($nivel_3) > 0 ? '<option value="' . $nivel_3[0]['CodConceptoPres'] . '">' . $nivel_3[0]['descConceptoPres'] . '</option>' : '';
+
+                $option_plan_contable = '';
+
+                if (isset($presupuesto['CodCuenta'])) {
+                    $plan_contable = (new PlanContable())->getPlanContable(
+                        $this->CodEmpresa,
+                        date('Y'),
+                        $presupuesto['CodCuenta'],
+                        'CodCuenta, DescCuenta, IF(Child = 0, "disabled", "") AS Disabled',
+                        [],
+                        '',
+                        'CodCuenta ASC'
+                    )[0];
+
+                    $option_plan_contable = '<option value="' . $plan_contable['CodCuenta'] . '" ' . $plan_contable['Disabled'] . '>' . $plan_contable['CodCuenta'] . ' - ' . $plan_contable['DescCuenta'] . '</option>';
                 }
 
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $nivel_2 = $this->conceptoPresModel->getConceptoPres($this->CodEmpresa, '', '', [], 'LENGTH(CodConceptoPres) = 4', '');
-
-                $options_nivel_2 = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($nivel_2 as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodConceptoPres'] == substr($presupuesto['CodConceptoPres'], 0, 4)) $selected = 'selected';
-
-                    $options_nivel_2 .= '<option value="' . $valor['CodConceptoPres'] . '" ' . $selected . '>' . $valor['descConceptoPres'] . '</option>';
-                }
-
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $nivel_3 = $this->conceptoPresModel->getConceptoPres($this->CodEmpresa, '', '', [], 'LENGTH(CodConceptoPres) = 7', '');
-
-                $options_nivel_3 = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($nivel_3 as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodConceptoPres'] == substr($presupuesto['CodConceptoPres'], 0, 7)) $selected = 'selected';
-
-                    $options_nivel_3 .= '<option value="' . $valor['CodConceptoPres'] . '" ' . $selected . '>' . $valor['descConceptoPres'] . '</option>';
-                }
-
-                $this->planContableModel = new PlanContable();
-
-                $planes_contable = $this->planContableModel->getPlanContable(
-                    $this->CodEmpresa,
-                    date('Y'),
-                    $presupuesto['CodCuenta'],
-                    'CodCuenta, DescCuenta, IF(Child = 0, "disabled", "") AS Disabled',
-                    '',
-                    'CodCuenta ASC'
-                );
-
-                $options_planes_contable = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($planes_contable as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodCuenta'] == $presupuesto['CodCuenta']) $selected = 'selected';
-
-                    $options_planes_contable .= '<option value="' . $valor['CodCuenta'] . '" ' . $valor['Disabled'] . ' ' . $selected . '>' . $valor['CodCuenta'] . ' - ' . $valor['DescCuenta'] . '</option>';
-                }
-
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/budget/edit.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/budget/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/budget/edit', [
                     'presupuesto' => $presupuesto,
                     'nivel' => $Nivel,
                     'options_niveles' => $options_niveles,
-                    'options_nivel_1' => $options_nivel_1,
-                    'options_nivel_2' => $options_nivel_2,
-                    'options_nivel_3' => $options_nivel_3,
-                    'options_planes_contable' => $options_planes_contable,
+                    'option_nivel_1' => $option_nivel_1,
+                    'option_nivel_2' => $option_nivel_2,
+                    'option_nivel_3' => $option_nivel_3,
+                    'option_plan_contable' => $option_plan_contable,
                     'typeOrder' => 'string',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -356,26 +233,18 @@ class Presupuesto extends BaseController
                 $post['CodConceptoPres'] = $post['CodConceptoPres' . $Tipo];
                 $post['descConceptoPres'] = strtoupper(trim($post['descConceptoPres' . $Tipo]));
 
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $existe_codigo = $this->conceptoPresModel->getConceptoPres($post['CodEmpresa'], $post['CodConceptoPres'], '', [], '', '');
+                $existe_codigo = (new ConceptoPres())->getConceptoPres($post['CodEmpresa'], $post['CodConceptoPres'], '', [], '', '');
 
                 if (count($existe_codigo) == 0) {
-                    $this->conceptoPresModel = new ConceptoPres();
-
-                    $this->conceptoPresModel->agregar($post);
+                    (new ConceptoPres())->agregar($post);
                 }
             } else {
                 $post['DescVoucherPre'] = strtoupper(trim($post['DescVoucherPre']));
 
-                $this->voucherPresModel = new VoucherPres();
-
-                $existe_codigo = $this->voucherPresModel->getVoucherPres($post['CodEmpresa'], $post['CodVoucherPre'], '', [], '', '');
+                $existe_codigo = (new VoucherPres())->getVoucherPres($post['CodEmpresa'], $post['CodVoucherPre'], '', [], '', '');
 
                 if (count($existe_codigo) == 0) {
-                    $this->voucherPresModel = new VoucherPres();
-
-                    $this->voucherPresModel->agregar($post);
+                    (new VoucherPres())->agregar($post);
                 }
             }
 
@@ -414,15 +283,11 @@ class Presupuesto extends BaseController
                 $post['CodConceptoPres'] = $post['CodConceptoPres' . $post['Nivel']];
                 $post['descConceptoPres'] = strtoupper(trim($post['descConceptoPres' . $post['Nivel']]));
 
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $this->conceptoPresModel->actualizar($post['CodEmpresa'], $post['CodConceptoPres'], $post);
+                (new ConceptoPres())->actualizar($post['CodEmpresa'], $post['CodConceptoPres'], $post);
             } else if ($post['Nivel'] == 5) {
                 $post['DescVoucherPre'] = strtoupper(trim($post['DescVoucherPre']));
 
-                $this->voucherPresModel = new VoucherPres();
-
-                $this->voucherPresModel->actualizar($post['CodEmpresa'], $post['CodVoucherPre'], $post);
+                (new VoucherPres())->actualizar($post['CodEmpresa'], $post['CodVoucherPre'], $post);
             }
 
             if ($this->db->transStatus() === FALSE) {
@@ -455,13 +320,9 @@ class Presupuesto extends BaseController
             $this->db->transBegin();
 
             if ($Nivel <= 4) {
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $this->conceptoPresModel->eliminar($this->CodEmpresa, $Codigo);
+                (new ConceptoPres())->eliminar($this->CodEmpresa, $Codigo);
             } else if ($Nivel == 5) {
-                $this->voucherPresModel = new VoucherPres();
-
-                $this->voucherPresModel->where($this->CodEmpresa, $Codigo);
+                (new VoucherPres())->where($this->CodEmpresa, $Codigo);
             }
 
             if ($this->db->transStatus() === FALSE) {
@@ -499,9 +360,7 @@ class Presupuesto extends BaseController
 
             $excel->body(1, 'columnas');
 
-            $this->conceptoPresModel = new ConceptoPres();
-
-            $concepto_pres = $this->conceptoPresModel->getConceptoPres(
+            $concepto_pres = (new ConceptoPres())->getConceptoPres(
                 $this->CodEmpresa,
                 '',
                 '
@@ -511,40 +370,30 @@ class Presupuesto extends BaseController
                         WHEN LENGTH(CodConceptoPres) = 7 THEN 3
                         WHEN LENGTH(CodConceptoPres) = 10 THEN 4
                     END
-                    AS Id,
+                    AS id,
                     CASE
                         WHEN LENGTH(CodConceptoPres) = 2 THEN "Nivel 1"
                         WHEN LENGTH(CodConceptoPres) = 4 THEN "Nivel 2"
                         WHEN LENGTH(CodConceptoPres) = 7 THEN "Nivel 3"
                         WHEN LENGTH(CodConceptoPres) = 10 THEN "Concepto Presupuestal"
                     END
-                    AS Nivel, CodConceptoPres, descConceptoPres, CodCuenta
-                ',
+                    AS nivel, CodConceptoPres AS codigo, descConceptoPres AS descripcion, CodCuenta As cuenta
+                    ',
                 [],
                 '',
                 'CodConceptoPres ASC'
             );
 
-            $this->voucherPresModel = new VoucherPres();
+            $voucher_pres = (new VoucherPres())->getVoucherPres($this->CodEmpresa, '', '5 AS id, "Proyectos" AS nivel, CodVoucherPre AS codigo, DescVoucherPre AS descripcion, "" AS cuenta', [], '', '');
 
-            $voucher_pres = $this->voucherPresModel->getVoucherPres($this->CodEmpresa, '', '', [], '', '');
-
-            $result = array();
-
-            foreach ($concepto_pres as $indice => $valor) {
-                $result[] = array('Id' => $valor['Id'], 'Nivel' => $valor['Nivel'], 'Codigo' => $valor['CodConceptoPres'], 'Descripcion' => $valor['descConceptoPres'], 'Cuenta' => $valor['CodCuenta']);
-            }
-
-            foreach ($voucher_pres as $indice => $valor) {
-                $result[] = array('Id' => 5, 'Nivel' => 'Proyectos', 'Codigo' => $valor['CodVoucherPre'], 'Descripcion' => $valor['DescVoucherPre'], 'Cuenta' => '');
-            }
+            $result = array_merge($concepto_pres, $voucher_pres);
 
             foreach ($result as  $indice => $valor) {
                 $values = array(
-                    $valor['Nivel'],
-                    $valor['Codigo'],
-                    $valor['Descripcion'],
-                    $valor['Cuenta']
+                    $valor['nivel'],
+                    $valor['codigo'],
+                    $valor['descripcion'],
+                    $valor['cuenta']
                 );
 
                 $excel->setValues($values);
@@ -561,9 +410,7 @@ class Presupuesto extends BaseController
     public function pdf()
     {
         try {
-            $this->conceptoPresModel = new ConceptoPres();
-
-            $concepto_pres = $this->conceptoPresModel->getConceptoPres(
+            $concepto_pres = (new ConceptoPres())->getConceptoPres(
                 $this->CodEmpresa,
                 '',
                 '
@@ -573,33 +420,23 @@ class Presupuesto extends BaseController
                         WHEN LENGTH(CodConceptoPres) = 7 THEN 3
                         WHEN LENGTH(CodConceptoPres) = 10 THEN 4
                     END
-                    AS Id,
+                    AS id,
                     CASE
                         WHEN LENGTH(CodConceptoPres) = 2 THEN "Nivel 1"
                         WHEN LENGTH(CodConceptoPres) = 4 THEN "Nivel 2"
                         WHEN LENGTH(CodConceptoPres) = 7 THEN "Nivel 3"
                         WHEN LENGTH(CodConceptoPres) = 10 THEN "Concepto Presupuestal"
                     END
-                    AS Nivel, CodConceptoPres, descConceptoPres, CodCuenta
-                ',
+                    AS nivel, CodConceptoPres AS codigo, descConceptoPres AS descripcion, CodCuenta As cuenta
+                    ',
                 [],
                 '',
                 'CodConceptoPres ASC'
             );
 
-            $this->voucherPresModel = new VoucherPres();
+            $voucher_pres = (new VoucherPres())->getVoucherPres($this->CodEmpresa, '', '5 AS id, "Proyectos" AS nivel, CodVoucherPre AS codigo, DescVoucherPre AS descripcion, "" AS cuenta', [], '', '');
 
-            $voucher_pres = $this->voucherPresModel->getVoucherPres($this->CodEmpresa, '', '', [], '', '');
-
-            $result = array();
-
-            foreach ($concepto_pres as $indice => $valor) {
-                $result[] = array('Id' => $valor['Id'], 'Nivel' => $valor['Nivel'], 'Codigo' => $valor['CodConceptoPres'], 'Descripcion' => $valor['descConceptoPres'], 'Cuenta' => $valor['CodCuenta']);
-            }
-
-            foreach ($voucher_pres as $indice => $valor) {
-                $result[] = array('Id' => 5, 'Nivel' => 'Proyectos', 'Codigo' => $valor['CodVoucherPre'], 'Descripcion' => $valor['DescVoucherPre'], 'Cuenta' => '');
-            }
+            $result = array_merge($concepto_pres, $voucher_pres);
 
             $columnas = array('Tipo', 'Código', 'Descripción', 'CodCuenta');
 
@@ -614,10 +451,10 @@ class Presupuesto extends BaseController
             foreach ($result as $indice => $valor) {
                 $tr .= '
                 <tr>
-                    <td align="left">' . $valor['Nivel'] . '</td>
-                    <td align="left">' . $valor['Codigo'] . '</td>
-                    <td align="left">' . $valor['Descripcion'] . '</td>
-                    <td align="left">' . $valor['Cuenta'] . '</td>
+                    <td align="left">' . $valor['nivel'] . '</td>
+                    <td align="left">' . $valor['codigo'] . '</td>
+                    <td align="left">' . $valor['descripcion'] . '</td>
+                    <td align="left">' . $valor['cuenta'] . '</td>
                 <tr>
             ';
             }
@@ -695,9 +532,7 @@ class Presupuesto extends BaseController
 
                     $datos = array('codigo' => $codigo . $termina);
 
-                    $this->conceptoPresModel = new ConceptoPres();
-
-                    $concepto_pres = $this->conceptoPresModel->getConceptoPres(
+                    $concepto_pres = (new ConceptoPres())->getConceptoPres(
                         $this->CodEmpresa,
                         '',
                         'CAST(MAX(SUBSTRING(CodConceptoPres, ' . ($length - $resta) . ')) AS UNSIGNED) AS CodConceptoPres',
@@ -749,9 +584,7 @@ class Presupuesto extends BaseController
                     echo json_encode($datos);
                 }
             } else if ($tipo == 'options_nivel_2') {
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $nivel_2 = $this->conceptoPresModel->getConceptoPres(
+                $nivel_2 = (new ConceptoPres())->getConceptoPres(
                     $this->CodEmpresa,
                     '',
                     '',
@@ -768,9 +601,7 @@ class Presupuesto extends BaseController
 
                 echo $options_nivel_2;
             } else if ($tipo == 'options_nivel_3') {
-                $this->conceptoPresModel = new ConceptoPres();
-
-                $nivel_3 = $this->conceptoPresModel->getConceptoPres(
+                $nivel_3 = (new ConceptoPres())->getConceptoPres(
                     $this->CodEmpresa,
                     '',
                     '',

@@ -21,7 +21,7 @@ class Cheque extends Model
         'Estado'
     ];
 
-    public function getCheque($CodEmpresa, $CodBanco, $columnas, $join, $where, $orderBy)
+    public function getCheque(string $CodEmpresa, string $CodBanco, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;

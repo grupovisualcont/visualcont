@@ -8,41 +8,57 @@ use App\Models\Anexo;
 class Anexos extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $anexoModel;
-
     public function __construct()
     {
         $this->page = 'Anexos';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->anexoModel = new Anexo();
     }
 
-    public function autocompletado($IdAnexo, $TipoAnexo, $OtroDato)
+    public function autocompletado()
     {
         try {
             $post = $this->request->getPost();
 
-            if($OtroDato == 'null') $OtroDato = '';
+            if (isset($post['CodEFE']) && !empty($post['CodEFE'])) {
+                $option_operacion = array();
+                $option_financiamento = array();
+                $option_inversion = array();
 
-            if (isset($post['search'])) {
-                $search = $post['search'];
+                $search = isset($post['search']) ? ' AND DescAnexo LIKE "%' . $post['search'] . '%"' : '';
 
-                $this->anexoModel = new Anexo();
+                $operaciones = (new Anexo())->getAnexo($this->CodEmpresa, 0, 0, '', 'IdAnexo AS id, DescAnexo AS text', [], 'CodInterno >= 101 AND CodInterno <= 109' . $search, '');
 
-                $anexo = $this->anexoModel->getAnexo($this->CodEmpresa, $IdAnexo, $TipoAnexo, $OtroDato, 'IdAnexo AS value, DescAnexo AS name', [], 'DescAnexo LIKE "%' . $search . '%"', '');
+                $option_operacion[] = array('id' => "0", 'text' => 'Operación', 'disabled' => true, 'class' => 'background-readonly h5 text-black');
+
+                $anexos = array_merge($option_operacion, $operaciones);
+
+                $financiamientos = (new Anexo())->getAnexo($this->CodEmpresa, 0, 0, '', 'IdAnexo AS id, DescAnexo AS text', [], 'CodInterno >= 201 AND CodInterno <= 206' . $search, '');
+
+                $option_financiamento[] = array('id' => "0", 'text' => 'Financiamiento', 'disabled' => true, 'class' => 'background-readonly h5 text-black');
+
+                $inversiones = (new Anexo())->getAnexo($this->CodEmpresa, 0, 0, '', 'IdAnexo AS id, DescAnexo AS text', [], 'CodInterno >= 301 AND CodInterno <= 308' . $search, '');
+
+                $option_inversion[] = array('id' => "0", 'text' => 'Inversión', 'disabled' => true, 'class' => 'background-readonly h5 text-black');
+
+                $anexo = array_merge($option_operacion, $operaciones, $option_financiamento, $financiamientos, $option_inversion, $inversiones);
+            } else if (isset($post['DescAnexo']) && !empty($post['DescAnexo'])) {
+                $anexo = (new Anexo())->getAnexo($this->CodEmpresa, $post['IdAnexo'], $post['TipoAnexo'], $post['OtroDato'], 'IdAnexo AS id, DescAnexo AS text', [], 'DescAnexo = "' . $post['DescAnexo'] . '"', '');
             } else {
-                $this->anexoModel = new Anexo();
+                $Value = $post['Value'] ?? 'IdAnexo';
 
-                $anexo = $this->anexoModel->getAnexo($this->CodEmpresa, $IdAnexo, $TipoAnexo, $OtroDato, 'IdAnexo AS value, DescAnexo AS name', [], '', '');
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+
+                    $anexo = (new Anexo())->getAnexo($this->CodEmpresa, $post['IdAnexo'], $post['TipoAnexo'], $post['OtroDato'], $Value . ' AS id, DescAnexo AS text', [], 'DescAnexo LIKE "%' . $search . '%"', '');
+                } else {
+                    $anexo = (new Anexo())->getAnexo($this->CodEmpresa, $post['IdAnexo'], $post['TipoAnexo'], $post['OtroDato'], $Value . ' AS id, DescAnexo AS text', [], '', '');
+                }
             }
 
             echo json_encode($anexo);

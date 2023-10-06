@@ -8,38 +8,30 @@ use App\Models\TipoActivo;
 class TiposActivos extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $tipoActivoModel;
-
     public function __construct()
     {
         $this->page = 'Tipos de Activos';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->tipoActivoModel = new TipoActivo();
     }
 
     public function index()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->tipoActivoModel = new TipoActivo();
-
-                $tipos_activos_fijos = $this->tipoActivoModel->getTipoActivo($this->CodEmpresa, '', '');
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $tipos_activos_fijos = (new TipoActivo())->getTipoActivo($this->CodEmpresa, '', '', [], '', '');
 
                 return viewApp($this->page, 'app/mantenience/asset_types/index', [
                     'tipos_activos_fijos' => $tipos_activos_fijos,
                     'typeOrder' => 'string'
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -49,10 +41,8 @@ class TiposActivos extends BaseController
     public function create()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->tipoActivoModel = new TipoActivo();
-
-                $tipo_activo = $this->tipoActivoModel->getTipoActivo($this->CodEmpresa, 'MAX(SUBSTRING(codTipoActivo, 3)) AS codigo', '');
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $tipo_activo = (new TipoActivo())->getTipoActivo($this->CodEmpresa, '', 'MAX(SUBSTRING(codTipoActivo, 3)) AS codigo', [], '', '');
 
                 $codigo_maximo = 'TA001';
 
@@ -68,9 +58,7 @@ class TiposActivos extends BaseController
                     }
                 }
 
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/asset_types/create.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/asset_types/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/asset_types/create', [
                     'codigo_maximo' => $codigo_maximo,
@@ -78,7 +66,7 @@ class TiposActivos extends BaseController
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -96,14 +84,10 @@ class TiposActivos extends BaseController
 
             $post['descTipoActivo'] = strtoupper(trim($post['descTipoActivo']));
 
-            $this->tipoActivoModel = new TipoActivo();
-
-            $existe_codigo = $this->tipoActivoModel->getTipoActivo($post['CodEmpresa'], '', 'codTipoActivo = "' . $post['codTipoActivo'] . '"');
+            $existe_codigo = (new TipoActivo())->getTipoActivo($post['CodEmpresa'], '', '', [], 'codTipoActivo = "' . $post['codTipoActivo'] . '"', '');
 
             if (count($existe_codigo) == 0) {
-                $this->tipoActivoModel = new TipoActivo();
-
-                $this->tipoActivoModel->insert($post);
+                (new TipoActivo())->insert($post);
 
                 if ($this->db->transStatus() === FALSE) {
                     $this->db->transRollback();
@@ -133,18 +117,14 @@ class TiposActivos extends BaseController
     public function edit($codTipoActivo)
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->tipoActivoModel = new TipoActivo();
-
-                $tipo_activo_fijo = $this->tipoActivoModel->getTipoActivo($this->CodEmpresa, '', 'codTipoActivo = "' . $codTipoActivo . '"')[0];
-
-                $this->empresa = new Empresa();
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $tipo_activo_fijo = (new TipoActivo())->getTipoActivo($this->CodEmpresa, '', '', [], 'codTipoActivo = "' . $codTipoActivo . '"', '')[0];
 
                 $script = "
                     var tipo_activo_fijo_descTipoActivo = '" . $tipo_activo_fijo['descTipoActivo'] . "';
                 ";
 
-                $script = $this->empresa->generar_script($script, ['app/mantenience/asset_types/edit.js']);
+                $script = (new Empresa())->generar_script($script, ['app/mantenience/asset_types/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/asset_types/edit', [
                     'tipo_activo_fijo' => $tipo_activo_fijo,
@@ -152,7 +132,7 @@ class TiposActivos extends BaseController
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -170,9 +150,7 @@ class TiposActivos extends BaseController
 
             $post['descTipoActivo'] = strtoupper(trim($post['descTipoActivo']));
 
-            $this->tipoActivoModel = new TipoActivo();
-
-            $this->tipoActivoModel->actualizar($post['CodEmpresa'], $post['codTipoActivo'], $post);
+            (new TipoActivo())->actualizar($post['CodEmpresa'], $post['codTipoActivo'], $post);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -203,9 +181,7 @@ class TiposActivos extends BaseController
 
             $this->db->transBegin();
 
-            $this->tipoActivoModel = new TipoActivo();
-
-            $this->tipoActivoModel->eliminar($this->CodEmpresa, $codTipoActivo);
+            (new TipoActivo())->eliminar($this->CodEmpresa, $codTipoActivo);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -242,9 +218,7 @@ class TiposActivos extends BaseController
 
             $excel->body(1, 'columnas');
 
-            $this->tipoActivoModel = new TipoActivo();
-
-            $result = $this->tipoActivoModel->getTipoActivo($this->CodEmpresa, '', '');
+            $result = (new TipoActivo())->getTipoActivo($this->CodEmpresa, '', '', [], '', '');
 
             foreach ($result as  $indice => $valor) {
                 $values = array(
@@ -266,9 +240,7 @@ class TiposActivos extends BaseController
     public function pdf()
     {
         try {
-            $this->tipoActivoModel = new TipoActivo();
-
-            $result = $this->tipoActivoModel->getTipoActivo($this->CodEmpresa, '', '');
+            $result = (new TipoActivo())->getTipoActivo($this->CodEmpresa, '', '', [], '', '');
 
             $columnas = array('Código', 'Descripción');
 
@@ -307,9 +279,7 @@ class TiposActivos extends BaseController
             if ($tipo == 'nuevo') {
                 $descTipoActivo = strtoupper(trim(strval($this->request->getPost('descTipoActivo'))));
 
-                $this->tipoActivoModel = new TipoActivo();
-
-                $tipos_activos_fijos = $this->tipoActivoModel->getTipoActivo($this->CodEmpresa, '', 'UPPER(descTipoActivo) = "' . $descTipoActivo . '"');
+                $tipos_activos_fijos = (new TipoActivo())->getTipoActivo($this->CodEmpresa, '', '', [], 'UPPER(descTipoActivo) = "' . $descTipoActivo . '"', '');
 
                 $existe = array('existe' => false);
 
@@ -322,9 +292,7 @@ class TiposActivos extends BaseController
                 $descTipoActivo = strtoupper(trim(strval($this->request->getPost('descTipoActivo'))));
                 $NotdescTipoActivo = strtoupper(trim(strval($this->request->getPost('NotdescTipoActivo'))));
 
-                $this->tipoActivoModel = new TipoActivo();
-
-                $tipos_activos_fijos = $this->tipoActivoModel->getTipoActivo($this->CodEmpresa, '', 'UPPER(descTipoActivo) != "' . $NotdescTipoActivo . '" AND UPPER(descTipoActivo) = "' . $descTipoActivo . '"');
+                $tipos_activos_fijos = (new TipoActivo())->getTipoActivo($this->CodEmpresa, '', '', [], 'UPPER(descTipoActivo) != "' . $NotdescTipoActivo . '" AND UPPER(descTipoActivo) = "' . $descTipoActivo . '"', '');
 
                 $existe = array('existe' => false);
 
@@ -334,6 +302,25 @@ class TiposActivos extends BaseController
 
                 echo json_encode($existe);
             }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function autocompletado()
+    {
+        try {
+            $post = $this->request->getPost();
+
+            if (isset($post['search'])) {
+                $search = $post['search'];
+
+                $tipo_activo = (new TipoActivo())->getTipoActivo($this->CodEmpresa, '', 'codTipoActivo AS id, descTipoActivo AS text', [], 'descTipoActivo LIKE "%' . $search . '%"', '');
+            } else {
+                $tipo_activo = (new TipoActivo())->getTipoActivo($this->CodEmpresa, '', 'codTipoActivo AS id, descTipoActivo AS text', [], '', '');
+            }
+
+            echo json_encode($tipo_activo);
         } catch (\Throwable $th) {
             throw $th;
         }

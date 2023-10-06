@@ -2,6 +2,9 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
+autocompletado($('#Tipo'), { IdAnexo: 0, TipoAnexo: 106, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado($('#Estado'), { IdAnexo: 0, TipoAnexo: 1, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+
 function verificarFormulario() {
     var desccondpago = $('#desccondpago').val();
     var Tipo = $('#Tipo option:selected').val();

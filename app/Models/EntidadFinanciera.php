@@ -12,7 +12,7 @@ class EntidadFinanciera extends Model
 
     protected $allowedFields = [];
 
-    public function getEntidadFinanciera($columnas, $join, $where, $orderBy)
+    public function getEntidadFinanciera(string $CodEntidad, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;
@@ -24,6 +24,8 @@ class EntidadFinanciera extends Model
                     $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
                 }
             }
+
+            if (!empty($CodEntidad)) $result = $result->where('CodEntidad', $CodEntidad);
 
             if (!empty($where)) $result = $result->where($where);
 

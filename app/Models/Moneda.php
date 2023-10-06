@@ -11,16 +11,26 @@ class Moneda extends Model
     protected $returnType       = 'object';
     protected $allowedFields    = [];
 
-    public function getMoneda($columnas, $where)
+    public function getMoneda(string $CodMoneda, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;
 
             if (!empty($columnas)) $result = $this->select($columnas);
 
+            if (is_array($join) && count($join) > 0) {
+                foreach ($join as $indice => $valor) {
+                    $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
+                }
+            }
+
+            if (!empty($CodMoneda)) $result = $result->where('CodMoneda', $CodMoneda);
+
             if (!empty($where)) $result->where($where);
 
-            $result = $result->findAll();
+            if (!empty($orderBy)) $result = $result->orderBy($orderBy);
+
+            $result = $result->asArray()->findAll();
 
             return $result;
         } catch (\Throwable $th) {

@@ -18,51 +18,23 @@ use App\Models\Ubigeo;
 class SocioNegocios extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $socioNegocioModel;
-    protected $tipoPersonaModel;
-    protected $tipoDocumentoIdentidadModel;
-    protected $cajaBancoModel;
-    protected $ubigeoModel;
-    protected $anexoModel;
-    protected $tipoSocioNegocioModel;
-    protected $socioNegocioXTipoModel;
-    protected $ts27VinculoModel;
-    protected $socioNegocioBancoModel;
-    protected $predeterminadoModel;
-
     public function __construct()
     {
         $this->page = 'Socio de Negocio';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->socioNegocioModel = new SocioNegocio();
-        $this->tipoPersonaModel = new TipoPersona();
-        $this->tipoDocumentoIdentidadModel = new TipoDocumentoIdentidad();
-        $this->cajaBancoModel = new Banco();
-        $this->ubigeoModel = new Ubigeo();
-        $this->anexoModel = new Anexo();
-        $this->tipoSocioNegocioModel = new TipoSocioNegocio();
-        $this->socioNegocioXTipoModel = new SocioNegocioXTipo();
-        $this->ts27VinculoModel = new Ts27Vinculo();
-        $this->socioNegocioBancoModel = new SocioNegocioBanco();
-        $this->predeterminadoModel = new Predeterminado();
     }
 
     public function index()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->socioNegocioModel = new SocioNegocio();
-
-                $socio_negocio = $this->socioNegocioModel->getSocioNegocio(
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $socio_negocio = (new SocioNegocio())->getSocioNegocio(
                     $this->CodEmpresa,
                     0,
                     '
@@ -84,7 +56,7 @@ class SocioNegocios extends BaseController
                     'typeOrder' => 'num'
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -94,76 +66,34 @@ class SocioNegocios extends BaseController
     public function create()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->predeterminadoModel = new Predeterminado();
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $predeterminados = (new Predeterminado())->getPredeterminado('CodTipPer_sn, CodTipoDoc_sn, IdCondicion_sn, CodUbigeo_sn, IdEstadoSN');
 
-                $predeterminados = $this->predeterminadoModel->getPredeterminado('CodTipPer_sn, CodTipoDoc_sn, IdCondicion_sn, CodUbigeo_sn, IdEstadoSN');
+                $tipo_persona = (new TipoPersona())->getTipoPersona($predeterminados->CodTipPer_sn, '', [], '', '')[0];
 
-                $this->tipoPersonaModel = new TipoPersona();
+                $option_tipo_persona = '<option value="' . $tipo_persona['CodTipPer'] . '">' . $tipo_persona['DescPer'] . '</option>';
 
-                $tipos_persona = $this->tipoPersonaModel->getTipoPersona($predeterminados->CodTipPer_sn, '', [], '', '')[0];
+                $tipo_documento_identidad = (new TipoDocumentoIdentidad())->getTipoDocumentoIdentidad($predeterminados->CodTipoDoc_sn, '', [], '', '')[0];
 
-                $option_tipos_persona = '<option value="' . $tipos_persona['CodTipPer'] . '">' . $tipos_persona['DescPer'] . '</option>';
+                $option_tipo_documento_identidad = '<option data-tipo-dato="' . $tipo_documento_identidad['TipoDato'] . '" value="' . $tipo_documento_identidad['CodTipoDoc'] . '">' . $tipo_documento_identidad['DesDocumento'] . '</option>';
 
-                $this->tipoDocumentoIdentidadModel = new TipoDocumentoIdentidad();
+                $condicion = (new Anexo())->getAnexo($this->CodEmpresa, 0, 2, '', '', [], '', '')[0];
 
-                $tipos_documento_identidad = $this->tipoDocumentoIdentidadModel->getTipoDocumentoIdentidad($predeterminados->CodTipoDoc_sn, '', [], '', '')[0];
+                $option_condicion = '<option value="' . $condicion['IdAnexo'] . '">' . $condicion['DescAnexo'] . '</option>';
 
-                $option_tipos_documento_identidad = '<option data-tipo-dato="' . $tipos_documento_identidad['TipoDato'] . '" value="' . $tipos_documento_identidad['CodTipoDoc'] . '">' . $tipos_documento_identidad['DesDocumento'] . '</option>';
+                $pais = (new Ubigeo())->getUbigeo('', '', [], 'LENGTH(codubigeo) = 2', '')[0];
 
-                $this->anexoModel = new Anexo();
+                $option_pais = '<option value="' . $pais['codubigeo'] . '">' . $pais['descubigeo'] . '</option>';
 
-                $condiciones = $this->anexoModel->getAnexo($this->CodEmpresa, 0, 2, '', '', [], '', '')[0];
+                $ubigeo = (new Ubigeo())->getUbigeoQuery($this->db, $predeterminados->CodUbigeo_sn, '')[0];
 
-                $option_condiciones = '<option value="' . $condiciones['IdAnexo'] . '">' . $condiciones['DescAnexo'] . '</option>';
+                $option_ubigeo = '<option value="' . $ubigeo->id . '">' . htmlspecialchars($ubigeo->text, ENT_QUOTES) . '</option>';
 
-                $this->ubigeoModel = new Ubigeo();
+                $estado = (new Anexo())->getAnexo($this->CodEmpresa, 11, 1, '', '', [], '', '')[0];
 
-                $paises = $this->ubigeoModel->getPaises();
+                $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $options_paises = '';
-
-                foreach ($paises as $indice => $valor) {
-                    $selected = '';
-
-                    if (strlen($valor['codubigeo']) == 2) $selected = 'selected';
-
-                    $options_paises .= '<option value="' . $valor['codubigeo'] . '" ' . $selected . '>' . $valor['descubigeo'] . '</option>';
-                }
-
-                $ubigeos = $this->db
-                    ->query('SELECT dist.codubigeo, (
-                                SELECT (
-                                    SELECT CONCAT(dept.descubigeo, " \\\ ", prov.descubigeo, " \\\ ", dist.descubigeo) 
-                                    FROM ubigeo dept WHERE dept.codubigeo = SUBSTRING(prov.codubigeo, 1, 4)
-                                )
-                                FROM ubigeo prov
-                                WHERE prov.codubigeo = SUBSTRING(dist.codubigeo, 1, 6)
-                            )
-                            AS descubigeo
-                            FROM ubigeo dist
-                            WHERE LENGTH(dist.codubigeo) = 9 AND LENGTH(dist.codubigeo) != 2 AND dist.codubigeo NOT LIKE "9%"
-                        ')->getResult();
-
-                $options_ubigeos = '';
-
-                foreach ($ubigeos as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor->codubigeo == $predeterminados->CodUbigeo_sn) $selected = 'selected';
-
-                    $options_ubigeos .= '<option value="' . $valor->codubigeo . '" ' . $selected . '>' . htmlspecialchars($valor->descubigeo, ENT_QUOTES) . '</option>';
-                }
-
-                $this->anexoModel = new Anexo();
-
-                $estados = $this->anexoModel->getAnexo($this->CodEmpresa, 11, 1, '', '', [], '', '')[0];
-
-                $option_estados = '<option value="' . $estados['IdAnexo'] . '">' . $estados['DescAnexo'] . '</option>';
-
-                $this->tipoSocioNegocioModel = new TipoSocioNegocio();
-
-                $tipos_socio_negocio = $this->tipoSocioNegocioModel->getTipoSocioNegocio();
+                $tipos_socio_negocio = (new TipoSocioNegocio())->getTipoSocioNegocio();
 
                 $checkbox_tipos_socio_negocio = '';
 
@@ -177,9 +107,7 @@ class SocioNegocios extends BaseController
                     ';
                 }
 
-                $this->tipoDocumentoIdentidadModel = new TipoDocumentoIdentidad();
-
-                $datos_ruc = $this->tipoDocumentoIdentidadModel->getTipoDocumentoIdentidadByCodTipoDoc(6, 'CodTipoDoc, N_tip');
+                $datos_ruc = (new TipoDocumentoIdentidad())->getTipoDocumentoIdentidad(6, 'CodTipoDoc, N_tip', [], '', '');
 
                 if (count($datos_ruc) == 0) {
                     $datos_ruc = ['CodTipPer' => '02', 'CodTipoDoc' => '6', 'N_tip' => 'F'];
@@ -187,17 +115,13 @@ class SocioNegocios extends BaseController
                     $datos_ruc = ['CodTipPer' => '02', 'CodTipoDoc' => $datos_ruc[0]['CodTipoDoc'], 'N_tip' => $datos_ruc[0]['N_tip']];
                 }
 
-                $this->tipoDocumentoIdentidadModel = new TipoDocumentoIdentidad();
-
-                $datos_extranjero = $this->tipoDocumentoIdentidadModel->getTipoDocumentoIdentidadByCodTipoDoc('-', 'CodTipoDoc, N_tip');
+                $datos_extranjero = (new TipoDocumentoIdentidad())->getTipoDocumentoIdentidad('-', 'CodTipoDoc, N_tip', [], '', '');
 
                 if (count($datos_extranjero) == 0) {
                     $datos_extranjero = ['CodTipPer' => '03', 'CodTipoDoc' => '-'];
                 } else {
                     $datos_extranjero = ['CodTipPer' => '03', 'CodTipoDoc' => $datos_extranjero[0]['CodTipoDoc']];
                 }
-
-                $this->empresa = new Empresa();
 
                 $script = "
                     var datos_ruc_CodTipPer = '" . $datos_ruc['CodTipPer'] . "';
@@ -207,21 +131,21 @@ class SocioNegocios extends BaseController
                     var datos_extranjero_CodTipoDoc = '" . $datos_extranjero['CodTipoDoc'] . "';
                 ";
 
-                $script = $this->empresa->generar_script($script, ['app/mantenience/business_partner/create.js']);
+                $script = (new Empresa())->generar_script($script, ['app/mantenience/business_partner/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/business_partner/create', [
-                    'option_tipos_persona' => $option_tipos_persona,
-                    'option_tipos_documento_identidad' => $option_tipos_documento_identidad,
-                    'option_condiciones' => $option_condiciones,
-                    'options_paises' => $options_paises,
-                    'options_ubigeos' => $options_ubigeos,
-                    'option_estados' => $option_estados,
+                    'option_tipo_persona' => $option_tipo_persona,
+                    'option_tipo_documento_identidad' => $option_tipo_documento_identidad,
+                    'option_condicion' => $option_condicion,
+                    'option_pais' => $option_pais,
+                    'option_ubigeo' => $option_ubigeo,
+                    'option_estado' => $option_estado,
                     'checkbox_tipos_socio_negocio' => $checkbox_tipos_socio_negocio,
                     'typeOrder' => 'num',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -231,143 +155,61 @@ class SocioNegocios extends BaseController
     public function edit($IdSocioN)
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->socioNegocioModel = new SocioNegocio();
-
-                $socionegocio = $this->socioNegocioModel->getSocioNegocio(
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $socio_negocio = (new SocioNegocio())->getSocioNegocio(
                     $this->CodEmpresa,
                     $IdSocioN,
+                    'socionegocio.*, a1.DescAnexo AS estado, a2.DescAnexo AS condicion',
                     [
                         array('tabla' => 'anexos a1', 'on' => 'a1.IdAnexo = socionegocio.Idestado AND a1.CodEmpresa = socionegocio.CodEmpresa', 'tipo' => 'left'),
                         array('tabla' => 'anexos a2', 'on' => 'a2.IdAnexo = socionegocio.Idestado AND a2.CodEmpresa = socionegocio.CodEmpresa', 'tipo' => 'left')
                     ],
-                    'socionegocio.*, a1.DescAnexo AS estado, a2.DescAnexo AS condicion',
                     '',
                     'socionegocio.IdSocioN ASC'
                 )[0];
 
-                $this->socioNegocioXTipoModel = new SocioNegocioXTipo();
+                $socio_negocio_tipos = (new SocioNegocioXTipo())->getSocioNegocioXTipo($IdSocioN);
 
-                $socionegociotipos = $this->socioNegocioXTipoModel->getSocioNegocioXTipo($IdSocioN);
+                $socio_negocio_tipo_array = array();
 
-                $socionegociotipo_array = array();
-
-                foreach ($socionegociotipos as $socionegociotipo) {
-                    $socionegociotipo_array[] = $socionegociotipo['CodTipoSN'];
+                foreach ($socio_negocio_tipos as $indice => $value) {
+                    $socio_negocio_tipo_array[] = $value['CodTipoSN'];
                 }
 
-                $this->socioNegocioBancoModel = new SocioNegocioBanco();
+                $socio_negocio_banco = (new SocioNegocioBanco())->getSocioNegocioBanco($IdSocioN);
 
-                $socionegociobanco = $this->socioNegocioBancoModel->getSocioNegocioBanco($IdSocioN);
+                $tipo_persona = (new TipoPersona())->getTipoPersona($socio_negocio['CodTipPer'], '', [], '', '')[0];
 
-                $this->tipoPersonaModel = new TipoPersona();
+                $option_tipo_persona = '<option value="' . $tipo_persona['CodTipPer'] . '">' . $tipo_persona['DescPer'] . '</option>';
 
-                $tipos_persona = $this->tipoPersonaModel->getTipoPersona();
+                $tipo_documento_identidad = (new TipoDocumentoIdentidad())->getTipoDocumentoIdentidad($socio_negocio['CodTipoDoc'], '', [], '', '')[0];
 
-                $options_tipos_persona = '<option value="" disabled selected>Seleccione</option>';
+                $option_tipo_documento_identidad = '<option data-tipo-dato="' . $tipo_documento_identidad['TipoDato'] . '" value="' . $tipo_documento_identidad['CodTipoDoc'] . '">' . $tipo_documento_identidad['DesDocumento'] . '</option>';
 
-                foreach ($tipos_persona as $indice => $valor) {
-                    $selected = '';
+                $condicion = (new Anexo())->getAnexo($this->CodEmpresa, $socio_negocio['IdCondicion'], 2, '', '', [], '', '')[0];
 
-                    if ($valor['CodTipPer'] == $socionegocio['CodTipPer']) $selected = 'selected';
+                $option_condicion = '<option value="' . $condicion['IdAnexo'] . '">' . $condicion['DescAnexo'] . '</option>';
 
-                    $options_tipos_persona .= '<option value="' . $valor['CodTipPer'] . '" ' . $selected . '>' . $valor['DescPer'] . '</option>';
-                }
+                $pais = (new Ubigeo())->getUbigeo('', '', [], 'codubigeo = ' . $socio_negocio['codubigeo'] . ' OR codubigeo = ' . substr($socio_negocio['codubigeo'], 0, 2), '')[0];
 
-                $this->tipoDocumentoIdentidadModel = new TipoDocumentoIdentidad();
+                $option_pais = '<option value="' . $pais['codubigeo'] . '">' . $pais['descubigeo'] . '</option>';
 
-                $tipos_documento_identidad = $this->tipoDocumentoIdentidadModel->getTipoDocumentoIdentidad();
+                $ubigeo = (new Ubigeo())->getUbigeoQuery($this->db, $socio_negocio['codubigeo'], '')[0];
 
-                $options_tipos_documento_identidad = '<option value="" disabled selected>Seleccione</option>';
+                $option_ubigeo = '<option value="' . $ubigeo->id . '">' . htmlspecialchars($ubigeo->text, ENT_QUOTES) . '</option>';
 
-                foreach ($tipos_documento_identidad as $indice => $valor) {
-                    $selected = '';
+                $estado = (new Anexo())->getAnexo($this->CodEmpresa, $socio_negocio['Idestado'], 1, '', '', [], '', '')[0];
 
-                    if ($valor['CodTipoDoc'] == $socionegocio['CodTipoDoc']) $selected = 'selected';
+                $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                    $options_tipos_documento_identidad .= '<option data-tipo-dato="' . $valor['TipoDato'] . '" value="' . $valor['CodTipoDoc'] . '" ' . $selected . '>' . $valor['DesDocumento'] . '</option>';
-                }
-
-                $this->anexoModel = new Anexo();
-
-                $condiciones = $this->anexoModel->getAnexo($this->CodEmpresa, 0, 2, '', '', '', '');
-
-                $options_condiciones = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($condiciones as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexo'] == $socionegocio['IdCondicion']) $selected = 'selected';
-
-                    $options_condiciones .= '<option data-descripcion="' . $valor['DescAnexo'] . '" value="' . $valor['IdAnexo'] . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->ubigeoModel = new Ubigeo();
-
-                $paises = $this->ubigeoModel->getPaises();
-
-                $options_paises = '';
-
-                foreach ($paises as $indice => $valor) {
-                    $selected = '';
-
-                    if (substr($socionegocio['codubigeo'], 0, 2) == $valor['codubigeo']) {
-                        $selected = 'selected';
-                    } else if ($valor['codubigeo'] == $socionegocio['codubigeo']) {
-                        $selected = 'selected';
-                    }
-
-                    $options_paises .= '<option value="' . $valor['codubigeo'] . '" ' . $selected . '>' . $valor['descubigeo'] . '</option>';
-                }
-
-                $ubigeos = $this->db
-                    ->query('SELECT dist.codubigeo, (
-                                SELECT (
-                                    SELECT CONCAT(dept.descubigeo, " \\\ ", prov.descubigeo, " \\\ ", dist.descubigeo) 
-                                    FROM ubigeo dept WHERE dept.codubigeo = SUBSTRING(prov.codubigeo, 1, 4)
-                                )
-                                FROM ubigeo prov
-                                WHERE prov.codubigeo = SUBSTRING(dist.codubigeo, 1, 6)
-                            )
-                            AS descubigeo
-                            FROM ubigeo dist
-                            WHERE LENGTH(dist.codubigeo) = 9 AND LENGTH(dist.codubigeo) != 2 AND dist.codubigeo NOT LIKE "9%"
-                        ')->getResult();
-
-                $options_ubigeos = '';
-
-                foreach ($ubigeos as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor->codubigeo == $socionegocio['codubigeo']) $selected = 'selected';
-
-                    $options_ubigeos .= '<option value="' . $valor->codubigeo . '" ' . $selected . '>' . htmlspecialchars($valor->descubigeo, ENT_QUOTES) . '</option>';
-                }
-
-                $this->anexoModel = new Anexo();
-
-                $estados = $this->anexoModel->getAnexo($this->CodEmpresa, 0, 1, '', '', '', '');
-
-                $options_estados = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($estados as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexo'] == $socionegocio['Idestado']) $selected = 'selected';
-
-                    $options_estados .= '<option data-descripcion="' . $valor['DescAnexo'] . '" value="' . $valor['IdAnexo'] . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->tipoSocioNegocioModel = new TipoSocioNegocio();
-
-                $tipos_socio_negocio = $this->tipoSocioNegocioModel->getTipoSocioNegocio();
+                $tipos_socio_negocio = (new TipoSocioNegocio())->getTipoSocioNegocio();
 
                 $checkbox_tipos_socio_negocio = '';
 
                 foreach ($tipos_socio_negocio as $indice => $valor) {
                     $checked = '';
 
-                    if (in_array($valor->CodTipoSN, $socionegociotipo_array)) $checked = 'checked';
+                    if (in_array($valor->CodTipoSN, $socio_negocio_tipo_array)) $checked = 'checked';
 
                     $checkbox_tipos_socio_negocio .= '
                         <div class="form-check">
@@ -378,71 +220,35 @@ class SocioNegocios extends BaseController
                     ';
                 }
 
-                $this->ts27VinculoModel = new Ts27Vinculo();
+                $vinculo = (new Ts27Vinculo())->getTs27Vinculo($socio_negocio['CodVinculo'] ?? '', '', [], '', '')[0];
 
-                $vinculos = $this->ts27VinculoModel->getTs27Vinculo();
+                $option_vinculo = $socio_negocio['CodVinculo'] ? '<option value="' . $vinculo['CodVinculo'] . '">' . $vinculo['DescVinculo'] . '</option>' : '';
 
-                $options_vinculos = '';
+                $sexo = (new Anexo())->getAnexo($this->CodEmpresa, $socio_negocio['IdSexo'] ?? 0, 3, '', '', [], '', '')[0];
 
-                foreach ($vinculos as $indice => $valor) {
-                    $selected = '';
+                $option_sexo = $socio_negocio['IdSexo'] ? '<option value="' . $sexo['IdAnexo'] . '">' . $sexo['DescAnexo'] . '</option>' : '';
 
-                    if ($valor['CodVinculo'] == $socionegocio['CodVinculo']) $selected = 'selected';
+                $tipo_documento_identidad_banco = (new TipoDocumentoIdentidad())->getTipoDocumentoIdentidad($socionegocio['CodTipoDoc_Tele'] ?? '', '', [], '', '')[0];
 
-                    $options_vinculos .= '<option value="' . $valor['CodVinculo'] . '" ' . $selected . '>' . $valor['DescVinculo'] . '</option>';
-                }
+                $option_tipo_documento_identidad_banco = $socio_negocio['CodTipoDoc_Tele'] ? '<option value="' . $tipo_documento_identidad_banco['CodTipoDoc'] . '">' . $tipo_documento_identidad_banco['DesDocumento'] . '</option>' : '';
 
-                $this->anexoModel = new Anexo();
+                $bancos = (new Banco())->getBanco($this->CodEmpresa, '', '', '', [], '', '');
 
-                $sexos = $this->anexoModel->getAnexo($this->CodEmpresa, 0, 3, '', '', '', '');
-
-                $options_sexos = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($sexos as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['IdAnexo'] == $socionegocio['IdSexo']) $selected = 'selected';
-
-                    $options_sexos .= '<option value="' . $valor['IdAnexo'] . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->tipoDocumentoIdentidadModel = new TipoDocumentoIdentidad();
-
-                $tipos_documento_identidad_bancos = $this->tipoDocumentoIdentidadModel->getTipoDocumentoIdentidadBanco();
-
-                $options_tipos_documento_identidad_bancos = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($tipos_documento_identidad_bancos as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodTipoDoc'] == $socionegocio['CodTipoDoc_Tele']) $selected = 'selected';
-
-                    $options_tipos_documento_identidad_bancos .= '<option value="' . $valor['CodTipoDoc'] . '" ' . $selected . '>' . $valor['DesDocumento'] . '</option>';
-                }
-
-                $this->cajaBancoModel = new Banco();
-
-                $bancos = $this->cajaBancoModel->getBanco($this->CodEmpresa, '', '', [], 'Codbanco, abreviatura', '', '');
-
-                $options_banco = '<option value="" disabled selected>Seleccione</option>';
+                $options_banco = '';
 
                 foreach ($bancos as $indice => $valor) {
-                    $options_banco .= '<option value="' . $valor['Codbanco'] . '">' . $valor['Codbanco'] . ' - ' . $valor['abreviatura'] . '</option>';
+                    $options_banco .= '<option value="' . $valor['Codbanco'] . '">' . $valor['abreviatura'] . '</option>';
                 }
 
-                $this->anexoModel = new Anexo();
+                $tipo_cuentas = (new Anexo())->getAnexo($this->CodEmpresa, 0, 54, '02', '', [], '', '');
 
-                $tipos_cuenta = $this->anexoModel->getAnexo($this->CodEmpresa, 0, 54, '02', '', '', 'CodInterno ASC');
+                $options_tipo_cuenta = '';
 
-                $options_tipo_cuenta = '<option value="" disabled selected>Seleccione</option>';
-
-                foreach ($tipos_cuenta as $indice => $valor) {
-                    $options_tipo_cuenta .= '<option value="' . $valor['IdAnexo'] . '">' . $valor['IdAnexo'] . ' - ' . $valor['DescAnexo'] . '</option>';
+                foreach ($tipo_cuentas as $indice => $valor) {
+                    $options_tipo_cuenta .= '<option value="' . $valor['IdAnexo'] . '">' . $valor['DescAnexo'] . '</option>';
                 }
 
-                $this->tipoDocumentoIdentidadModel = new TipoDocumentoIdentidad();
-
-                $datos_ruc = $this->tipoDocumentoIdentidadModel->getTipoDocumentoIdentidadByCodTipoDoc(6, 'CodTipoDoc, N_tip');
+                $datos_ruc = (new TipoDocumentoIdentidad())->getTipoDocumentoIdentidad(6, 'CodTipoDoc, N_tip', [], '', '');
 
                 if (count($datos_ruc) == 0) {
                     $datos_ruc = ['CodTipPer' => '02', 'CodTipoDoc' => '6', 'N_tip' => 'F'];
@@ -450,9 +256,7 @@ class SocioNegocios extends BaseController
                     $datos_ruc = ['CodTipPer' => '02', 'CodTipoDoc' => $datos_ruc[0]['CodTipoDoc'], 'N_tip' => $datos_ruc[0]['N_tip']];
                 }
 
-                $this->tipoDocumentoIdentidadModel = new TipoDocumentoIdentidad();
-
-                $datos_extranjero = $this->tipoDocumentoIdentidadModel->getTipoDocumentoIdentidadByCodTipoDoc('-', 'CodTipoDoc, N_tip');
+                $datos_extranjero = (new TipoDocumentoIdentidad())->getTipoDocumentoIdentidad('-', 'CodTipoDoc, N_tip', [], '', '');
 
                 if (count($datos_extranjero) == 0) {
                     $datos_extranjero = ['CodTipPer' => '03', 'CodTipoDoc' => '-'];
@@ -460,45 +264,41 @@ class SocioNegocios extends BaseController
                     $datos_extranjero = ['CodTipPer' => '03', 'CodTipoDoc' => $datos_extranjero[0]['CodTipoDoc']];
                 }
 
-                $this->empresa = new Empresa();
-
                 $script = "
-                    var id_banco = " . (count($socionegociobanco) + 1) . ";
+                    var id_banco = " . (count($socio_negocio_banco) + 1) . ";
                     var datos_ruc_CodTipPer = '" . $datos_ruc['CodTipPer'] . "';
                     var datos_ruc_CodTipoDoc = '" . $datos_ruc['CodTipoDoc'] . "';
                     var datos_ruc_N_tip = '" . $datos_ruc['N_tip'] . "';
                     var datos_extranjero_CodTipPer = '" . $datos_extranjero['CodTipPer'] . "';
                     var datos_extranjero_CodTipoDoc = '" . $datos_extranjero['CodTipoDoc'] . "';
-                    var options_banco = '" . $options_banco . "';
-                    var options_tipo_cuenta = '" . $options_tipo_cuenta . "';
-                    var socionegocio_ruc = '" . $socionegocio['ruc'] . "';
-                    var socionegocio_docidentidad = '" . $socionegocio['docidentidad'] . "';
-                    var socionegocio_razonsocial = '" . $socionegocio['razonsocial'] . "';
+                    var socio_negocio_ruc = '" . $socio_negocio['ruc'] . "';
+                    var socio_negocio_docidentidad = '" . $socio_negocio['docidentidad'] . "';
+                    var socio_negocio_razonsocial = '" . str_replace("'", "\'", $socio_negocio['razonsocial']) . "';
                 ";
 
-                $script = $this->empresa->generar_script($script, ['app/mantenience/business_partner/edit.js']);
+                $script = (new Empresa())->generar_script($script, ['app/mantenience/business_partner/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/business_partner/edit', [
                     'codigo_socio_negocio' => $IdSocioN,
-                    'socionegocio' => $socionegocio,
-                    'socionegociobanco' => $socionegociobanco,
-                    'options_tipos_persona' => $options_tipos_persona,
-                    'options_tipos_documento_identidad' => $options_tipos_documento_identidad,
-                    'options_condiciones' => $options_condiciones,
-                    'options_paises' => $options_paises,
-                    'options_ubigeos' => $options_ubigeos,
-                    'options_estados' => $options_estados,
+                    'socio_negocio' => $socio_negocio,
+                    'socio_negocio_banco' => $socio_negocio_banco,
+                    'option_tipo_persona' => $option_tipo_persona,
+                    'option_tipo_documento_identidad' => $option_tipo_documento_identidad,
+                    'option_condicion' => $option_condicion,
+                    'option_pais' => $option_pais,
+                    'option_ubigeo' => $option_ubigeo,
+                    'option_estado' => $option_estado,
                     'checkbox_tipos_socio_negocio' => $checkbox_tipos_socio_negocio,
-                    'options_vinculos' => $options_vinculos,
-                    'options_sexos' => $options_sexos,
-                    'options_tipos_documento_identidad_bancos' => $options_tipos_documento_identidad_bancos,
+                    'option_vinculo' => $option_vinculo,
+                    'option_sexo' => $option_sexo,
+                    'option_tipo_documento_identidad_banco' => $option_tipo_documento_identidad_banco,
                     'options_banco' => $options_banco,
                     'options_tipo_cuenta' => $options_tipo_cuenta,
                     'typeOrder' => 'num',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -511,13 +311,9 @@ class SocioNegocios extends BaseController
             $post = $this->request->getPost();
 
             if (!empty($post['ruc'])) {
-                $this->socioNegocioModel = new SocioNegocio();
-
-                $existe_socio_negocio = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], '', 'ruc = "' . $post['ruc'] . '" OR razonsocial = "' . $post['razonsocial'] . '"', '');
+                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'ruc = "' . $post['ruc'] . '" OR razonsocial = "' . $post['razonsocial'] . '"', '');
             } else if (!empty($post['docidentidad'])) {
-                $this->socioNegocioModel = new SocioNegocio();
-
-                $existe_socio_negocio = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], '', 'docidentidad = "' . $post['docidentidad'] . '" OR razonsocial = "' . $post['razonsocial'] . '"', '');
+                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'docidentidad = "' . $post['docidentidad'] . '" OR razonsocial = "' . $post['razonsocial'] . '"', '');
             } else if ($post['CodTipoDoc'] == '-') {
                 $existe_socio_negocio = array();
             }
@@ -532,20 +328,16 @@ class SocioNegocios extends BaseController
                 $post['ApeMat'] = ucwords(strtolower(trim($post['ApeMat'])));
                 $post['Nom1'] = ucwords(strtolower(trim($post['Nom1'])));
                 $post['Nom2'] = ucwords(strtolower(trim($post['Nom2'])));
-                $post['razonsocial'] = strtoupper(trim($post['razonsocial']));
+                $post['razonsocial'] = str_replace("'", "'''", strtoupper(trim($post['razonsocial'])));
 
                 $this->db->disableForeignKeyChecks();
 
                 $this->db->transBegin();
 
-                $this->socioNegocioModel = new SocioNegocio();
-
-                $IdSocioN = $this->socioNegocioModel->agregar($post);
+                $IdSocioN = (new SocioNegocio())->agregar($post);
 
                 if (count($tipos_socio_negocio) > 0) {
-                    $this->socioNegocioXTipoModel = new SocioNegocioXTipo();
-
-                    $this->socioNegocioXTipoModel->eliminar($IdSocioN);
+                    (new SocioNegocioXTipo())->eliminar($IdSocioN);
 
                     foreach ($tipos_socio_negocio as $indice => $valor) {
                         $data = [
@@ -553,20 +345,14 @@ class SocioNegocios extends BaseController
                             'IdSocioN' => $IdSocioN
                         ];
 
-                        $this->socioNegocioXTipoModel = new SocioNegocioXTipo();
-
-                        $this->socioNegocioXTipoModel->agregar($data);
+                        (new SocioNegocioXTipo())->agregar($data);
                     }
                 } else {
-                    $this->socioNegocioXTipoModel = new SocioNegocioXTipo();
-
-                    $this->socioNegocioXTipoModel->eliminar($IdSocioN);
+                    (new SocioNegocioXTipo())->eliminar($IdSocioN);
                 }
 
                 if (count($codigos_banco) > 0) {
-                    $this->socioNegocioBancoModel = new SocioNegocioBanco();
-
-                    $this->socioNegocioBancoModel->eliminar($IdSocioN);
+                    (new SocioNegocioBanco())->eliminar($IdSocioN);
 
                     foreach ($codigos_banco as $indice => $valor) {
                         $predeterminado_auxiliar = '0';
@@ -582,14 +368,10 @@ class SocioNegocios extends BaseController
                             'Predeterminado' => $predeterminado_auxiliar
                         ];
 
-                        $this->socioNegocioBancoModel = new SocioNegocioBanco();
-
-                        $this->socioNegocioBancoModel->agregar($data);
+                        (new SocioNegocioBanco())->agregar($data);
                     }
                 } else {
-                    $this->socioNegocioBancoModel = new SocioNegocioBanco();
-
-                    $this->socioNegocioBancoModel->eliminar($IdSocioN);
+                    (new SocioNegocioBanco())->eliminar($IdSocioN);
                 }
 
                 if ($this->db->transStatus() === FALSE) {
@@ -627,13 +409,9 @@ class SocioNegocios extends BaseController
             $IdSocioN = $this->request->getPost('IdSocioN');
 
             if ($post['CodTipoDoc'] == '6') {
-                $this->socioNegocioModel = new SocioNegocio();
-
-                $existe_socio_negocio = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], '', "IdSocioN != " . $IdSocioN . " AND ruc != '" . $post['ruc'] . "' OR razonsocial = '" . $post['razonsocial'] . "'", '');
+                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'IdSocioN != ' . $IdSocioN . ' AND ruc != "' . $post['ruc'] . '" OR razonsocial = "' . $post['razonsocial'] . '"', '');
             } else {
-                $this->socioNegocioModel = new SocioNegocio();
-
-                $existe_socio_negocio = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], '', "IdSocioN != " . $IdSocioN . " AND docidentidad != '" . $post['docidentidad'] . "' OR razonsocial = '" . $post['razonsocial'] . "'", '');
+                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'IdSocioN != ' . $IdSocioN . ' AND docidentidad != "' . $post['docidentidad'] . '" OR razonsocial = "' . $post['razonsocial'] . '"', '');
             }
 
             if (count($existe_socio_negocio) > 0) {
@@ -652,14 +430,10 @@ class SocioNegocios extends BaseController
 
                 $this->db->transBegin();
 
-                $this->socioNegocioModel = new SocioNegocio();
-
-                $this->socioNegocioModel->actualizar($IdSocioN, $post);
+                (new SocioNegocio())->actualizar($this->CodEmpresa, $IdSocioN, $post);
 
                 if (count($tipos_socio_negocio) > 0) {
-                    $this->socioNegocioXTipoModel = new SocioNegocioXTipo();
-
-                    $this->socioNegocioXTipoModel->eliminar($IdSocioN);
+                    (new SocioNegocioXTipo())->eliminar($IdSocioN);
 
                     foreach ($tipos_socio_negocio as $indice => $valor) {
                         $data = [
@@ -667,20 +441,14 @@ class SocioNegocios extends BaseController
                             'IdSocioN' => $IdSocioN
                         ];
 
-                        $this->socioNegocioXTipoModel = new SocioNegocioXTipo();
-
-                        $this->socioNegocioXTipoModel->agregar($data);
+                        (new SocioNegocioXTipo())->agregar($data);
                     }
                 } else {
-                    $this->socioNegocioXTipoModel = new SocioNegocioXTipo();
-
-                    $this->socioNegocioXTipoModel->eliminar($IdSocioN);
+                    (new SocioNegocioXTipo())->eliminar($IdSocioN);
                 }
 
                 if (count($codigos_banco) > 0) {
-                    $this->socioNegocioBancoModel = new SocioNegocioBanco();
-
-                    $this->socioNegocioBancoModel->eliminar($IdSocioN);
+                    (new SocioNegocioBanco())->eliminar($IdSocioN);
 
                     foreach ($codigos_banco as $indice => $valor) {
                         $predeterminado_auxiliar = '0';
@@ -696,14 +464,10 @@ class SocioNegocios extends BaseController
                             'Predeterminado' => $predeterminado_auxiliar
                         ];
 
-                        $this->socioNegocioBancoModel = new SocioNegocioBanco();
-
-                        $this->socioNegocioBancoModel->agregar($data);
+                        (new SocioNegocioBanco())->agregar($data);
                     }
                 } else {
-                    $this->socioNegocioBancoModel = new SocioNegocioBanco();
-
-                    $this->socioNegocioBancoModel->eliminar($IdSocioN);
+                    (new SocioNegocioBanco())->eliminar($IdSocioN);
                 }
 
                 if ($this->db->transStatus() === FALSE) {
@@ -738,9 +502,7 @@ class SocioNegocios extends BaseController
 
             $this->db->transBegin();
 
-            $this->socioNegocioModel = new SocioNegocio();
-
-            $this->socioNegocioModel->eliminar($this->CodEmpresa, $IdSocioN);
+            (new SocioNegocio())->eliminar($this->CodEmpresa, $IdSocioN);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -777,9 +539,7 @@ class SocioNegocios extends BaseController
 
             $excel->body(1, 'columnas');
 
-            $this->socioNegocioModel = new SocioNegocio();
-
-            $result = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], 'IdSocioN, IF(ruc = "", CONCAT(ApePat, " ", ApeMat, " ", Nom1, IF(LENGTH(Nom2) = 0, "", CONCAT(" ", Nom2))), razonsocial) AS Cliente, ruc, docidentidad, telefono, direccion1', '', 'IdSocioN ASC');
+            $result = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN, ' . (new SocioNegocio())->getRazonSocial(false) . ' AS Cliente, ruc, docidentidad, telefono, direccion1', [], '', 'IdSocioN ASC');
 
             foreach ($result as $indice => $valor) {
                 $values = array(
@@ -805,9 +565,7 @@ class SocioNegocios extends BaseController
     public function pdf()
     {
         try {
-            $this->socioNegocioModel = new SocioNegocio();
-
-            $result = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], 'IdSocioN, IF(ruc = "", CONCAT(ApePat, " ", ApeMat, " ", Nom1, IF(LENGTH(Nom2) = 0, "", CONCAT(" ", Nom2))), razonsocial) AS Cliente, ruc, docidentidad, telefono, direccion1', '', 'IdSocioN ASC');
+            $result = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN, ' . (new SocioNegocio())->getRazonSocial(false) . ' AS Cliente, ruc, docidentidad, telefono, direccion1', [], '', 'IdSocioN ASC');
 
             $columnas = array('Código', 'Cliente', 'RUC', 'DocIdentidad', 'Teléfono', 'Dirección');
 
@@ -851,25 +609,19 @@ class SocioNegocios extends BaseController
             $razonsocial = strtoupper(trim(strval($this->request->getPost('razonsocial'))));
 
             if ($tipo == 'nuevo') {
-                $this->socioNegocioModel = new SocioNegocio();
-
-                $socio_negocio = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], '', 'ruc = "' . $ruc . '"', '');
+                $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'ruc = "' . $ruc . '"', '');
 
                 $existe_duplicados = array('existe' => false, 'codigo' => '');
 
                 if (!empty($ruc) && count($socio_negocio) > 0) {
                     $existe_duplicados = array('existe' => true, 'codigo' => $ruc);
                 } else {
-                    $this->socioNegocioModel = new SocioNegocio();
-
-                    $socio_negocio = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], '', 'docidentidad = "' . $docidentidad . '"', '');
+                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'docidentidad = "' . $docidentidad . '"', '');
 
                     if (!empty($docidentidad) && count($socio_negocio) > 0) {
                         $existe_duplicados = array('existe' => true, 'codigo' => $docidentidad);
                     } else {
-                        $this->socioNegocioModel = new SocioNegocio();
-
-                        $socio_negocio = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], '', 'razonsocial = "' . $razonsocial . '"', '');
+                        $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'razonsocial = "' . $razonsocial . '"', '');
 
                         if (!empty($razonsocial) && count($socio_negocio) > 0) {
                             $existe_duplicados = array('existe' => true, 'codigo' => $razonsocial);
@@ -883,25 +635,19 @@ class SocioNegocios extends BaseController
                 $Notdocidentidad = trim(strval($this->request->getPost('Notdocidentidad')));
                 $Notrazonsocial = strtoupper(trim(strval($this->request->getPost('Notrazonsocial'))));
 
-                $this->socioNegocioModel = new SocioNegocio();
-
-                $socio_negocio = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], '', 'ruc = "' . $ruc . '" AND ruc != "' . $Notruc . '"', '');
+                $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'ruc = "' . $ruc . '" AND ruc != "' . $Notruc . '"', '');
 
                 $existe_duplicados = array('existe' => false, 'codigo' => '');
 
                 if (!empty($ruc) && count($socio_negocio) > 0) {
                     $existe_duplicados = array('existe' => true, 'codigo' => $ruc);
                 } else {
-                    $this->socioNegocioModel = new SocioNegocio();
-
-                    $socio_negocio = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], '', 'docidentidad = "' . $docidentidad . '" AND docidentidad != "' . $Notdocidentidad . '"', '');
+                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'docidentidad = "' . $docidentidad . '" AND docidentidad != "' . $Notdocidentidad . '"', '');
 
                     if (!empty($docidentidad) && count($socio_negocio) > 0) {
                         $existe_duplicados = array('existe' => true, 'codigo' => $docidentidad);
                     } else {
-                        $this->socioNegocioModel = new SocioNegocio();
-
-                        $socio_negocio = $this->socioNegocioModel->getSocioNegocio($this->CodEmpresa, '', [], '', 'razonsocial = "' . $razonsocial . '" AND razonsocial != "' . $Notrazonsocial . '"', '');
+                        $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'razonsocial = "' . $razonsocial . '" AND razonsocial != "' . $Notrazonsocial . '"', '');
 
                         if (!empty($razonsocial) && count($socio_negocio) > 0) {
                             $existe_duplicados = array('existe' => true, 'codigo' => $razonsocial);
@@ -921,5 +667,26 @@ class SocioNegocios extends BaseController
         $busqueda = $this->request->getGet('search');
         $items = (new SocioNegocio())->autoCompletado($busqueda, 2, $this->request->getCookie('empresa'));
         return $this->response->setJson($items);
+    }
+
+    public function autocompletado_()
+    {
+        try {
+            $post = $this->request->getPost();
+
+            $text = (new SocioNegocio())->getRazonSocial(true);
+
+            if (isset($post['search'])) {
+                $search = $post['search'];
+
+                $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', [], $text . ' LIKE "%' . $search . '%"', '');
+            } else {
+                $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', [], '', '');
+            }
+
+            echo json_encode($socio_negocio);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

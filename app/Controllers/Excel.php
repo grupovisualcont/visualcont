@@ -58,10 +58,10 @@ class Excel extends BaseController
             } else {
                 if (strpos($this->values[$i], ',') !== false) $this->objExcel->getActiveSheet()->getStyle($this->letras[$i] . $fila)->getAlignment()->setHorizontal('right');
 
-                if($tipo == 'columnas'){
+                if ($tipo == 'columnas') {
                     $this->backgroundCell($this->letras[$i] . $fila);
                     $this->colorCell($this->letras[$i] . $fila);
-                } 
+                }
 
                 $this->objActSheet->setCellValue($this->letras[$i] . $fila, $this->values[$i]);
             }

@@ -40,7 +40,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <div class="input-group input-group-sm input-group-vc">
-                                                    <input type="text" name="fecingreso" class="form-control form-control-sm mydatepicker" placeholder="dd/mm/yyyy" value="<?= date('d/m/Y', strtotime($socionegocio['fecingreso'])) ?>" readonly>
+                                                    <input type="text" name="fecingreso" class="form-control form-control-sm mydatepicker" placeholder="dd/mm/yyyy" value="<?= date('d/m/Y', strtotime($socio_negocio['fecingreso'])) ?>" readonly>
                                                     <span class="input-group-text">
                                                         <i class="fa fa-calendar"></i>
                                                     </span>
@@ -57,7 +57,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="CodTipPer" id="CodTipPer" class="form-control form-control-sm" onchange="verificarTipoDocumentoIdentidad()">
-                                                    <?= $options_tipos_persona ?>
+                                                    <?= $option_tipo_persona ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -68,7 +68,7 @@
                                                 <label>Id. Interno</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="CodInterno" class="form-control form-control-sm" value="<?= $socionegocio['CodInterno'] ?>" readonly>
+                                                <input type="text" name="CodInterno" class="form-control form-control-sm" value="<?= $socio_negocio['CodInterno'] ?>" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -80,7 +80,7 @@
                                                 <label>A. Paterno</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="ApePat" id="ApePat" class="form-control form-control-sm" value="<?= $socionegocio['ApePat'] ?>">
+                                                <input type="text" name="ApePat" id="ApePat" class="form-control form-control-sm" value="<?= $socio_negocio['ApePat'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -90,7 +90,7 @@
                                                 <label>Nombre 1</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="Nom1" id="Nom1" class="form-control form-control-sm" value="<?= $socionegocio['Nom1'] ?>">
+                                                <input type="text" name="Nom1" id="Nom1" class="form-control form-control-sm" value="<?= $socio_negocio['Nom1'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -102,7 +102,7 @@
                                                 <label>A. Materno</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="ApeMat" id="ApeMat" class="form-control form-control-sm" value="<?= $socionegocio['ApeMat'] ?>">
+                                                <input type="text" name="ApeMat" id="ApeMat" class="form-control form-control-sm" value="<?= $socio_negocio['ApeMat'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -112,7 +112,7 @@
                                                 <label>Nombre 2</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="Nom2" id="Nom2" class="form-control form-control-sm" value="<?= $socionegocio['Nom2'] ?>">
+                                                <input type="text" name="Nom2" id="Nom2" class="form-control form-control-sm" value="<?= $socio_negocio['Nom2'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -124,7 +124,7 @@
                                                 <label>Razón Social</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-10 col-xl-10">
-                                                <input type="text" name="razonsocial" id="razonsocial" class="form-control form-control-sm" value="<?= $socionegocio['razonsocial'] ?>">
+                                                <input type="text" name="razonsocial" id="razonsocial" class="form-control form-control-sm" value="<?= $socio_negocio['razonsocial'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -137,7 +137,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="CodTipoDoc" id="CodTipoDoc" class="form-control form-control-sm" onchange="verificarTipoDocumentoIdentidad()">
-                                                    <?= $options_tipos_documento_identidad ?>
+                                                    <?= $option_tipo_documento_identidad ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -149,7 +149,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <div class="d-flex">
-                                                    <input type="text" name="ruc" id="ruc" class="form-control form-control-sm" value="<?= $socionegocio['ruc'] ?>" oninput="verificarLongitudDocumento(this)" onkeypress="esNumero(event)">
+                                                    <input type="text" name="ruc" id="ruc" class="form-control form-control-sm" value="<?= $socio_negocio['ruc'] ?>" oninput="verificarLongitudDocumento(this)" onkeypress="esNumero(event)">
                                                     <button type="button" class="btn btn-sm height-sm border" onclick="consulta_sunat('ruc')">
                                                         <img src="<?= base_url('assets/img/ruc.png') ?>" width="15" height="15" />
                                                     </button>
@@ -166,7 +166,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="IdCondicion" id="IdCondicion" class="form-control form-control-sm">
-                                                    <?= $options_condiciones ?>
+                                                    <?= $option_condicion ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -178,7 +178,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <div class="d-flex">
-                                                    <input type="text" name="docidentidad" id="docidentidad" class="form-control form-control-sm" value="<?= $socionegocio['docidentidad'] ?>" oninput="verificarLongitudDocumento(this)" onkeypress="esNumero(event)">
+                                                    <input type="text" name="docidentidad" id="docidentidad" class="form-control form-control-sm" value="<?= $socio_negocio['docidentidad'] ?>" oninput="verificarLongitudDocumento(this)" onkeypress="esNumero(event)">
                                                     <button type="button" class="btn btn-sm height-sm border" onclick="consulta_sunat('dni')">
                                                         <img src="<?= base_url('assets/img/dni.png') ?>" width="15" height="15" />
                                                     </button>
@@ -194,7 +194,7 @@
                                                 <label>Direc. Principal</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-10 col-xl-10">
-                                                <input type="text" name="direccion1" id="direccion1" class="form-control form-control-sm" value="<?= $socionegocio['direccion1'] ?>">
+                                                <input type="text" name="direccion1" id="direccion1" class="form-control form-control-sm" value="<?= $socio_negocio['direccion1'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -207,7 +207,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="pais" id="pais" class="form-control form-control-sm" onchange="cambiarInputByPais()">
-                                                    <?= $options_paises ?>
+                                                    <?= $option_pais ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -218,9 +218,9 @@
                                                 <label>Ubigeo</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="codubigeo_pais" id="input_codubigeo" class="form-control form-control-sm <?= (substr($socionegocio['codubigeo'], 0, 2) == '01') ? 'display-none' : '' ?>" value="<?= $socionegocio['codubigeo'] ?>">
-                                                <select name="codubigeo" id="select_codubigeo" class="form-control form-control-sm <?= (substr($socionegocio['codubigeo'], 0, 2) != '01') ? 'display-none' : '' ?>">
-                                                    <?= $options_ubigeos ?>
+                                                <input type="text" name="codubigeo_pais" id="input_codubigeo" class="form-control form-control-sm <?= (substr($socio_negocio['codubigeo'], 0, 2) == '01') ? 'display-none' : '' ?>" value="<?= $socio_negocio['codubigeo'] ?>">
+                                                <select name="codubigeo" id="select_codubigeo" class="form-control form-control-sm <?= (substr($socio_negocio['codubigeo'], 0, 2) != '01') ? 'display-none' : '' ?>">
+                                                    <?= $option_ubigeo ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -233,7 +233,7 @@
                                                 <label>Teléfono</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="telefono" class="form-control form-control-sm" value="<?= $socionegocio['telefono'] ?>" onkeypress="esNumero(event)">
+                                                <input type="text" name="telefono" class="form-control form-control-sm" value="<?= $socio_negocio['telefono'] ?>" onkeypress="esNumero(event)">
                                             </div>
                                         </div>
                                     </div>
@@ -243,7 +243,7 @@
                                                 <label>Mail</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="direlectronica" class="form-control form-control-sm" value="<?= $socionegocio['direlectronica'] ?>">
+                                                <input type="text" name="direlectronica" class="form-control form-control-sm" value="<?= $socio_negocio['direlectronica'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -255,7 +255,7 @@
                                                 <label>Nota</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <textarea name="comentario" class="form-control"><?= $socionegocio['comentario'] ?></textarea>
+                                                <textarea name="comentario" class="form-control"><?= $socio_negocio['comentario'] ?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -266,7 +266,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="Idestado" id="Idestado" class="form-control form-control-sm">
-                                                    <?= $options_estados ?>
+                                                    <?= $option_estado ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -292,7 +292,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="CodVinculo" id="CodVinculo" class="form-control form-control-sm">
-                                                    <?= $options_vinculos ?>
+                                                    <?= $option_vinculo ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -303,7 +303,7 @@
                                                 <label>Página Web</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="pagweb" class="form-control form-control-sm" value="<?= $socionegocio['pagweb'] ?>" />
+                                                <input type="text" name="pagweb" class="form-control form-control-sm" value="<?= $socio_negocio['pagweb'] ?>" />
                                             </div>
                                         </div>
                                     </div>
@@ -316,7 +316,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="IdSexo" id="IdSexo" class="form-control form-control-sm">
-                                                    <?= $options_sexos ?>
+                                                    <?= $option_sexo ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -328,7 +328,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <div class="d-flex">
-                                                    <input type="text" name="retencion" class="form-control form-control-sm" value="<?= $socionegocio['retencion'] ?>" onkeypress="esNumero(event)" /><span class="ml-2 mt-1">%</span>
+                                                    <input type="text" name="retencion" class="form-control form-control-sm" value="<?= $socio_negocio['retencion'] ?>" onkeypress="esNumero(event)" /><span class="ml-2 mt-1">%</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -351,7 +351,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="CodTipoDoc_Tele" id="CodTipoDoc_Tele" class="form-control form-control-sm">
-                                                    <?= $options_tipos_documento_identidad_bancos ?>
+                                                    <?= $option_tipo_documento_identidad_banco ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -362,7 +362,7 @@
                                                 <label>Nro. Doc.</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="docidentidad_Tele" class="form-control form-control-sm" value="<?= $socionegocio['docidentidad_Tele'] ?>" onkeypress="esNumero(event)" />
+                                                <input type="text" name="docidentidad_Tele" class="form-control form-control-sm" value="<?= $socio_negocio['docidentidad_Tele'] ?>" onkeypress="esNumero(event)" />
                                             </div>
                                         </div>
                                     </div>
@@ -399,14 +399,14 @@
                                                         </thead>
                                                         <tbody>
                                                             <?php
-                                                            if (count($socionegociobanco) == 0) {
+                                                            if (count($socio_negocio_banco) == 0) {
                                                             ?>
                                                                 <tr id="tr_empty">
                                                                     <td align="center" colspan="7">No hay datos para mostrar</td>
                                                                 </tr>
                                                                 <?php
                                                             } else {
-                                                                foreach ($socionegociobanco as $indice => $valor) {
+                                                                foreach ($socio_negocio_banco as $indice => $valor) {
                                                                 ?>
                                                                     <tr id="tr_banco<?= $indice + 1 ?>" class="clase_banco">
                                                                         <td>
@@ -430,7 +430,7 @@
                                                                         </td>
                                                                         <td></td>
                                                                         <td>
-                                                                            <button type="button" class="Buttons btn btn-sm btn-danger shadow-sm" onclick="eliminarBanco('<?= $indice + 1 ?>')">Eliminar</button>
+                                                                            <button type="button" class="Buttons btn btn-sm btn-danger shadow-sm" onclick="eliminar('<?= $indice + 1 ?>')">Eliminar</button>
                                                                         </td>
                                                                     </tr>
                                                             <?php

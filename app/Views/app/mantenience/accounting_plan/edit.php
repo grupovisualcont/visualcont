@@ -188,12 +188,12 @@
                                                                 </td>
                                                                 <td>
                                                                     <select name="CuentaDebe[]" class="CuentaDebe form-control form-control-sm" id="CuentaDebe<?= $indice + 1 ?>">
-                                                                        <?= $options_planes_contable ?>
+                                                                        <?= $valor['CuentaDebe'] ?>
                                                                     </select>
                                                                 </td>
                                                                 <td>
                                                                     <select name="CuentaHaber[]" class="CuentaHaber form-control form-control-sm" id="CuentaHaber<?= $indice + 1 ?>">
-                                                                        <?= $options_planes_contable ?>
+                                                                        <?= $valor['CuentaHaber'] ?>
                                                                     </select>
                                                                 </td>
                                                                 <td>

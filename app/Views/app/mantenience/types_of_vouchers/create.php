@@ -78,35 +78,37 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="row mt-1">
-                                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                                <div class="row">
-                                                    <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
-                                                        <label>Flujo Efectivo</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                        <select name="CodEFE" id="CodEFE" class="form-control form-control-sm">
-                                                            <?= $options_CodEFE ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                                <div class="row">
-                                                    <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
-                                                        <label>TV. Caja</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                        <select name="CodTVcaja" class="form-control form-control-sm" id="CodTVcaja" disabled></select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> -->
+                        <div class="row mt-1">
+                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
+                                        <label>Flujo Efectivo</label>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
+                                        <select name="CodEFE" id="CodEFE" class="form-control form-control-sm">
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
+                                        <label>TV. Caja</label>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
+                                        <select name="CodTVcaja" class="form-control form-control-sm" id="CodTVcaja" disabled>
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row mt-1">
                             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                 <div class="row mb-3">
                                     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                        <button type="button" class="btn btn-sm btn-secondary shadow-sm float-right" id="btnNuevaFilaTipoVouchers" onclick="nuevaFilaTipoVouchers()">
+                                        <button type="button" class="btn btn-sm btn-secondary shadow-sm float-right" id="btnAgregar" onclick="agregar()">
                                             Agregar <i class="fa fa-plus-circle text-white ml-2"></i>
                                         </button>
                                     </div>

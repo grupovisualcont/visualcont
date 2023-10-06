@@ -2,15 +2,16 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
-autocompletado($('#CodTipPer'), BASE_URL + "app/type_person/autocompletado");
-autocompletado($('#CodTipoDoc'), BASE_URL + "app/identity_document_type/document/autocompletado");
-autocompletado($('#IdCondicion'), BASE_URL + "app/attached/autocompletado/0/2/null");
-autocompletado($('#Idestado'), BASE_URL + "app/attached/autocompletado/0/1/null");
-autocompletado($('#IdSexo'), BASE_URL + "app/attached/autocompletado/0/3/null");
-autocompletado($('#CodTipoDoc_Tele'), BASE_URL + "app/identity_document_type/bank/autocompletado");
-autocompletado($('#CodVinculo'), BASE_URL + "app/ts27Vinculo/autocompletado");
+autocompletado($('#CodTipPer'), {}, BASE_URL + "app/type_person/autocompletado");
+autocompletado($('#CodTipoDoc'), { tipo: 'documento'}, BASE_URL + "app/identity_document_type/autocompletado");
+autocompletado($('#IdCondicion'), { IdAnexo: 0, TipoAnexo: 2, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado($('#Idestado'), { IdAnexo: 0, TipoAnexo: 1, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado($('#IdSexo'), { IdAnexo: 0, TipoAnexo: 3, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado($('#CodTipoDoc_Tele'), { tipo: 'banco' }, BASE_URL + "app/identity_document_type/autocompletado");
+autocompletado($('#CodVinculo'), {}, BASE_URL + "app/ts27Vinculo/autocompletado");
+autocompletado($('#pais'), { tipo: 'pais' }, BASE_URL + "app/ubigeo/autocompletado");
+autocompletado($('#select_codubigeo'), { tipo: 'ubigeo' }, BASE_URL + "app/ubigeo/autocompletado");
 
-var estado_razonsocial = false;
 var id_banco = 1;
 
 function cambiarInputByPais() {
@@ -73,10 +74,12 @@ function consulta_sunat(tipo_documento) {
 
                 if (!datos.error) {
                     if (tipo_documento == 'ruc') {
-                        $('#CodTipPer').val('02');
+                        nuevo_option('#CodTipPer',  { CodTipPer: '02' }, BASE_URL + "app/type_person/autocompletado");
+
                         $('#docidentidad').val('');
                     } else {
-                        $('#CodTipPer').val('01');
+                        nuevo_option('#CodTipPer', { CodTipPer: '01' }, BASE_URL + "app/type_person/autocompletado");
+
                         $('#ruc').val('');
                     }
 
@@ -95,11 +98,10 @@ function consulta_sunat(tipo_documento) {
                         $('#Nom1').css('textTransform', 'capitalize');
                     }
 
-                    $('#CodTipoDoc').val(datos.tipoDocumento);
-                    $('#razonsocial').val(datos.nombre);
+                    nuevo_option('#CodTipoDoc', { tipo: 'documento', CodTipoDoc: datos.tipoDocumento }, BASE_URL + "app/identity_document_type/autocompletado");
 
-                    if (datos.nombre.length > 0) {
-                        estado_razonsocial = true;
+                    if (datos.nombre) {
+                        $('#razonsocial').val(datos.nombre);
                     }
 
                     var condiciones = $('#IdCondicion')[0];
@@ -114,7 +116,7 @@ function consulta_sunat(tipo_documento) {
                     }
 
                     if (condicion.length > 0) {
-                        $('#IdCondicion').val(condicion);
+                        nuevo_option('#IdCondicion', { IdAnexo: 0, TipoAnexo: 2, OtroDato: '', DescAnexo: condicion }, BASE_URL + "app/attached/autocompletado");
                     }
 
                     $('#direccion1').val(datos.direccion);
@@ -131,7 +133,7 @@ function consulta_sunat(tipo_documento) {
                     }
 
                     if (estado.length > 0) {
-                        $('#Idestado').val(estado);
+                        nuevo_option('#Idestado', { IdAnexo: 0, TipoAnexo: 1, OtroDato: '', DescAnexo: 'Inactivo' }, BASE_URL + "app/attached/autocompletado");
                     }
 
                     verificarTipoDocumentoIdentidad();
@@ -144,9 +146,11 @@ function consulta_sunat(tipo_documento) {
 }
 
 function verificarTipoDocumentoIdentidad() {
-    var CodTipPer = $('#CodTipPer option:selected').val();
-    var CodTipoDoc = $('#CodTipoDoc option:selected').val();
-    var TipoDato = $('#CodTipoDoc option:selected').attr('data-tipo-dato').split('|');
+    var CodTipPer = $('#CodTipPer option:selected') ? $('#CodTipPer option:selected').val() : '';
+    var CodTipoDoc = $('#CodTipoDoc option:selected') ? $('#CodTipoDoc option:selected').val() : '';
+    var TipoDato = $('#CodTipoDoc option:selected').attr('data-tipo-dato');
+
+    if (TipoDato) TipoDato = TipoDato.split('|');
 
     if (CodTipPer == datos_ruc_CodTipPer) {
         $('#ApePat').val('');
@@ -242,15 +246,15 @@ function nuevoBanco() {
                 </td>
                 <td></td>
                 <td>
-                    <button type="button" class="Buttons btn btn-sm btn-danger shadow-sm" onclick="eliminarBanco('${id_banco}')">Eliminar</button>
+                    <button type="button" class="Buttons btn btn-sm btn-danger shadow-sm" onclick="eliminar('${id_banco}')">Eliminar</button>
                 </td>
             </tr>
         `;
 
     $('#tablaBanco > tbody').append(nuevo);
 
-    autocompletado($('#CodBanco' + id_banco), BASE_URL + "app/mantenience/box_banks/autocompletado");
-    autocompletado($('#idTipoCuenta' + id_banco), BASE_URL + "app/attached/autocompletado/0/54/02");
+    autocompletado($('#CodBanco' + id_banco), {}, BASE_URL + "app/mantenience/box_banks/autocompletado");
+    autocompletado($('#idTipoCuenta' + id_banco), { IdAnexo: 0, TipoAnexo: 54, OtroDato: '02' }, BASE_URL + "app/attached/autocompletado");
 
     id_banco++;
 }
@@ -265,21 +269,21 @@ function cambiarPredeterminado(id) {
     });
 }
 
-function eliminarBanco(id) {
+function eliminar(id) {
     $('#tr_banco' + id).remove();
 
     $(".clase_banco").each(function (i) {
         this.id = 'tr_banco' + (i + 1);
     });
 
-    $(".CodBanco > select").each(function (i) {
+    $(".CodBanco").each(function (i) {
         this.id = 'CodBanco' + (i + 1);
         $(this).select2({
             width: 'auto', dropdownAutoWidth: true
         });
     });
 
-    $(".idTipoCuenta > select").each(function (i) {
+    $(".idTipoCuenta").each(function (i) {
         this.id = 'idTipoCuenta' + (i + 1);
         $(this).select2({
             width: 'auto', dropdownAutoWidth: true
@@ -292,7 +296,7 @@ function eliminarBanco(id) {
     });
 
     $(".Buttons").each(function (i) {
-        $(this).attr('onclick', 'eliminarBanco(' + (i + 1) + ')');
+        $(this).attr('onclick', 'eliminar(' + (i + 1) + ')');
     });
 
     if ($('.clase_banco').length == 0) {

@@ -6,7 +6,6 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->get('app/panel/index', 'Panel::index');
 
 $routes->post('login', 'Empresa::login');
 $routes->post('empresa/consulta_sunat', 'Empresa::consulta_sunat');
@@ -14,14 +13,33 @@ $routes->post('empresa/consulta_tipo_cambio', 'Empresa::consulta_tipo_cambio');
 
 $routes->group('app', static function($routes) {
 
+    $routes->get('panel/index', 'Panel::index');
+
     $routes->post('type_person/autocompletado', 'TipoPersona::autocompletado');
-    $routes->group('identity_document_type', static function($routes) {
-        $routes->post('document/autocompletado', 'TipoDocumentoIdentidad::autocompletado');
-        $routes->post('bank/autocompletado', 'TipoDocumentoIdentidad::autocompletado_banco');
-    });
-    
-    $routes->post('attached/autocompletado/(:any)/(:any)/(:any)', 'Anexos::autocompletado/$1/$2/$3');
+
+    $routes->post('identity_document_type/autocompletado', 'TipoDocumentoIdentidad::autocompletado');
+
+    $routes->post('attached/autocompletado', 'Anexos::autocompletado');
+
     $routes->post('ts27Vinculo/autocompletado', 'Ts27Vinculos::autocompletado');
+
+    $routes->post('ubigeo/autocompletado', 'Ubigeo::autocompletado');
+
+    $routes->post('iAnexoSunat/autocompletado', 'IAnexoSunat::autocompletado');
+
+    $routes->post('debeHaber/autocompletado', 'DebeHaber::autocompletado');
+
+    $routes->post('parametro/autocompletado', 'Parametro::autocompletado');
+
+    $routes->post('moneda/autocompletado_', 'Monedas::autocompletado_');
+
+    $routes->post('tipoComprobante/autocompletado', 'TipoComprobante::autocompletado');
+
+    $routes->post('claseDoc/autocompletado', 'ClaseDoc::autocompletado');
+
+    $routes->post('entidadFinanciera/autocompletado', 'EntidadFinanciera::autocompletado');
+
+    $routes->post('conceptoPres/autocompletado', 'ConceptoPres::autocompletado');
 
     $routes->group('mantenience', static function($routes) {
         
@@ -37,6 +55,7 @@ $routes->group('app', static function($routes) {
             $routes->get('pdf', 'SocioNegocios::pdf');
             $routes->post('consulta_duplicados', 'SocioNegocios::consulta_duplicados');
             $routes->get('autocompletado', 'SocioNegocios::autoCompletado');
+            $routes->post('autocompletado_', 'SocioNegocios::autoCompletado_');
 
         });
 
@@ -51,6 +70,7 @@ $routes->group('app', static function($routes) {
             $routes->get('excel', 'ActivosFijos::excel');
             $routes->get('pdf', 'ActivosFijos::pdf');
             $routes->post('consulta_nombre', 'ActivosFijos::consulta_nombre');
+            $routes->post('autocompletado', 'ActivosFijos::autocompletado');
 
         });
 
@@ -65,6 +85,7 @@ $routes->group('app', static function($routes) {
             $routes->get('excel', 'TiposActivos::excel');
             $routes->get('pdf', 'TiposActivos::pdf');
             $routes->post('consulta_nombre', 'TiposActivos::consulta_nombre');
+            $routes->post('autocompletado', 'TiposActivos::autoCompletado');
 
         });
 
@@ -98,6 +119,7 @@ $routes->group('app', static function($routes) {
             $routes->post('consulta_detalles', 'TipoVouchers::consulta_detalles');
             $routes->post('consulta_codigo', 'TipoVouchers::consulta_codigo');
             $routes->get('autocompletado', 'TipoVouchers::autoCompletado');
+            $routes->post('autocompletado_', 'TipoVouchers::autoCompletado_');
 
         });
 
@@ -127,6 +149,7 @@ $routes->group('app', static function($routes) {
             $routes->get('excel', 'CentroCosto::excel');
             $routes->get('pdf', 'CentroCosto::pdf');
             $routes->post('consulta_codigo', 'CentroCosto::consulta_codigo');
+            $routes->post('autocompletado', 'CentroCosto::autocompletado');
 
         });
 

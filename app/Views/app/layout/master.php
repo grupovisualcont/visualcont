@@ -122,7 +122,7 @@
                 }
             }
 
-            function autocompletado(id, url) {
+            function autocompletado(id, data, url) {
                 $(id).select2({
                     placeholder: 'Seleccione',
                     dropdownAutoWidth: true,
@@ -131,9 +131,9 @@
                         dataType: 'json',
                         type: 'POST',
                         data: function(params) {
-                            var query = {
-                                search: params.term
-                            }
+                            var query = data;
+
+                            query.search = params.term;
 
                             return query;
                         },
@@ -141,18 +141,20 @@
                             return {
                                 results: $.map(data, function(item) {
                                     return {
-                                        id: item.value,
-                                        text: item.name,
+                                        id: item.id,
+                                        text: item.text,
                                         disabled: item.disabled,
+                                        class: item.class,
                                         TipoDato: item.TipoDato,
-                                        tipo_dato: item.tipo_dato
+                                        tipo_dato: item.tipo_dato,
+                                        RelacionCuenta: item.RelacionCuenta
                                     }
                                 })
                             };
                         },
                     },
                     templateSelection: function(data, container) {
-                        if(data.TipoDato){
+                        if (data.TipoDato) {
                             $(data.element).attr('data-tipo-dato', data.TipoDato);
                         }
 
@@ -167,7 +169,41 @@
                             $(data.element).attr('data-longitud', longitud);
                         }
 
+                        if(data.RelacionCuenta) {
+                            $(data.element).attr('data-relacion-cuenta', data.RelacionCuenta);
+                        }
+
                         return data.text;
+                    },
+                    templateResult: function(data, container) {
+                        if (data.class) {
+                            $(container).addClass(data.class);
+                        }
+
+                        return data.text;
+                    }
+                });
+            }
+
+            function nuevo_option(id, data, url) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: data,
+                    async: false,
+                    success: function(data) {
+                        var datos = JSON.parse(data);
+
+                        if (datos.options) {
+                            $(id).html(datos.options);
+                        } else {
+                            var option = new Option(datos.name, datos.value, true, true);
+
+                            if (datos.TipoDato) option.setAttribute('data-tipo-dato', datos.TipoDato);
+
+                            $(id).html(option).trigger('change');
+                            $(id).val(datos.value);
+                        }
                     }
                 });
             }

@@ -18,7 +18,7 @@ class CentroCosto extends Model
         'Porcentaje'
     ];
 
-    public function getCentroCosto($CodEmpresa, $CodcCosto, $Estado, $join, $columnas, $where, $like, $orderBy)
+    public function getCentroCosto(string $CodEmpresa, string $CodcCosto, int $Estado, string $columnas, array $join,string $where, string $like, string $orderBy)
     {
         try {
             $result = $this;

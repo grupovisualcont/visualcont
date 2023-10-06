@@ -11,37 +11,23 @@ use App\Models\TipoComprobante;
 class ComprobantesPago extends BaseController
 {
     protected $page;
-    protected $empresa;
     protected $CodEmpresa;
 
     protected $db;
 
-    protected $documentoModel;
-    protected $claseDocModel;
-    protected $tipoComprobanteModel;
-    protected $anexoModel;
-
     public function __construct()
     {
         $this->page = 'Comprobantes de Pago';
-        $this->empresa = new Empresa;
-        $this->CodEmpresa = $this->empresa->getCodEmpresa();
+        $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
-
-        $this->documentoModel = new Documento();
-        $this->claseDocModel = new ClaseDoc();
-        $this->tipoComprobanteModel = new TipoComprobante();
-        $this->anexoModel = new Anexo();
     }
 
     public function index()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->documentoModel = new Documento();
-
-                $documentos = $this->documentoModel->getDocumento(
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $documentos = (new Documento())->getDocumento(
                     $this->CodEmpresa,
                     '',
                     'origen = "VE" OR origen = "CO"',
@@ -58,7 +44,7 @@ class ComprobantesPago extends BaseController
                     'typeOrder' => 'string'
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -68,30 +54,10 @@ class ComprobantesPago extends BaseController
     public function create()
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->claseDocModel = new ClaseDoc();
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $clase_documento = (new ClaseDoc())->getClaseDoc('FACT', '', [], '', '')[0];
 
-                $clases_documento = $this->claseDocModel->getClaseDoc('', [], '', '');
-
-                $options_clases_documento = '';
-
-                foreach ($clases_documento as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodClaseDoc'] == 'FACT') $selected = 'selected';
-
-                    $options_clases_documento .= '<option value="' . $valor['CodClaseDoc'] . '" ' . $selected . '>' . $valor['DescClaseDoc'] . '</option>';
-                }
-
-                $this->tipoComprobanteModel = new TipoComprobante();
-
-                $tipos_comprobantes = $this->tipoComprobanteModel->getTipoComprobante([], '', '', 'DescComprobante ASC');
-
-                $options_tipos_comprobantes = '';
-
-                foreach ($tipos_comprobantes as $indice => $valor) {
-                    $options_tipos_comprobantes .= '<option value="' . $valor['CodComprobante'] . '">' . '(' . $valor['CodComprobante'] . ') ' . $valor['DescComprobante'] . '</option>';
-                }
+                $option_clase_documento = '<option value="' . $clase_documento['CodClaseDoc'] . '">' . $clase_documento['DescClaseDoc'] . '</option>';
 
                 $origen = array('VE' => 'Venta', 'CO' => 'Compra');
 
@@ -117,35 +83,22 @@ class ComprobantesPago extends BaseController
                     $options_van_al_registro_de .= '<option value="' . $indice . '" ' . $selected . '>' . $valor . '</option>';
                 }
 
-                $this->anexoModel = new Anexo();
+                $estado = (new Anexo())->getAnexo($this->CodEmpresa, 11, 0, '', '', [], '', '')[0];
 
-                $estados = $this->anexoModel->getAnexo($this->CodEmpresa, '', 1, '', '', '', '');
+                $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $options_estados = '';
-
-                foreach ($estados as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['DescAnexo'] == 'Activo') $selected = 'selected';
-
-                    $options_estados .= '<option value="' . $valor['IdAnexo'] . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->empresa = new Empresa();
-
-                $script = $this->empresa->generar_script('', ['app/mantenience/payment_vouchers/create.js']);
+                $script = (new Empresa())->generar_script('', ['app/mantenience/payment_vouchers/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/payment_vouchers/create', [
-                    'options_clases_documento' => $options_clases_documento,
-                    'options_tipos_comprobantes' => $options_tipos_comprobantes,
+                    'option_clase_documento' => $option_clase_documento,
                     'options_origen' => $options_origen,
                     'options_van_al_registro_de' => $options_van_al_registro_de,
-                    'options_estados' => $options_estados,
+                    'option_estado' => $option_estado,
                     'typeOrder' => 'string',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -155,10 +108,8 @@ class ComprobantesPago extends BaseController
     public function edit($CodDocumento)
     {
         try {
-            if ($this->empresa->verificar_inicio_sesion()) {
-                $this->documentoModel = new Documento();
-
-                $documento = $this->documentoModel->getDocumento(
+            if ((new Empresa())->verificar_inicio_sesion()) {
+                $documento = (new Documento())->getDocumento(
                     $this->CodEmpresa,
                     $CodDocumento,
                     '',
@@ -170,33 +121,13 @@ class ComprobantesPago extends BaseController
                     ''
                 )[0];
 
-                $this->claseDocModel = new ClaseDoc();
+                $clase_documento = (new ClaseDoc())->getClaseDoc($documento['CodClaseDoc'], '', [], '', '')[0];
 
-                $clases_documento = $this->claseDocModel->getClaseDoc('', [], '', '');
+                $option_clase_documento = '<option value="' . $clase_documento['CodClaseDoc'] . '">' . $clase_documento['DescClaseDoc'] . '</option>';
 
-                $options_clases_documento = '';
+                $tipo_comprobante = (new TipoComprobante())->getTipoComprobante($documento['CodSunat'], '', [], '', 'DescComprobante ASC')[0];
 
-                foreach ($clases_documento as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodClaseDoc'] == $documento['CodClaseDoc']) $selected = 'selected';
-
-                    $options_clases_documento .= '<option value="' . $valor['CodClaseDoc'] . '" ' . $selected . '>' . $valor['DescClaseDoc'] . '</option>';
-                }
-
-                $this->tipoComprobanteModel = new TipoComprobante();
-
-                $tipos_comprobantes = $this->tipoComprobanteModel->getTipoComprobante([], '', '', 'DescComprobante ASC');
-
-                $options_tipos_comprobantes = '';
-
-                foreach ($tipos_comprobantes as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodComprobante'] == $documento['CodSunat']) $selected = 'selected';
-
-                    $options_tipos_comprobantes .= '<option value="' . $valor['CodComprobante'] . '" ' . $selected . '>' . '(' . $valor['CodComprobante'] . ') ' . $valor['DescComprobante'] . '</option>';
-                }
+                $option_tipo_comprobante = '<option value="' . $tipo_comprobante['CodComprobante'] . '">' . '(' . $tipo_comprobante['CodComprobante'] . ') ' . $tipo_comprobante['DescComprobante'] . '</option>';
 
                 $origen = array('VE' => 'Venta', 'CO' => 'Compra');
 
@@ -222,40 +153,28 @@ class ComprobantesPago extends BaseController
                     $options_van_al_registro_de .= '<option value="' . $indice . '" ' . $selected . '>' . $valor . '</option>';
                 }
 
-                $this->anexoModel = new Anexo();
+                $estado = (new Anexo())->getAnexo($this->CodEmpresa, 0, 1, '', '', [], 'CodInterno = ' . $documento['Estado'], '')[0];
 
-                $estados = $this->anexoModel->getAnexo($this->CodEmpresa, '', 1, '', '', '', '');
-
-                $options_estados = '';
-
-                foreach ($estados as $indice => $valor) {
-                    $selected = '';
-
-                    if ($valor['CodInterno'] == $documento['Estado']) $selected = 'selected';
-
-                    $options_estados .= '<option value="' . $valor['CodInterno'] . '" ' . $selected . '>' . $valor['DescAnexo'] . '</option>';
-                }
-
-                $this->empresa = new Empresa();
+                $option_estado = '<option value="' . $estado['CodInterno'] . '">' . $estado['DescAnexo'] . '</option>';
 
                 $script = "
                     var documento_CodDocumento = '" . $documento['CodDocumento'] . "';
                 ";
 
-                $script = $this->empresa->generar_script($script, ['app/mantenience/payment_vouchers/edit.js']);
+                $script = (new Empresa())->generar_script($script, ['app/mantenience/payment_vouchers/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/payment_vouchers/edit', [
                     'documento' => $documento,
-                    'options_clases_documento' => $options_clases_documento,
-                    'options_tipos_comprobantes' => $options_tipos_comprobantes,
+                    'option_clase_documento' => $option_clase_documento,
+                    'option_tipo_comprobante' => $option_tipo_comprobante,
                     'options_origen' => $options_origen,
                     'options_van_al_registro_de' => $options_van_al_registro_de,
-                    'options_estados' => $options_estados,
+                    'option_estado' => $option_estado,
                     'typeOrder' => 'string',
                     'script' => $script
                 ]);
             } else {
-                return $this->empresa->logout();
+                return (new Empresa())->logout();
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -273,7 +192,6 @@ class ComprobantesPago extends BaseController
 
             $post['CodDocumento'] = strtoupper(trim($post['CodDocumento']));
             $post['DescDocumento'] = strtoupper(trim($post['DescDocumento']));
-
 
             switch (strlen($post['Numero'])) {
                 case 1:
@@ -305,9 +223,7 @@ class ComprobantesPago extends BaseController
                     break;
             }
 
-            $this->documentoModel = new Documento();
-
-            $this->documentoModel->agregar($post);
+            (new Documento())->agregar($post);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -374,9 +290,7 @@ class ComprobantesPago extends BaseController
                     break;
             }
 
-            $this->documentoModel = new Documento();
-
-            $this->documentoModel->actualizar($post['CodEmpresa'], $post['CodDocumento'], $post);
+            (new Documento())->actualizar($post['CodEmpresa'], $post['CodDocumento'], $post);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -407,9 +321,7 @@ class ComprobantesPago extends BaseController
 
             $this->db->transBegin();
 
-            $this->documentoModel = new Documento();
-
-            $this->documentoModel->eliminar($this->CodEmpresa, $CodDocumento);
+            (new Documento())->eliminar($this->CodEmpresa, $CodDocumento);
 
             if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
@@ -446,9 +358,7 @@ class ComprobantesPago extends BaseController
 
             $excel->body(1, 'columnas');
 
-            $this->documentoModel = new Documento();
-
-            $result = $this->documentoModel->getDocumento(
+            $result = (new Documento())->getDocumento(
                 $this->CodEmpresa,
                 '',
                 'origen = "VE" OR origen = "CO"',
@@ -484,9 +394,7 @@ class ComprobantesPago extends BaseController
     public function pdf()
     {
         try {
-            $this->documentoModel = new Documento();
-
-            $result = $this->documentoModel->getDocumento(
+            $result = (new Documento())->getDocumento(
                 $this->CodEmpresa,
                 '',
                 'origen = "VE" OR origen = "CO"',
@@ -539,9 +447,7 @@ class ComprobantesPago extends BaseController
             if ($tipo == 'nuevo') {
                 $CodDocumento = strtoupper(trim(strval($this->request->getPost('CodDocumento'))));
 
-                $this->documentoModel = new Documento();
-
-                $documentos = $this->documentoModel->getDocumento($this->CodEmpresa, $CodDocumento, '', [], '', '', '');
+                $documentos = (new Documento())->getDocumento($this->CodEmpresa, $CodDocumento, '', [], '', '', '');
 
                 $existe = array('existe' => false);
 
@@ -554,9 +460,7 @@ class ComprobantesPago extends BaseController
                 $CodDocumento = strtoupper(trim(strval($this->request->getPost('CodDocumento'))));
                 $NotCodDocumento = strtoupper(trim(strval($this->request->getPost('NotCodDocumento'))));
 
-                $this->documentoModel = new Documento();
-
-                $documentos = $this->documentoModel->getDocumento($this->CodEmpresa, $CodDocumento, '', [], '', 'UPPER(CodDocumento) != "' . $NotCodDocumento . '"', '');
+                $documentos = (new Documento())->getDocumento($this->CodEmpresa, $CodDocumento, '', [], '', 'UPPER(CodDocumento) != "' . $NotCodDocumento . '"', '');
 
                 $existe = array('existe' => false);
 

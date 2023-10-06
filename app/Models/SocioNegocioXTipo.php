@@ -17,7 +17,7 @@ class SocioNegocioXTipo extends Model
         'IdSocioN'
     ];
 
-    public function getSocioNegocioXTipo($IdSocioN){
+    public function getSocioNegocioXTipo(int $IdSocioN){
         try {
             $result = $this->where('IdSocioN', $IdSocioN)->findAll();
 

@@ -59,7 +59,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="CodInterno1" class="CodInterno form-control form-control-sm">
-                                                    <?= $options_planes_contable ?>
+                                                    <?= $option_plan_contable ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -70,8 +70,8 @@
                                                 <label>Estado</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="Estado1" class="form-control form-control-sm">
-                                                    <?= $options_estado ?>
+                                                <select name="Estado1" class="Estado form-control form-control-sm">
+                                                    <?= $option_estado ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -110,7 +110,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                                 <select name="CodInterno2" class="CodInterno form-control form-control-sm">
-                                                    <?= $options_planes_contable ?>
+                                                    <?= $option_plan_contable ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -121,8 +121,8 @@
                                                 <label>Estado</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="Estado2" class="form-control form-control-sm">
-                                                    <?= $options_estado ?>
+                                                <select name="Estado2" class="Estado form-control form-control-sm">
+                                                    <?= $option_estado ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -170,8 +170,8 @@
                                                 <label>Estado</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="Estado3" class="form-control form-control-sm">
-                                                    <?= $options_estado ?>
+                                                <select name="Estado3" class="Estado form-control form-control-sm">
+                                                    <?= $option_estado ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -209,8 +209,8 @@
                                                 <label>Estado</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <select name="Estado4" class="form-control form-control-sm">
-                                                    <?= $options_estado ?>
+                                                <select name="Estado4" class="Estado form-control form-control-sm">
+                                                    <?= $option_estado ?>
                                                 </select>
                                             </div>
                                         </div>
