@@ -311,9 +311,11 @@ class SocioNegocios extends BaseController
             $post = $this->request->getPost();
 
             if (!empty($post['ruc'])) {
-                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'ruc = "' . $post['ruc'] . '" OR razonsocial = "' . $post['razonsocial'] . '"', '');
+                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'ruc = "' . $post['ruc'] . '"', '');
             } else if (!empty($post['docidentidad'])) {
-                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'docidentidad = "' . $post['docidentidad'] . '" OR razonsocial = "' . $post['razonsocial'] . '"', '');
+                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'docidentidad = "' . $post['docidentidad'] . '"', '');
+            } else if (!empty($post['razonsocial'])) {
+                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'razonsocial = "' . $post['razonsocial'] . '"', '');
             } else if ($post['CodTipoDoc'] == '-') {
                 $existe_socio_negocio = array();
             }
@@ -408,10 +410,14 @@ class SocioNegocios extends BaseController
 
             $IdSocioN = $this->request->getPost('IdSocioN');
 
-            if ($post['CodTipoDoc'] == '6') {
-                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'IdSocioN != ' . $IdSocioN . ' AND ruc != "' . $post['ruc'] . '" OR razonsocial = "' . $post['razonsocial'] . '"', '');
-            } else {
-                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'IdSocioN != ' . $IdSocioN . ' AND docidentidad != "' . $post['docidentidad'] . '" OR razonsocial = "' . $post['razonsocial'] . '"', '');
+            if (!empty($post['ruc'])) {
+                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'IdSocioN != ' . $IdSocioN . ' AND ruc != "' . $post['ruc'] . '"', '');
+            } else if (!empty($post['docidentidad'])) {
+                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'IdSocioN != ' . $IdSocioN . ' AND docidentidad != "' . $post['docidentidad'] . '"', '');
+            } else if (!empty($post['razonsocial'])) {
+                $existe_socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, '', [], 'IdSocioN != ' . $IdSocioN . ' AND razonsocial != "' . $post['razonsocial'] . '"', '');
+            } else if ($post['CodTipoDoc'] == '-') {
+                $existe_socio_negocio = array();
             }
 
             if (count($existe_socio_negocio) > 0) {
