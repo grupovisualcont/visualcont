@@ -202,12 +202,12 @@
                         if (datos.options) {
                             $(id).html(datos.options);
                         } else {
-                            var option = new Option(datos.name, datos.value, true, true);
+                            var option = new Option(datos.text, datos.id, true, true);
 
                             if (datos.TipoDato) option.setAttribute('data-tipo-dato', datos.TipoDato);
 
-                            $(id).html(option).trigger('change');
-                            $(id).val(datos.value);
+                            $(id).html(option);
+                            $(id).val(datos.id);
                         }
                     }
                 });

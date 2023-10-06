@@ -328,7 +328,7 @@ class SocioNegocios extends BaseController
                 $post['ApeMat'] = ucwords(strtolower(trim($post['ApeMat'])));
                 $post['Nom1'] = ucwords(strtolower(trim($post['Nom1'])));
                 $post['Nom2'] = ucwords(strtolower(trim($post['Nom2'])));
-                $post['razonsocial'] = str_replace("'", "'''", strtoupper(trim($post['razonsocial'])));
+                $post['razonsocial'] = strtoupper(trim($post['razonsocial']));
 
                 $this->db->disableForeignKeyChecks();
 

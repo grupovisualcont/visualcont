@@ -72,7 +72,7 @@ function consulta_sunat(tipo_documento) {
             success: function (data) {
                 var datos = JSON.parse(data);
 
-                if (!datos.error) {
+                if (datos.error == null) {
                     if (tipo_documento == 'ruc') {
                         nuevo_option('#CodTipPer',  { CodTipPer: '02' }, BASE_URL + "app/type_person/autocompletado");
 
