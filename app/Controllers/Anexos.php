@@ -25,7 +25,18 @@ class Anexos extends BaseController
         try {
             $post = $this->request->getPost();
 
-            if (isset($post['CodEFE']) && !empty($post['CodEFE'])) {
+            if (isset($post['App']) && !empty($post['App']) && $post['App'] == 'Ventas') {
+                $Value = $post['Value'] ?? 'IdAnexo';
+                $whereCodInterno = isset($post['CodInterno']) && !empty($post['CodInterno']) ? 'CodInterno = ' . $post['CodInterno'] : '';
+
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+
+                    $anexo = (new Anexo())->getAnexo($this->CodEmpresa, $post['IdAnexo'], $post['TipoAnexo'], $post['OtroDato'], $Value . ' AS id, DescAnexo AS text, CodInterno', [], 'DescAnexo LIKE "%' . $search . '%"', '');
+                } else {
+                    $anexo = (new Anexo())->getAnexo($this->CodEmpresa, $post['IdAnexo'], $post['TipoAnexo'], $post['OtroDato'], $Value . ' AS id, DescAnexo AS text, CodInterno', [], $whereCodInterno, '');
+                }
+            } else if (isset($post['CodEFE']) && !empty($post['CodEFE'])) {
                 $option_operacion = array();
                 $option_financiamento = array();
                 $option_inversion = array();

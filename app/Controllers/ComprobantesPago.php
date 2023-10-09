@@ -31,10 +31,10 @@ class ComprobantesPago extends BaseController
                     $this->CodEmpresa,
                     '',
                     'origen = "VE" OR origen = "CO"',
+                    'documento.*, cl.DescClaseDoc, IF(origen = "VE", "Venta", "Compra") AS Tipo',
                     [
                         array('tabla' => 'clasedoc cl', 'on' => 'cl.CodClaseDoc = documento.CodClaseDoc', 'tipo' => 'left')
                     ],
-                    'documento.*, cl.DescClaseDoc, IF(origen = "VE", "Venta", "Compra") AS Tipo',
                     '',
                     'origen, CodDocumento ASC'
                 );
@@ -113,10 +113,10 @@ class ComprobantesPago extends BaseController
                     $this->CodEmpresa,
                     $CodDocumento,
                     '',
+                    'documento.*, cl.DescClaseDoc',
                     [
                         array('tabla' => 'clasedoc cl', 'on' => 'cl.CodClaseDoc = documento.CodClaseDoc', 'tipo' => 'left')
                     ],
-                    'documento.*, cl.DescClaseDoc',
                     '',
                     ''
                 )[0];
@@ -362,10 +362,10 @@ class ComprobantesPago extends BaseController
                 $this->CodEmpresa,
                 '',
                 'origen = "VE" OR origen = "CO"',
+                'documento.*, cl.DescClaseDoc, IF(origen = "VE", "Venta", "Compra") AS Tipo',
                 [
                     array('tabla' => 'clasedoc cl', 'on' => 'cl.CodClaseDoc = documento.CodClaseDoc', 'tipo' => 'left')
                 ],
-                'documento.*, cl.DescClaseDoc, IF(origen = "VE", "Venta", "Compra") AS Tipo',
                 '',
                 'origen, CodDocumento ASC'
             );
@@ -398,10 +398,10 @@ class ComprobantesPago extends BaseController
                 $this->CodEmpresa,
                 '',
                 'origen = "VE" OR origen = "CO"',
+                'documento.*, cl.DescClaseDoc, IF(origen = "VE", "Venta", "Compra") AS Tipo',
                 [
                     array('tabla' => 'clasedoc cl', 'on' => 'cl.CodClaseDoc = documento.CodClaseDoc', 'tipo' => 'left')
                 ],
-                'documento.*, cl.DescClaseDoc, IF(origen = "VE", "Venta", "Compra") AS Tipo',
                 '',
                 'origen, CodDocumento ASC'
             );
@@ -447,7 +447,7 @@ class ComprobantesPago extends BaseController
             if ($tipo == 'nuevo') {
                 $CodDocumento = strtoupper(trim(strval($this->request->getPost('CodDocumento'))));
 
-                $documentos = (new Documento())->getDocumento($this->CodEmpresa, $CodDocumento, '', [], '', '', '');
+                $documentos = (new Documento())->getDocumento($this->CodEmpresa, $CodDocumento, '', '', [], '', '');
 
                 $existe = array('existe' => false);
 
@@ -460,7 +460,7 @@ class ComprobantesPago extends BaseController
                 $CodDocumento = strtoupper(trim(strval($this->request->getPost('CodDocumento'))));
                 $NotCodDocumento = strtoupper(trim(strval($this->request->getPost('NotCodDocumento'))));
 
-                $documentos = (new Documento())->getDocumento($this->CodEmpresa, $CodDocumento, '', [], '', 'UPPER(CodDocumento) != "' . $NotCodDocumento . '"', '');
+                $documentos = (new Documento())->getDocumento($this->CodEmpresa, $CodDocumento, '', '', [], 'UPPER(CodDocumento) != "' . $NotCodDocumento . '"', '');
 
                 $existe = array('existe' => false);
 

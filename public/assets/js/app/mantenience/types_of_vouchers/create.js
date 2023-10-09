@@ -16,13 +16,13 @@ function cambiarTabla() {
 
     if(Tipo == 1){
         $('#CodTVcaja').attr('disabled', false);
-        $('#CodTVcaja').html(autocompletado($('#CodTVcaja'), { Tipo: 5 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_"));
+        autocompletado($('#CodTVcaja'), { Tipo: 5 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_");
     }else if(Tipo == 3){
         $('#CodTVcaja').attr('disabled', false);
-        $('#CodTVcaja').html(autocompletado($('#CodTVcaja'), { Tipo: 6 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_"));
+        autocompletado($('#CodTVcaja'), { Tipo: 6 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_");
     }else if(Tipo == 7){
         $('#CodTVcaja').attr('disabled', false);
-        $('#CodTVcaja').html(autocompletado($('#CodTVcaja'), { Tipo: 6 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_"));
+        autocompletado($('#CodTVcaja'), { Tipo: 6 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_");
     }else{
         $('#CodTVcaja').attr('disabled', true);
         $('#CodTVcaja').html('');
@@ -253,7 +253,7 @@ function agregar() {
     autocompletado($('#Debe_Haber' + id_tipo_vouchers), { }, BASE_URL + "app/debeHaber/autocompletado");
     autocompletado($('#CodCcosto' + id_tipo_vouchers), { }, BASE_URL + "app/mantenience/cost_center/autocompletado");
     autocompletado($('#IdActivo' + id_tipo_vouchers), { }, BASE_URL + "app/mantenience/fixed_assets/autocompletado");
-    autocompletado($('#IdSocioN' + id_tipo_vouchers), { }, BASE_URL + "app/mantenience/business_partner/autocompletado_");
+    autocompletado($('#IdSocioN' + id_tipo_vouchers), { verDocumento: 'false' }, BASE_URL + "app/mantenience/business_partner/autocompletado_");
     autocompletado($('#Parametro' + id_tipo_vouchers), { }, BASE_URL + "app/parametro/autocompletado");
     autocompletado($('#CodMoneda' + id_tipo_vouchers), { }, BASE_URL + "app/moneda/autocompletado_");
 

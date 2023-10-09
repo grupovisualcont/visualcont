@@ -22,6 +22,10 @@
     background-color: #eaecf4 !important;
 }
 
+.border-none {
+    border: 0px solid transparent !important;
+}
+
 .border-rojo {
     border: 2px solid red !important;
 }
@@ -32,6 +36,14 @@
   
 .select2.select2-container {
     width: 100% !important;
+}
+
+.table-wrapper {
+    overflow: auto;
+}
+
+#tabla_ingreso_ventas {
+    white-space: nowrap;
 }
 
 @media (min-width: 576px) {

@@ -691,14 +691,37 @@ class SocioNegocios extends BaseController
         try {
             $post = $this->request->getPost();
 
-            $text = (new SocioNegocio())->getRazonSocial(true);
+            $verDocumento = true;
 
-            if (isset($post['search'])) {
-                $search = $post['search'];
+            if (isset($post['verDocumento']) && !empty($post['verDocumento'])) {
+                $verDocumento = filter_var($post['verDocumento'], FILTER_VALIDATE_BOOLEAN);
+            }
 
-                $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', [], $text . ' LIKE "%' . $search . '%"', '');
+            $text = (new SocioNegocio())->getRazonSocial($verDocumento);
+
+            if (isset($post['App']) && !empty($post['App']) && $post['App'] == 'Ventas') {
+                $join_Ventas = [
+                    array('tabla' => 'socionegocioxtipo sxt', 'on' => 'sxt.IdSocioN = socionegocio.IdSocioN', 'tipo' => 'inner'),
+                    array('tabla' => 'tiposocionegocio tsn', 'on' => 'tsn.CodTipoSN = sxt.CodTipoSN', 'tipo' => 'inner'),
+                ];
+
+                $where_Ventas = ' AND LOWER(tsn.DescTipoSN) = "cliente"';
+
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+
+                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', $join_Ventas, $text . ' LIKE "%' . $search . '%"' . $where_Ventas, '');
+                } else {
+                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', $join_Ventas, $where_Ventas, '');
+                }
             } else {
-                $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', [], '', '');
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+
+                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', [], $text . ' LIKE "%' . $search . '%"', '');
+                } else {
+                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', [], '', '');
+                }
             }
 
             echo json_encode($socio_negocio);

@@ -274,13 +274,13 @@ function verificarFormulario() {
         var index = 0;
 
         $(".Items").each(function (i) {
-            if ($('#CuentaDebe' + (i + 1)).val().length == 0) {
+            if ($('#CuentaDebe' + (i + 1)).val() == null) {
                 index = i + 1;
                 falta_cuenta_debe = true;
                 return false;
             }
 
-            if ($('#CuentaHaber' + (i + 1)).val().length == 0) {
+            if ($('#CuentaHaber' + (i + 1)).val() == null) {
                 index = i + 1;
                 falta_cuenta_haber = true;
                 return false;

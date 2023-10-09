@@ -26,7 +26,7 @@ class TipoPersona extends BaseController
             $post = $this->request->getPost();
 
             if (isset($post['CodTipPer']) && !empty($post['CodTipPer'])) {
-                $tipo_persona = (new ModelsTipoPersona())->getTipoPersona($post['CodTipPer'], 'CodTipPer AS id, DescPer AS text', [], '', '')[0];
+                $tipo_persona = (new ModelsTipoPersona())->getTipoPersona($post['CodTipPer'], 'CodTipPer AS id, DescPer AS text', [], '', '');
             } else {
                 if (isset($post['search'])) {
                     $search = $post['search'];

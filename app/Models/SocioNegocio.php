@@ -69,10 +69,14 @@ class SocioNegocio extends Model
         }
     }
 
-    public function getRazonSocial(bool $documento){
-        $documento = $documento ? 'CONCAT(IF(LENGTH(ruc) = 0 OR ruc IS NULL, docidentidad, ruc), " - ")' : '""';
+    public function getNumeroDocumento() : string {
+        return 'IF(LENGTH(socionegocio.ruc) = 0 OR socionegocio.ruc IS NULL, socionegocio.docidentidad, socionegocio.ruc)';
+    }
 
-        return 'CONCAT(' . $documento . ', IF(LENGTH(razonsocial) = 0, CONCAT(Nom1, " ", IF(LENGTH(Nom2) = 0, "", CONCAT(Nom2, " ")), ApePat, " ", ApeMat), razonsocial))';
+    public function getRazonSocial(bool $verDocumento) : string{
+        $documento = $verDocumento ? 'CONCAT(' . $this->getNumeroDocumento() . ', " - ")' : '""';
+
+        return 'CONCAT(' . $documento . ', IF(LENGTH(socionegocio.razonsocial) = 0, CONCAT(socionegocio.Nom1, " ", IF(LENGTH(socionegocio.Nom2) = 0, "", CONCAT(socionegocio.Nom2, " ")), socionegocio.ApePat, " ", socionegocio.ApeMat), razonsocial))';
     }
 
     public function agregar($data)

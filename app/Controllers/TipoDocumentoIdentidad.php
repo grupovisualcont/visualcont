@@ -27,7 +27,7 @@ class TipoDocumentoIdentidad extends BaseController
 
             if ($post['tipo'] == 'documento') {
                 if (isset($post['CodTipoDoc']) && !empty($post['CodTipoDoc'])) {
-                    $tipo_documento_identidad = (new ModelsTipoDocumentoIdentidad())->getTipoDocumentoIdentidad($post['CodTipoDoc'], 'CodTipoDoc AS id, DesDocumento AS text, TipoDato', [], '', '')[0];
+                    $tipo_documento_identidad = (new ModelsTipoDocumentoIdentidad())->getTipoDocumentoIdentidad($post['CodTipoDoc'], 'CodTipoDoc AS id, DesDocumento AS text, TipoDato', [], '', '');
                 } else {
                     if (isset($post['search'])) {
                         $search = $post['search'];

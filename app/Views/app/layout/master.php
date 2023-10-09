@@ -151,8 +151,10 @@
                                         disabled: item.disabled,
                                         class: item.class,
                                         TipoDato: item.TipoDato,
-                                        tipo_dato: item.tipo_dato,
-                                        RelacionCuenta: item.RelacionCuenta
+                                        TipoDatoS: item.TipoDatoS,
+                                        TipoVoucherCab: item.TipoVoucherCab,
+                                        RelacionCuenta: item.RelacionCuenta,
+                                        CodInterno: item.CodInterno
                                     }
                                 })
                             };
@@ -163,19 +165,27 @@
                             $(data.element).attr('data-tipo-dato', data.TipoDato);
                         }
 
-                        if (data.tipo_dato) {
-                            var tipo_dato = data.tipo_dato.split('|');
-                            var longitud = tipo_dato[2];
-                            var serie = tipo_dato[3];
-                            var es_numero = tipo_dato[4].length == 0 ? 'no' : 'si';
+                        if (data.TipoDatoS) {
+                            var TipoDatoS = data.TipoDatoS.split('|');
+                            var longitud = TipoDatoS[2];
+                            var serie = TipoDatoS[3];
+                            var es_numero = TipoDatoS[4].length == 0 ? 'no' : 'si';
 
                             $(data.element).attr('data-es-numero', es_numero);
                             $(data.element).attr('data-serie', serie);
                             $(data.element).attr('data-longitud', longitud);
                         }
 
-                        if(data.RelacionCuenta) {
+                        if (data.TipoVoucherCab) {
+                            $(data.element).attr('data-tipo', data.TipoVoucherCab);
+                        }
+
+                        if (data.RelacionCuenta) {
                             $(data.element).attr('data-relacion-cuenta', data.RelacionCuenta);
+                        }
+
+                        if (data.CodInterno) {
+                            $(data.element).attr('data-codigo-interno', data.CodInterno);
                         }
 
                         return data.text;
@@ -202,12 +212,13 @@
                         if (datos.options) {
                             $(id).html(datos.options);
                         } else {
-                            var option = new Option(datos.text, datos.id, true, true);
+                            var option = new Option(datos[0].text, datos[0].id, true, true);
 
-                            if (datos.TipoDato) option.setAttribute('data-tipo-dato', datos.TipoDato);
+                            if (datos[0].TipoDato) option.setAttribute('data-tipo-dato', datos[0].TipoDato);
 
-                            $(id).html(option);
-                            $(id).val(datos.id);
+                            if (datos[0].CodInterno) option.setAttribute('data-codigo-interno', datos[0].CodInterno);
+
+                            $(id).html(option).trigger('change');;
                         }
                     }
                 });

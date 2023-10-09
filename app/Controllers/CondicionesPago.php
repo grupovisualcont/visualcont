@@ -315,4 +315,27 @@ class CondicionesPago extends BaseController
         $items = (new CondicionPago())->autoCompletado($busqueda, $this->request->getCookie('empresa'));
         return $this->response->setJSON($items);
     }
+
+    public function autocompletado_()
+    {
+        try {
+            $post = $this->request->getPost();
+
+            if(isset($post['App']) && !empty($post['App']) && $post['App'] == 'Ventas'){
+                $Tipo = $post['Tipo'] ?? 168; 
+
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+    
+                    $documento = (new CondicionPago())->getCondicionPago($this->CodEmpresa, '', 'codcondpago AS id, desccondpago AS text', [ ], 'Tipo = ' . $Tipo . ' AND desccondpago LIKE "%' . $search . '%"', '');
+                } else {
+                    $documento = (new CondicionPago())->getCondicionPago($this->CodEmpresa, '', 'codcondpago AS id, desccondpago AS text', [ ], 'Tipo = ' . $Tipo, '');
+                }
+            }
+
+            echo json_encode($documento);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

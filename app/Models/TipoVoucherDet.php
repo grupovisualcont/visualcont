@@ -25,7 +25,7 @@ class TipoVoucherDet extends Model
         'IdSocioN'
     ];
 
-    public function getTipoVoucherDet($CodEmpresa, $Periodo, $CodCuenta, $CodTV, $columnas, $join, $where, $orderBy)
+    public function getTipoVoucherDet(string $CodEmpresa, string $Periodo, string $CodCuenta, string $CodTV, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;

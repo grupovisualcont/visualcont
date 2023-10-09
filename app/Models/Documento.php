@@ -23,7 +23,7 @@ class Documento extends Model
         'Estado'
     ];
 
-    public function getDocumento($CodEmpresa, $CodDocumento, $Origen, $join, $columnas, $where, $orderBy)
+    public function getDocumento(string $CodEmpresa, string $CodDocumento, string $Origen, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;
@@ -36,11 +36,11 @@ class Documento extends Model
                 }
             }
 
-            $result = $result->where('CodEmpresa', $CodEmpresa);
+            $result = $result->where('documento.CodEmpresa', $CodEmpresa);
 
-            if (!empty($CodDocumento)) $result = $result->where('UPPER(CodDocumento)', $CodDocumento);
+            if (!empty($CodDocumento)) $result = $result->where('UPPER(documento.CodDocumento)', $CodDocumento);
 
-            if (!empty($Origen)) $result = $result->where($Origen);
+            if (!empty($Origen)) $result = $result->where('documento.origen', $Origen);
 
             if (!empty($where)) $result = $result->where($where);
 

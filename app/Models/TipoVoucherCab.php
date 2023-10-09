@@ -24,7 +24,7 @@ class TipoVoucherCab extends Model
         'FlagInterno'
     ];
 
-    public function getTipoVoucherCab(string $CodEmpresa, string $CodTV, int $Tipo, string $columnas, array $join, string $where, string $orderBy)
+    public function getTipoVoucherCab(string $CodEmpresa, string $CodTV, array|int $Tipo, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
             $result = $this;
@@ -41,7 +41,9 @@ class TipoVoucherCab extends Model
 
             if (!empty($CodTV)) $result = $result->where('CodTV', $CodTV);
 
-            if (!empty($Tipo)) $result = $result->where('Tipo', $Tipo);
+            if (!is_array($Tipo) && !empty($Tipo)) $result = $result->where('Tipo', $Tipo);
+
+            if (is_array($Tipo) && count($Tipo) > 0) $result = $result->where('Tipo IN (' . implode(', ', $Tipo) . ')');
 
             if (!empty($where)) $result->where($where);
 

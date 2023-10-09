@@ -31,6 +31,55 @@ class MovimientoCab extends Model
         'FlagInterno'
     ];
 
+    public function getMovimientoCab(string $CodEmpresa, int $IdMov, string $columnas, array $join, array $parametros, string $where, string $orderBy)
+    {
+        try {
+            $result = $this;
+
+            if (!empty($columnas)) $result = $this->select($columnas);
+
+            if (is_array($join) && count($join) > 0) {
+                foreach ($join as $indice => $valor) {
+                    $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
+                }
+            }
+
+            $result = $result->where('movimientocab.CodEmpresa', $CodEmpresa);
+
+            if (!empty($IdMov)) $result = $result->where('movimientocab.IdMov', $IdMov);
+
+            if (is_array($parametros) && count($parametros) > 0) {
+
+                foreach ($parametros as $indice => $valor) {
+                    if (isset($valor['Periodo']) && !empty($valor['Periodo'])) $result = $result->where('movimientocab.Periodo', $valor['Periodo']);
+
+                    if (isset($valor['Mes']) && !empty($valor['Mes'])) $result = $result->where('movimientocab.Mes', $valor['Mes']);
+
+                    if (isset($valor['Codmov']) && !empty($valor['Codmov'])) $result = $result->where('movimientocab.Codmov', $valor['Codmov']);
+
+                    if (isset($valor['CodTV']) && !empty($valor['CodTV'])) $result = $result->where('movimientocab.CodTV', $valor['CodTV']);
+
+                    if (isset($valor['IdMovRef']) && !empty($valor['IdMovRef'])) $result = $result->where('movimientocab.IdMovRef', $valor['IdMovRef']);
+
+                    if (isset($valor['IdMovAplica']) && !empty($valor['IdMovAplica'])) $result = $result->where('movimientocab.IdMovAplica', $valor['IdMovAplica']);
+
+                    if (isset($valor['FecContable']) && !empty($valor['FecContable'])) $result = $result->where('DATE(movimientocab.FecContable)', $valor['FecContable']);
+
+                    if (isset($valor['Origen']) && !empty($valor['Origen'])) $result = $result->where('movimientocab.Origen IN ("' . implode('","', $valor['Origen']) . '")');
+                }
+            }
+
+            if (!empty($where)) $result = $result->where($where);
+
+            if (!empty($orderBy)) $result = $result->orderBy($orderBy);
+
+            $result = $result->asArray()->findAll();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 
     public function correlativo($periodo, $mes)
     {

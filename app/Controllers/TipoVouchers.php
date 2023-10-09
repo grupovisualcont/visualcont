@@ -211,7 +211,7 @@ class TipoVouchers extends BaseController
 
                     $option_activo_fijo = $valor['IdActivo'] ? '<option value="' . $activo_fijo['IdActivo'] . '">' . $activo_fijo['descripcion'] . '</option>' : '';
 
-                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, $valor['IdSocioN'] ?? 0, 'IdSocioN , ' . (new SocioNegocio())->getRazonSocial() . ' AS razonsocial', [], '', '')[0];
+                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, $valor['IdSocioN'] ?? 0, 'IdSocioN , ' . (new SocioNegocio())->getRazonSocial(false) . ' AS razonsocial', [], '', '')[0];
 
                     $option_socio_negocio = $valor['IdSocioN'] ? '<option value="' . $socio_negocio['IdSocioN'] . '">' . $socio_negocio['razonsocial'] . '</option>' : '';
 
@@ -604,7 +604,7 @@ class TipoVouchers extends BaseController
     public function consulta_detalles()
     {
         try {
-            $CodTV = $this->request->getPost('CodTV');
+            $CodTV = strval($this->request->getPost('CodTV'));
 
             $result = (new TipoVoucherDet())->getTipoVoucherDet(
                 $this->CodEmpresa,
@@ -743,12 +743,22 @@ class TipoVouchers extends BaseController
         try {
             $post = $this->request->getPost();
 
-            if (isset($post['search'])) {
-                $search = $post['search'];
-
-                $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT("(", CodTV, ") ", DescVoucher) AS text', [], 'DescVoucher LIKE "%' . $search . '%"', '');
-            } else {
-                $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT("(", CodTV, ") ", DescVoucher) AS text', [], '', '');
+            if(isset($post['App']) && !empty($post['App']) && $post['App'] == 'Ventas'){
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+    
+                    $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT(CodTV, " - ", DescVoucher) AS text, Tipo AS TipoVoucherCab', [], 'DescVoucher LIKE "%' . $search . '%"', '');
+                } else {
+                    $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT(CodTV, " - ", DescVoucher) AS text, Tipo AS TipoVoucherCab', [], '', '');
+                }
+            }else{
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+    
+                    $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT("(", CodTV, ") ", DescVoucher) AS text', [], 'DescVoucher LIKE "%' . $search . '%"', '');
+                } else {
+                    $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT("(", CodTV, ") ", DescVoucher) AS text', [], '', '');
+                }
             }
 
             echo json_encode($tipoVoucherCab);
