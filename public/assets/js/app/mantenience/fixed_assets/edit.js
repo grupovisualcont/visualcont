@@ -2,17 +2,17 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
-autocompletado($('#codTipoActivo'), {}, BASE_URL + "app/mantenience/asset_types/autocompletado");
-autocompletado($('#depresiacion'), { IdAnexo: 0, TipoAnexo: 15, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
-autocompletado($('#CtaCtableGasto'), { tipo: 'gasto' }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
-autocompletado($('#CtaCtableDepreciacion'), { tipo: 'depresiacion' }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
-autocompletado($('#estado'), { IdAnexo: 0, TipoAnexo: 1, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
-autocompletado($('#CodCcosto'), { }, BASE_URL + "app/mantenience/cost_center/autocompletado");
-autocompletado($('#codubigeo'), { tipo: 'ubigeo' }, BASE_URL + "app/ubigeo/autocompletado");
-autocompletado($('#IdCatalogo'), { IdAnexoS: 0, TipoAnexoS: 13 }, BASE_URL + "app/iAnexoSunat/autocompletado");
-autocompletado($('#IdTipoActivo'), { IdAnexoS: 0, TipoAnexoS: 18 }, BASE_URL + "app/iAnexoSunat/autocompletado");
-autocompletado($('#IdEstadoActivo'), { IdAnexoS: 0, TipoAnexoS: 19 }, BASE_URL + "app/iAnexoSunat/autocompletado");
-autocompletado($('#IdMetodo'), { IdAnexoS: 0, TipoAnexoS: 20 }, BASE_URL + "app/iAnexoSunat/autocompletado");
+autocompletado('#codTipoActivo', {}, BASE_URL + "app/mantenience/asset_types/autocompletado");
+autocompletado('#depresiacion', { IdAnexo: 0, TipoAnexo: 15, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado('#CtaCtableGasto', { tipo: 'gasto' }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+autocompletado('#CtaCtableDepreciacion', { tipo: 'depresiacion' }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+autocompletado('#estado', { IdAnexo: 0, TipoAnexo: 1, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado('#CodCcosto', { }, BASE_URL + "app/mantenience/cost_center/autocompletado");
+autocompletado('#codubigeo', { tipo: 'ubigeo' }, BASE_URL + "app/ubigeo/autocompletado");
+autocompletado('#IdCatalogo', { IdAnexoS: 0, TipoAnexoS: 13 }, BASE_URL + "app/iAnexoSunat/autocompletado");
+autocompletado('#IdTipoActivo', { IdAnexoS: 0, TipoAnexoS: 18 }, BASE_URL + "app/iAnexoSunat/autocompletado");
+autocompletado('#IdEstadoActivo', { IdAnexoS: 0, TipoAnexoS: 19 }, BASE_URL + "app/iAnexoSunat/autocompletado");
+autocompletado('#IdMetodo', { IdAnexoS: 0, TipoAnexoS: 20 }, BASE_URL + "app/iAnexoSunat/autocompletado");
 
 function verificarFormulario() {
     var descripcion = $('#descripcion').val();

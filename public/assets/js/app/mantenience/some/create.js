@@ -2,8 +2,8 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
-autocompletado($('.CodInterno'), { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
-autocompletado($('.Estado'), { IdAnexo: 0, TipoAnexo: 1, OtroDato: '', Value: 'CodInterno' }, BASE_URL + "app/attached/autocompletado");
+autocompletado('.CodInterno', { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+autocompletado('.Estado', { IdAnexo: 0, TipoAnexo: 1, OtroDato: '', Value: 'CodInterno' }, BASE_URL + "app/attached/autocompletado");
 
 function cambiarPorTipo() {
     var Tipo = parseInt($('#Tipo option:selected').val());

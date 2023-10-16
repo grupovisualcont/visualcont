@@ -419,4 +419,12 @@
     </div>
 </div>
 
+<script>
+    var datos_ruc_CodTipPer = '<?= $datos_ruc['CodTipPer'] ?>';
+    var datos_ruc_CodTipoDoc = '<?= $datos_ruc['CodTipoDoc'] ?>';
+    var datos_ruc_N_tip = '<?= $datos_ruc['N_tip'] ?>';
+    var datos_extranjero_CodTipPer = '<?= $datos_extranjero['CodTipPer'] ?>';
+    var datos_extranjero_CodTipoDoc = '<?= $datos_extranjero['CodTipoDoc'] ?>';
+</script>
+
 <?= $this->endSection() ?>

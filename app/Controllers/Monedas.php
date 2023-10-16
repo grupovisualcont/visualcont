@@ -14,7 +14,7 @@ class Monedas extends BaseController
 
     public function __construct()
     {
-        $this->page = 'Activos Fijos';
+        $this->page = 'Moneda';
         $this->CodEmpresa = (new Empresa())->getCodEmpresa();
 
         $this->db = \Config\Database::connect();
@@ -32,14 +32,26 @@ class Monedas extends BaseController
         try {
             $post = $this->request->getPost();
 
-            if (isset($post['search'])) {
-                $search = $post['search'];
+            if(isset($post['App']) && !empty($post['App']) && $post['App'] == 'Ventas'){
+                $text = $post['text'] ?? 'DescMoneda';
 
-                $moneda = (new Moneda())->getMoneda('', 'CodMoneda AS id, DescMoneda AS text', [], 'DescMoneda LIKE "%' . $search . '%"', '');
-            } else {
-                $moneda = (new Moneda())->getMoneda('', 'CodMoneda AS id, DescMoneda AS text', [], '', '');
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+    
+                    $moneda = (new Moneda())->getMoneda('', 'CodMoneda AS id, ' . $text . ' AS text', [], $text . ' LIKE "%' . $search . '%"', '');
+                } else {
+                    $moneda = (new Moneda())->getMoneda('', 'CodMoneda AS id, ' . $text . ' AS text', [], '', '');
+                }
+            }else{
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+    
+                    $moneda = (new Moneda())->getMoneda('', 'CodMoneda AS id, DescMoneda AS text', [], 'DescMoneda LIKE "%' . $search . '%"', '');
+                } else {
+                    $moneda = (new Moneda())->getMoneda('', 'CodMoneda AS id, DescMoneda AS text', [], '', '');
+                }
             }
-
+            
             echo json_encode($moneda);
         } catch (\Throwable $th) {
             throw $th;

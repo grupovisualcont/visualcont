@@ -2,8 +2,8 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
-autocompletado($('.Niveles1'), { length: 2 }, BASE_URL + "app/conceptoPres/autocompletado");
-autocompletado($('#CodCuenta'), { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+autocompletado('.Niveles1', { length: 2 }, BASE_URL + "app/conceptoPres/autocompletado");
+autocompletado('#CodCuenta', { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
 
 function cambiarPorNivel() {
     var Nivel = (parseInt($('#Tipo option:selected').val()) + 1);

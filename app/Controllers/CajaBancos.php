@@ -74,7 +74,7 @@ class CajaBancos extends BaseController
                     }
                 }
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/box_banks/create.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/box_banks/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/box_banks/create', [
                     'codigo_maximo' => $codigo_maximo,
@@ -121,11 +121,7 @@ class CajaBancos extends BaseController
 
                 $cheques = (new Cheque())->getCheque($this->CodEmpresa, $CodBanco, '', [], '', '');
 
-                $script = "
-                    var id_cheque = " . (count($cheques) + 1) . ";
-                ";
-
-                $script = (new Empresa())->generar_script($script, ['app/mantenience/box_banks/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/box_banks/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/box_banks/edit', [
                     'banco' => $banco,

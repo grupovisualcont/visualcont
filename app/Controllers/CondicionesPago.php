@@ -72,7 +72,7 @@ class CondicionesPago extends BaseController
 
                 $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/payment_condition/create.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/payment_condition/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/payment_condition/create', [
                     'codigo_maximo' => $codigo_maximo,
@@ -103,7 +103,7 @@ class CondicionesPago extends BaseController
 
                 $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/payment_condition/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/payment_condition/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/payment_condition/edit', [
                     'condicion_pago' => $condicion_pago,
@@ -324,12 +324,16 @@ class CondicionesPago extends BaseController
             if(isset($post['App']) && !empty($post['App']) && $post['App'] == 'Ventas'){
                 $Tipo = $post['Tipo'] ?? 168; 
 
+                $whereTipo = isset($post['Tipo']) && !empty($post['Tipo']) ? 'Tipo = ' . $Tipo : '';
+
                 if (isset($post['search'])) {
                     $search = $post['search'];
+
+                    $where = !empty($whereTipo) ? $whereTipo . ' AND desccondpago LIKE "%' . $search . '%"' : 'desccondpago LIKE "%' . $search . '%"';
     
-                    $documento = (new CondicionPago())->getCondicionPago($this->CodEmpresa, '', 'codcondpago AS id, desccondpago AS text', [ ], 'Tipo = ' . $Tipo . ' AND desccondpago LIKE "%' . $search . '%"', '');
+                    $documento = (new CondicionPago())->getCondicionPago($this->CodEmpresa, '', 'codcondpago AS id, desccondpago AS text', [ ], $where , '');
                 } else {
-                    $documento = (new CondicionPago())->getCondicionPago($this->CodEmpresa, '', 'codcondpago AS id, desccondpago AS text', [ ], 'Tipo = ' . $Tipo, '');
+                    $documento = (new CondicionPago())->getCondicionPago($this->CodEmpresa, '', 'codcondpago AS id, desccondpago AS text', [ ], '', '');
                 }
             }
 

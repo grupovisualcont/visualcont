@@ -3,7 +3,7 @@ $('select').select2({
     dropdownAutoWidth: true
 });
 
-autocompletado($('#CodEFE'), { CodEFE: 'true' }, BASE_URL + "app/attached/autocompletado");
+autocompletado('#CodEFE', { CodEFE: 'true' }, BASE_URL + "app/attached/autocompletado");
 
 var id_tipo_vouchers = 1;
 var td_tipo_1 = '';
@@ -16,13 +16,13 @@ function cambiarTabla() {
 
     if(Tipo == 1){
         $('#CodTVcaja').attr('disabled', false);
-        autocompletado($('#CodTVcaja'), { Tipo: 5 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_");
+        autocompletado('#CodTVcaja', { Tipo: 5 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_");
     }else if(Tipo == 3){
         $('#CodTVcaja').attr('disabled', false);
-        autocompletado($('#CodTVcaja'), { Tipo: 6 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_");
+        autocompletado('#CodTVcaja', { Tipo: 6 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_");
     }else if(Tipo == 7){
         $('#CodTVcaja').attr('disabled', false);
-        autocompletado($('#CodTVcaja'), { Tipo: 6 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_");
+        autocompletado('#CodTVcaja', { Tipo: 6 }, BASE_URL + "app/mantenience/types_of_vouchers/autocompletado_");
     }else{
         $('#CodTVcaja').attr('disabled', true);
         $('#CodTVcaja').html('');
@@ -249,13 +249,13 @@ function agregar() {
 
     $('#tabla_tipo_vouchers > tbody').append(nuevo);
 
-    autocompletado($('#CodCuenta' + id_tipo_vouchers), { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
-    autocompletado($('#Debe_Haber' + id_tipo_vouchers), { }, BASE_URL + "app/debeHaber/autocompletado");
-    autocompletado($('#CodCcosto' + id_tipo_vouchers), { }, BASE_URL + "app/mantenience/cost_center/autocompletado");
-    autocompletado($('#IdActivo' + id_tipo_vouchers), { }, BASE_URL + "app/mantenience/fixed_assets/autocompletado");
-    autocompletado($('#IdSocioN' + id_tipo_vouchers), { verDocumento: 'false' }, BASE_URL + "app/mantenience/business_partner/autocompletado_");
-    autocompletado($('#Parametro' + id_tipo_vouchers), { }, BASE_URL + "app/parametro/autocompletado");
-    autocompletado($('#CodMoneda' + id_tipo_vouchers), { }, BASE_URL + "app/moneda/autocompletado_");
+    autocompletado('#CodCuenta' + id_tipo_vouchers, { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+    autocompletado('#Debe_Haber' + id_tipo_vouchers, { }, BASE_URL + "app/debeHaber/autocompletado");
+    autocompletado('#CodCcosto' + id_tipo_vouchers, { }, BASE_URL + "app/mantenience/cost_center/autocompletado");
+    autocompletado('#IdActivo' + id_tipo_vouchers, { }, BASE_URL + "app/mantenience/fixed_assets/autocompletado");
+    autocompletado('#IdSocioN' + id_tipo_vouchers, { verDocumento: 'false' }, BASE_URL + "app/mantenience/business_partner/autocompletado_");
+    autocompletado('#Parametro' + id_tipo_vouchers, { }, BASE_URL + "app/parametro/autocompletado");
+    autocompletado('#CodMoneda' + id_tipo_vouchers, { }, BASE_URL + "app/moneda/autocompletado_");
 
     switch (Tipo) {
         case 0:

@@ -33,7 +33,7 @@ class TipoVouchers extends BaseController
             if ((new Empresa())->verificar_inicio_sesion()) {
                 $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', 0, '', [], '', '');
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/types_of_vouchers/index.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/types_of_vouchers/index.js']);
 
                 return viewApp($this->page, 'app/mantenience/types_of_vouchers/index', [
                     'tipoVoucherCab' => $tipoVoucherCab,
@@ -60,7 +60,7 @@ class TipoVouchers extends BaseController
                     $options_tipos .= '<option value="' . $indice . '">' . $valor . '</option>';
                 }
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/types_of_vouchers/create.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/types_of_vouchers/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/types_of_vouchers/create', [
                     'options_tipos' => $options_tipos,
@@ -285,14 +285,7 @@ class TipoVouchers extends BaseController
 
                 $option_CodTVcaja = $tipoVoucherCab['CodTVcaja'] ? '<option value="' . $CodTVcaja['CodTV'] . '">' . $CodTVcaja['DescVoucher'] . '</option>' : '';
 
-                $script = "
-                    var id_tipo_vouchers = " . (count($tipoVoucherDet) + 1) . ";
-                    $('#CodTVcaja').val('" . $tipoVoucherCab['CodTVcaja'] . "');
-                    var tipoVoucherCab_CodTV = '" . $tipoVoucherCab['CodTV'] . "';
-                    var tipoVoucherCab_DescVoucher = '" . $tipoVoucherCab['DescVoucher'] . "';
-                ";
-
-                $script = (new Empresa())->generar_script($script, ['app/mantenience/types_of_vouchers/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/types_of_vouchers/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/types_of_vouchers/edit', [
                     'tipoVoucherCab' => $tipoVoucherCab,
@@ -747,7 +740,7 @@ class TipoVouchers extends BaseController
                 if (isset($post['search'])) {
                     $search = $post['search'];
     
-                    $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT(CodTV, " - ", DescVoucher) AS text, Tipo AS TipoVoucherCab', [], 'DescVoucher LIKE "%' . $search . '%"', '');
+                    $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT(CodTV, " - ", DescVoucher) AS text, Tipo AS TipoVoucherCab', [], 'CONCAT(CodTV, " - ", DescVoucher) LIKE "%' . $search . '%"', '');
                 } else {
                     $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT(CodTV, " - ", DescVoucher) AS text, Tipo AS TipoVoucherCab', [], '', '');
                 }
@@ -755,7 +748,7 @@ class TipoVouchers extends BaseController
                 if (isset($post['search'])) {
                     $search = $post['search'];
     
-                    $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT("(", CodTV, ") ", DescVoucher) AS text', [], 'DescVoucher LIKE "%' . $search . '%"', '');
+                    $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT("(", CodTV, ") ", DescVoucher) AS text', [], 'CONCAT("(", CodTV, ") ", DescVoucher) LIKE "%' . $search . '%"', '');
                 } else {
                     $tipoVoucherCab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, '', $post['Tipo'], 'CodTV AS id, CONCAT("(", CodTV, ") ", DescVoucher) AS text', [], '', '');
                 }

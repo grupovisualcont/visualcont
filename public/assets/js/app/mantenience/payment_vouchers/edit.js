@@ -2,9 +2,9 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
-autocompletado($('#CodClaseDoc'), { }, BASE_URL + "app/claseDoc/autocompletado");
-autocompletado($('#CodSunat'), { }, BASE_URL + "app/tipoComprobante/autocompletado");
-autocompletado($('#Estado'), { IdAnexo: 0, TipoAnexo: 1, OtroDato: '', Value: 'CodInterno' }, BASE_URL + "app/attached/autocompletado");
+autocompletado('#CodClaseDoc', { }, BASE_URL + "app/claseDoc/autocompletado");
+autocompletado('#CodSunat', { }, BASE_URL + "app/tipoComprobante/autocompletado");
+autocompletado('#Estado', { IdAnexo: 0, TipoAnexo: 1, OtroDato: '', Value: 'CodInterno' }, BASE_URL + "app/attached/autocompletado");
 
 setNumeroDocumento();
 

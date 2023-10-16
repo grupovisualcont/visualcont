@@ -11,7 +11,7 @@
                     <i class="fa fa-bars"></i>
                 </button>
                 <div class="dropdown-menu" x-placement="left-start">
-                    <a class="dropdown-item" href="<?= base_url('app/movements/sales/create2') ?>">
+                    <a class="dropdown-item" href="<?= base_url('app/movements/sales/create') ?>">
                         <i class="fas fa-plus-circle"></i> Nuevo
                     </a>
                     <a class="dropdown-item" href="<?= base_url('app/movements/sales/import') ?>">
@@ -68,10 +68,10 @@
                                         <i class="fa fa-bars"></i>
                                     </button>
                                     <div class="dropdown-menu" x-placement="left-start">
-                                        <a class="dropdown-item" href="<?= base_url('app/movements/sales/editar/' . $valor['IdMov']) ?>">
+                                        <a class="dropdown-item" href="<?= base_url('app/movements/sales/edit/' . $valor['IdMov']) ?>">
                                             <i class="fa fa-edit"></i> Editar
                                         </a>
-                                        <a class="dropdown-item" href="<?= base_url('app/movements/sales/eliminar/' . $valor['IdMov']) ?>" onclick="return confirm('¿Está seguro de eliminar?')">
+                                        <a class="dropdown-item" href="<?= base_url('app/movements/sales/delete/' . $valor['IdMov']) ?>" onclick="return confirm('¿Está seguro de eliminar?')">
                                             <i class="fa fa-trash"></i> Eliminar
                                         </a>
                                     </div>

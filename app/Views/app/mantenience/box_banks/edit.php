@@ -215,4 +215,8 @@
     </div>
 </div>
 
+<script>
+    var id_cheque = <?= (count($cheques) + 1) ?>;
+</script>
+
 <?= $this->endSection() ?>

@@ -41,6 +41,14 @@ $routes->group('app', static function ($routes) {
 
     $routes->post('conceptoPres/autocompletado', 'ConceptoPres::autocompletado');
 
+    $routes->post('documento/autocompletado', 'Documento::autocompletado');
+
+    $routes->post('tipoPago/autocompletado', 'TipoPagos::autocompletado');
+
+    $routes->post('detraccion/autocompletado', 'Detracciones::autocompletado');
+
+    $routes->post('declararPeriodo/autocompletado', 'DeclararPeriodos::autocompletado');
+
     $routes->group('mantenience', static function ($routes) {
 
         $routes->group('business_partner', static function ($routes) {
@@ -218,17 +226,32 @@ $routes->group('app', static function ($routes) {
         $routes->group('sales', static function ($routes) {
 
             $routes->get('index', 'Ventas::index');
-            $routes->get('create2', 'Ventas::create');
+            $routes->get('create', 'Ventas::create');
             $routes->post('save', 'Ventas::save');
             $routes->get('edit/(:any)', 'Ventas::edit/$1');
             $routes->post('update', 'Ventas::update');
             $routes->get('delete/(:any)', 'Ventas::delete/$1');
+            $routes->get('import', 'Ventas::import');
             $routes->get('excel/(:any)', 'Ventas::excel/$1');
             $routes->get('pdf/(:any)', 'Ventas::pdf/$1');
             $routes->post('consulta_detalles_index', 'Ventas::consulta_detalles_index');
             $routes->post('consulta_detalles_PA', 'Ventas::consulta_detalles_PA');
             $routes->post('parametros_CodTV', 'Ventas::parametros_CodTV');
             $routes->post('consulta_tipo_cambio', 'Ventas::consulta_tipo_cambio');
+            $routes->post('consulta_sunat', 'Ventas::consulta_sunat');
+            $routes->post('registrar_socio_negocio', 'Ventas::registrar_socio_negocio');
+            $routes->post('consulta_movimientos_nota_credito', 'Ventas::consulta_movimientos_nota_credito');
+            $routes->post('consulta_movimiento', 'Ventas::consulta_movimiento');
+            $routes->post('seleccionar_movimiento_existente', 'Ventas::seleccionar_movimiento_existente');
+            $routes->post('seleccionar_movimiento_manual', 'Ventas::seleccionar_movimiento_manual');
+            $routes->post('consulta_codigo_cuenta', 'Ventas::consulta_codigo_cuenta');
+            $routes->post('consulta_codigo', 'Ventas::consulta_codigo');
+            $routes->post('consulta_tipo_vouchers', 'Ventas::consulta_tipo_vouchers');
+            $routes->post('agregar_mas_detalle_fila', 'Ventas::agregar_mas_detalle_fila');
+            $routes->post('historial_importar', 'Ventas::historial_importar');
+            $routes->post('importar_registrar_socio_negocio', 'Ventas::importar_registrar_socio_negocio');
+            $routes->post('consulta_importar', 'Ventas::consulta_importar');
+
         });
     });
 });

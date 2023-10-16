@@ -67,13 +67,13 @@ class SocioNegocios extends BaseController
     {
         try {
             if ((new Empresa())->verificar_inicio_sesion()) {
-                $predeterminados = (new Predeterminado())->getPredeterminado('CodTipPer_sn, CodTipoDoc_sn, IdCondicion_sn, CodUbigeo_sn, IdEstadoSN');
+                $predeterminado = (new Predeterminado())->getPredeterminado('CodTipPer_sn, CodTipoDoc_sn, IdCondicion_sn, CodUbigeo_sn, IdEstadoSN');
 
-                $tipo_persona = (new TipoPersona())->getTipoPersona($predeterminados->CodTipPer_sn, '', [], '', '')[0];
+                $tipo_persona = (new TipoPersona())->getTipoPersona($predeterminado['CodTipPer_sn'], '', [], '', '')[0];
 
                 $option_tipo_persona = '<option value="' . $tipo_persona['CodTipPer'] . '">' . $tipo_persona['DescPer'] . '</option>';
 
-                $tipo_documento_identidad = (new TipoDocumentoIdentidad())->getTipoDocumentoIdentidad($predeterminados->CodTipoDoc_sn, '', [], '', '')[0];
+                $tipo_documento_identidad = (new TipoDocumentoIdentidad())->getTipoDocumentoIdentidad($predeterminado['CodTipoDoc_sn'], '', [], '', '')[0];
 
                 $option_tipo_documento_identidad = '<option data-tipo-dato="' . $tipo_documento_identidad['TipoDato'] . '" value="' . $tipo_documento_identidad['CodTipoDoc'] . '">' . $tipo_documento_identidad['DesDocumento'] . '</option>';
 
@@ -85,7 +85,7 @@ class SocioNegocios extends BaseController
 
                 $option_pais = '<option value="' . $pais['codubigeo'] . '">' . $pais['descubigeo'] . '</option>';
 
-                $ubigeo = (new Ubigeo())->getUbigeoQuery($this->db, $predeterminados->CodUbigeo_sn, '')[0];
+                $ubigeo = (new Ubigeo())->getUbigeoQuery($this->db, $predeterminado['CodUbigeo_sn'], '')[0];
 
                 $option_ubigeo = '<option value="' . $ubigeo->id . '">' . htmlspecialchars($ubigeo->text, ENT_QUOTES) . '</option>';
 
@@ -93,7 +93,7 @@ class SocioNegocios extends BaseController
 
                 $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $tipos_socio_negocio = (new TipoSocioNegocio())->getTipoSocioNegocio();
+                $tipos_socio_negocio = (new TipoSocioNegocio())->getTipoSocioNegocio('', '', [], '', '');
 
                 $checkbox_tipos_socio_negocio = '';
 
@@ -101,7 +101,7 @@ class SocioNegocios extends BaseController
                     $checkbox_tipos_socio_negocio .= '
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" name="tipo_socio_negocio[]" value="' . $valor->CodTipoSN . '">' . $valor->DescTipoSN . '
+                                <input type="checkbox" class="form-check-input" name="tipo_socio_negocio[]" value="' . $valor['CodTipoSN'] . '">' . $valor['DescTipoSN'] . '
                             </label>
                         </div>
                     ';
@@ -123,15 +123,7 @@ class SocioNegocios extends BaseController
                     $datos_extranjero = ['CodTipPer' => '03', 'CodTipoDoc' => $datos_extranjero[0]['CodTipoDoc']];
                 }
 
-                $script = "
-                    var datos_ruc_CodTipPer = '" . $datos_ruc['CodTipPer'] . "';
-                    var datos_ruc_CodTipoDoc = '" . $datos_ruc['CodTipoDoc'] . "';
-                    var datos_ruc_N_tip = '" . $datos_ruc['N_tip'] . "';
-                    var datos_extranjero_CodTipPer = '" . $datos_extranjero['CodTipPer'] . "';
-                    var datos_extranjero_CodTipoDoc = '" . $datos_extranjero['CodTipoDoc'] . "';
-                ";
-
-                $script = (new Empresa())->generar_script($script, ['app/mantenience/business_partner/create.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/business_partner/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/business_partner/create', [
                     'option_tipo_persona' => $option_tipo_persona,
@@ -141,6 +133,8 @@ class SocioNegocios extends BaseController
                     'option_ubigeo' => $option_ubigeo,
                     'option_estado' => $option_estado,
                     'checkbox_tipos_socio_negocio' => $checkbox_tipos_socio_negocio,
+                    'datos_ruc' => $datos_ruc,
+                    'datos_extranjero' => $datos_extranjero,
                     'typeOrder' => 'num',
                     'script' => $script
                 ]);
@@ -202,19 +196,19 @@ class SocioNegocios extends BaseController
 
                 $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $tipos_socio_negocio = (new TipoSocioNegocio())->getTipoSocioNegocio();
+                $tipos_socio_negocio = (new TipoSocioNegocio())->getTipoSocioNegocio('', '', [], '', '');
 
                 $checkbox_tipos_socio_negocio = '';
 
                 foreach ($tipos_socio_negocio as $indice => $valor) {
                     $checked = '';
 
-                    if (in_array($valor->CodTipoSN, $socio_negocio_tipo_array)) $checked = 'checked';
+                    if (in_array($valor['CodTipoSN'], $socio_negocio_tipo_array)) $checked = 'checked';
 
                     $checkbox_tipos_socio_negocio .= '
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" name="tipo_socio_negocio[]" value="' . $valor->CodTipoSN . '" ' . $checked . '>' . $valor->DescTipoSN . '
+                                <input type="checkbox" class="form-check-input" name="tipo_socio_negocio[]" value="' . $valor['CodTipoSN'] . '" ' . $checked . '>' . $valor['DescTipoSN'] . '
                             </label>
                         </div>
                     ';
@@ -264,22 +258,9 @@ class SocioNegocios extends BaseController
                     $datos_extranjero = ['CodTipPer' => '03', 'CodTipoDoc' => $datos_extranjero[0]['CodTipoDoc']];
                 }
 
-                $script = "
-                    var id_banco = " . (count($socio_negocio_banco) + 1) . ";
-                    var datos_ruc_CodTipPer = '" . $datos_ruc['CodTipPer'] . "';
-                    var datos_ruc_CodTipoDoc = '" . $datos_ruc['CodTipoDoc'] . "';
-                    var datos_ruc_N_tip = '" . $datos_ruc['N_tip'] . "';
-                    var datos_extranjero_CodTipPer = '" . $datos_extranjero['CodTipPer'] . "';
-                    var datos_extranjero_CodTipoDoc = '" . $datos_extranjero['CodTipoDoc'] . "';
-                    var socio_negocio_ruc = '" . $socio_negocio['ruc'] . "';
-                    var socio_negocio_docidentidad = '" . $socio_negocio['docidentidad'] . "';
-                    var socio_negocio_razonsocial = '" . str_replace("'", "\'", $socio_negocio['razonsocial']) . "';
-                ";
-
-                $script = (new Empresa())->generar_script($script, ['app/mantenience/business_partner/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/business_partner/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/business_partner/edit', [
-                    'codigo_socio_negocio' => $IdSocioN,
                     'socio_negocio' => $socio_negocio,
                     'socio_negocio_banco' => $socio_negocio_banco,
                     'option_tipo_persona' => $option_tipo_persona,
@@ -294,6 +275,8 @@ class SocioNegocios extends BaseController
                     'option_tipo_documento_identidad_banco' => $option_tipo_documento_identidad_banco,
                     'options_banco' => $options_banco,
                     'options_tipo_cuenta' => $options_tipo_cuenta,
+                    'datos_ruc' => $datos_ruc,
+                    'datos_extranjero' => $datos_extranjero,
                     'typeOrder' => 'num',
                     'script' => $script
                 ]);
@@ -705,22 +688,26 @@ class SocioNegocios extends BaseController
                     array('tabla' => 'tiposocionegocio tsn', 'on' => 'tsn.CodTipoSN = sxt.CodTipoSN', 'tipo' => 'inner'),
                 ];
 
-                $where_Ventas = ' AND LOWER(tsn.DescTipoSN) = "cliente"';
+                $where = 'LOWER(tsn.DescTipoSN) = "cliente"';
 
                 if (isset($post['search'])) {
+                    $where_Ventas = ' AND ' . $where;
+
                     $search = $post['search'];
 
-                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', $join_Ventas, $text . ' LIKE "%' . $search . '%"' . $where_Ventas, '');
+                    $where = '(' . (new SocioNegocio())->getNumeroDocumento() . ' LIKE "' . $search . '%" OR ' . (new SocioNegocio())->getRazonSocial(false) . ' LIKE "%' . $search . '%")' . $where_Ventas;
+
+                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'socionegocio.IdSocioN AS id, ' . $text . ' AS text, ' . (new SocioNegocio())->getNumeroDocumento() . ' AS NumeroDocumento, ' . (new SocioNegocio())->getRazonSocial(false) . ' AS RazonSocial', $join_Ventas, $where, 'socionegocio.IdSocioN ASC');
                 } else {
-                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', $join_Ventas, $where_Ventas, '');
+                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'socionegocio.IdSocioN AS id, ' . $text . ' AS text, ' . (new SocioNegocio())->getNumeroDocumento() . ' AS NumeroDocumento, ' . (new SocioNegocio())->getRazonSocial(false) . ' AS RazonSocial', $join_Ventas, $where, 'socionegocio.IdSocioN ASC');
                 }
             } else {
                 if (isset($post['search'])) {
                     $search = $post['search'];
 
-                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', [], $text . ' LIKE "%' . $search . '%"', '');
+                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', [], $text . ' LIKE "%' . $search . '%"', 'socionegocio.IdSocioN ASC');
                 } else {
-                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', [], '', '');
+                    $socio_negocio = (new SocioNegocio())->getSocioNegocio($this->CodEmpresa, 0, 'IdSocioN AS id, ' . $text . ' AS text', [], '', 'socionegocio.IdSocioN ASC');
                 }
             }
 

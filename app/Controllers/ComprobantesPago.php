@@ -30,12 +30,12 @@ class ComprobantesPago extends BaseController
                 $documentos = (new Documento())->getDocumento(
                     $this->CodEmpresa,
                     '',
-                    'origen = "VE" OR origen = "CO"',
+                    '',
                     'documento.*, cl.DescClaseDoc, IF(origen = "VE", "Venta", "Compra") AS Tipo',
                     [
                         array('tabla' => 'clasedoc cl', 'on' => 'cl.CodClaseDoc = documento.CodClaseDoc', 'tipo' => 'left')
                     ],
-                    '',
+                    'origen = "VE" OR origen = "CO"',
                     'origen, CodDocumento ASC'
                 );
 
@@ -85,9 +85,9 @@ class ComprobantesPago extends BaseController
 
                 $estado = (new Anexo())->getAnexo($this->CodEmpresa, 11, 0, '', '', [], '', '')[0];
 
-                $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
+                $option_estado = '<option value="' . $estado['CodInterno'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/payment_vouchers/create.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/payment_vouchers/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/payment_vouchers/create', [
                     'option_clase_documento' => $option_clase_documento,
@@ -157,11 +157,7 @@ class ComprobantesPago extends BaseController
 
                 $option_estado = '<option value="' . $estado['CodInterno'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $script = "
-                    var documento_CodDocumento = '" . $documento['CodDocumento'] . "';
-                ";
-
-                $script = (new Empresa())->generar_script($script, ['app/mantenience/payment_vouchers/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/payment_vouchers/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/payment_vouchers/edit', [
                     'documento' => $documento,

@@ -41,4 +41,8 @@
     </div>
 </div>
 
+<script>
+    var tipo_activo_fijo_descTipoActivo = '<?= $tipo_activo_fijo['descTipoActivo'] ?>';
+</script>
+
 <?= $this->endSection() ?>

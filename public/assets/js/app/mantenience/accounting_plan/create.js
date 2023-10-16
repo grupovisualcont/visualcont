@@ -161,8 +161,8 @@ function nuevaFilaAmarre() {
 
     $('#tabla_amarres > tbody').append(nuevo);
 
-    autocompletado($('#CuentaDebe' + id_amarre), {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
-    autocompletado($('#CuentaHaber' + id_amarre), {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+    autocompletado('#CuentaDebe' + id_amarre, {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+    autocompletado('#CuentaHaber' + id_amarre, {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
 
     id_amarre++;
 }

@@ -20,9 +20,13 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <form id="form" class="mt-3" method="POST" action="<?= base_url('app/movements/sales/save') ?>">
+                        <form id="form" class="mt-3" method="POST" action="<?= base_url('app/movements/sales/update') ?>">
+                            <input type="hidden" name="IdMov" id="IdMov" value="<?= $movimiento_cab['IdMov'] ?>" />
+                            <input type="hidden" name="IdMovRef" value="<?= $IdMovRef ?>" />
+                            <input type="hidden" name="IdMovAplica" value="<?= count($movimiento_cab_referencia) > 0 ? $movimiento_cab_referencia[0]['IdMov'] : '' ?>" />
                             <input type="hidden" name="CodEmpresa" value="<?= $_COOKIE['empresa'] ?>" />
                             <input type="hidden" name="Banco" id="Banco" value="" />
+                            <input type="hidden" name="CodTV" value="<?= $movimiento_cab['CodTV'] ?>" />
                             <div class="row">
                                 <div class="col-xl-4 col-lg-4 col-md-12 col-12">
                                     <div class="form-group row">
@@ -30,7 +34,7 @@
                                             Tipo
                                         </label>
                                         <div class="col-xl-10 col-lg-10 col-12">
-                                            <select name="CodTV" id="CodTV" class="form-select form-select-sm form-select-vc" onchange="cambiar_condicion_pago()" autofocus>
+                                            <select name="CodTV" id="CodTV" class="form-select form-select-sm form-select-vc" onchange="cambiar_condicion_pago()" disabled>
                                                 <?= $option_tipo_voucher ?>
                                             </select>
                                         </div>
@@ -42,7 +46,7 @@
                                             Voucher
                                         </label>
                                         <div class="col-xl-9 col-lg-9 col-12">
-                                            <input type="text" name="Codmov" id="Codmov" class="form-control form-control-sm form-control-vc" value="<?= $codigo_voucher_maximo ?>" onfocus="cambiar_codigo()" onfocusout="cambiar_codigo()" maxlength="20">
+                                            <input type="text" name="Codmov" id="Codmov" class="form-control form-control-sm form-control-vc" value="<?= $movimiento_cab['Codmov'] ?>" onfocus="cambiar_codigo()" onfocusout="cambiar_codigo()" maxlength="20" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -53,7 +57,7 @@
                                         </label>
                                         <div class="col-xl-8 col-lg-8 col-12">
                                             <div class="input-group input-group-sm input-group-vc">
-                                                <input type="text" name="FecContable" id="FecContable" class="form-control mydatepicker" placeholder="dd/mm/yyyy" value="<?= date('d/m/Y') ?>" onchange="cambiar_fecha_contable()">
+                                                <input type="text" name="FecContable" id="FecContable" class="form-control mydatepicker" placeholder="dd/mm/yyyy" value="<?= date('d/m/Y', strtotime($movimiento_cab['FecContable'])) ?>" onchange="cambiar_fecha_contable()" disabled>
                                                 <span class="input-group-text">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -69,7 +73,7 @@
                                             Glosa
                                         </label>
                                         <div class="col-xl-10 col-lg-10 col-12">
-                                            <input type="text" name="Glosa" id="Glosa" class="form-control form-control-sm form-control-vc">
+                                            <input type="text" name="Glosa" id="Glosa" class="form-control form-control-sm form-control-vc" value="<?= $movimiento_cab['Glosa'] ?>">
                                         </div>
                                     </div>
                                 </div>
@@ -79,25 +83,25 @@
                                             <label class="form-check-label" for="Estado">
                                                 Anulado
                                             </label>
-                                            <input class="form-check-input" type="checkbox" name="Estado" id="Estado" value="0" onchange="cambiar_estado()">
+                                            <input class="form-check-input" type="checkbox" name="Estado" id="Estado" value="<?= $movimiento_cab['Estado'] ?>" onchange="cambiar_estado()" <?= $movimiento_cab['Estado'] == 0 ? '' : 'checked' ?>>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1-tab-pane" type="button" role="tab" aria-controls="tab1-tab-pane" aria-selected="true">
+                                    <button class="nav-link disabled" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1-tab-pane" type="button" role="tab" aria-controls="tab1-tab-pane" aria-selected="true">
                                         Datos del comprobante
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2-tab-pane" type="button" role="tab" aria-controls="tab2-tab-pane" aria-selected="false">
+                                    <button class="nav-link active" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2-tab-pane" type="button" role="tab" aria-controls="tab2-tab-pane" aria-selected="false">
                                         Datos del comprobamte Referencia
                                     </button>
                                 </li>
                             </ul>
                             <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane px-2 py-3 fade show active" id="tab1-tab-pane" role="tabpanel" aria-labelledby="tab1-tab" tabindex="0">
+                                <div class="tab-pane px-2 py-3 fade" id="tab1-tab-pane" role="tabpanel" aria-labelledby="tab1-tab" tabindex="0">
                                     <div class="row">
                                         <div class="col-xl-8 col-md-8 col-12">
                                             <div class="form-group row">
@@ -106,7 +110,7 @@
                                                 </label>
                                                 <div class="col-xl-9 col-lg-9 col-12 d-lg-flex">
                                                     <select name="IdSocioN" id="IdSocioN" class="form-select form-select-sm form-select-vc">
-
+                                                        <?= $option_socio_negocio ?>
                                                     </select>
                                                     <span class="input-group-btn">
                                                         <button type="button" tabindex="-1" class="btn btn-sm height-sm btn-info mx-1" data-bs-toggle="modal" data-bs-target="#clienteModal"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
@@ -130,7 +134,7 @@
                                                             Serie
                                                         </label>
                                                         <div class="col-xl-8 col-lg-8 col-12">
-                                                            <input type="text" name="Serie" id="Serie" class="form-control form-control-sm form-control-vc" oninput="verificar_serie()" onfocusout="cambiar_serie()">
+                                                            <input type="text" name="Serie" id="Serie" class="form-control form-control-sm form-control-vc" value="<?= $movimiento_cab['SerieDoc'] ?>" oninput="verificar_serie()" onfocusout="cambiar_serie()">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -138,7 +142,7 @@
                                                             Nro Inicial
                                                         </label>
                                                         <div class="col-xl-8 col-lg-8 col-12">
-                                                            <input type="text" name="NumeroDoc" id="NumeroDoc" class="form-control form-control-sm form-control-vc" onkeypress="esNumero(event)">
+                                                            <input type="text" name="NumeroDoc" id="NumeroDoc" class="form-control form-control-sm form-control-vc" value="<?= $movimiento_cab['NumeroDoc'] ?>" onkeypress="esNumero(event)">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -146,7 +150,7 @@
                                                             Nro Final
                                                         </label>
                                                         <div class="col-xl-8 col-lg-8 col-12">
-                                                            <input type="text" name="NumeroDocF" id="NumeroDocF" class="form-control form-control-sm form-control-vc" onkeypress="esNumero(event)">
+                                                            <input type="text" name="NumeroDocF" id="NumeroDocF" class="form-control form-control-sm form-control-vc" value="<?= $movimiento_cab['NumeroDocF'] ?>" onkeypress="esNumero(event)">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -155,7 +159,7 @@
                                                         </label>
                                                         <div class="col-xl-8 col-lg-8 col-12">
                                                             <select name="CodCondPago" id="CodCondPago" class="form-select form-select-sm form-select-vc">
-                                                                <?= $option_condicion_pago_credito ?>
+                                                                <?= $option_condicion_pago ?>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -167,7 +171,7 @@
                                                         </label>
                                                         <div class="col-xl-7 col-lg-7 col-12">
                                                             <div class="input-group input-group-sm input-group-vc">
-                                                                <input type="text" name="FecEmision" id="FecEmision" class="form-control mydatepicker" placeholder="dd/mm/yyyy" value="<?= date('d/m/Y') ?>" onchange="cambiar_tipo_cambio_from_fecEmision()">
+                                                                <input type="text" name="FecEmision" id="FecEmision" class="form-control mydatepicker" placeholder="dd/mm/yyyy" value="<?= date('d/m/Y', strtotime($movimiento_cab['FecEmision'])) ?>" onchange="cambiar_tipo_cambio_from_fecEmision()">
                                                                 <span class="input-group-text">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </span>
@@ -180,7 +184,7 @@
                                                         </label>
                                                         <div class="col-xl-7 col-lg-7 col-12">
                                                             <div class="input-group input-group-sm input-group-vc">
-                                                                <input type="text" name="FecVcto" id="FecVcto" class="form-control mydatepicker" placeholder="dd/mm/yyyy" value="<?= date('d/m/Y') ?>">
+                                                                <input type="text" name="FecVcto" id="FecVcto" class="form-control mydatepicker" placeholder="dd/mm/yyyy" value="<?= date('d/m/Y', strtotime($movimiento_cab['FecVcto'])) ?>">
                                                                 <span class="input-group-text">
                                                                     <i class="fa fa-calendar"></i>
                                                                 </span>
@@ -202,7 +206,7 @@
                                                             T/C
                                                         </label>
                                                         <div class="col-xl-7 col-lg-7 col-12">
-                                                            <input type="text" name="ValorTC" id="ValorTC" class="form-control form-control-sm form-control-vc" value="<?= $tipo_cambio_venta ?>" onkeypress="esNumero(event)">
+                                                            <input type="text" name="ValorTC" id="ValorTC" class="form-control form-control-sm form-control-vc" value="<?= $movimiento_cab['ValorTC'] ?>" onkeypress="esNumero(event)">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -318,11 +322,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane px-2 py-3 fade" id="tab2-tab-pane" role="tabpanel" aria-labelledby="tab2-tab" tabindex="0">
+                                <div class="tab-pane px-2 py-3 fade show active" id="tab2-tab-pane" role="tabpanel" aria-labelledby="tab2-tab" tabindex="0">
                                     <div class="row">
                                         <div class="col-xl-7 col-lg-7 col-md-7 col-12">
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-info font-medium px-4 me-1" id="btnReferenciaExistente" onclick="consulta_notas_credito()" disabled>
+                                                <button type="button" class="btn btn-info font-medium px-4 me-1" id="btnReferenciaExistente" disabled>
                                                     Referencia existente
                                                 </button>
                                                 <button type="button" class="btn btn-info font-medium px-4 me-1" id="btnReferenciaManual" disabled>
@@ -359,9 +363,13 @@
                                                 <th>CodMov</th>
                                             </thead>
                                             <tbody>
-                                                <tr id="tr_vacio_referencia">
-                                                    <td align="center" colspan="10">No hay datos para mostrar</td>
-                                                </tr>
+                                                <?php if (empty($movimiento_det_referencias)) { ?>
+                                                    <tr id="tr_vacio_referencia">
+                                                        <td align="center" colspan="10">No hay datos para mostrar</td>
+                                                    </tr>
+                                                <?php } else {
+                                                    echo $movimiento_det_referencias;
+                                                } ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -376,8 +384,8 @@
                                                     Forma de Pago
                                                 </label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-7">
-                                                    <select id="FormaPago" class="form-control form-control-sm form-control-vc" onchange="cambiar_forma_pago()" disabled>
-                                                        <option value="NINGUNO">NINGUNO</option>
+                                                    <select id="FormaPago" class="form-control form-control-sm form-control-vc" onchange="cambiar_forma_pago()">
+                                                        <?= $option_forma_pago ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -387,16 +395,16 @@
                                                 <label class="form-check-label" for="Detraccion">
                                                     Detracción
                                                 </label>
-                                                <input class="form-check-input" type="checkbox" name="Detraccion" id="Detraccion" value="0" onchange="cambiar_detraccion()">
+                                                <input class="form-check-input" type="checkbox" name="Detraccion" id="Detraccion" value="<?= $movimiento_cab['Detraccion'] ?>" onchange="cambiar_detraccion()" <?= $movimiento_cab['Detraccion'] == 0 ? '' : 'checked' ?>>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-xl-4 col-lg-4 col-md-4 col-12 text-end">
-                                    <button type="button" class="btn btn-info font-medium px-4" id="btnAgregar" onclick="return agregar()">
+                                    <button type="button" class="btn btn-info font-medium px-4 display-none" id="btnAgregar" onclick="return agregar()">
                                         Agregar
                                     </button>
-                                    <button type="button" class="btn btn-info font-medium px-4 display-none" id="btnAgregarMas" onclick="return agregar_fila()">
+                                    <button type="button" class="btn btn-info font-medium px-4" id="btnAgregarMas" onclick="return agregar_fila()">
                                         <i class="fa fa-plus"></i> Agregar
                                     </button>
                                 </div>
@@ -437,9 +445,13 @@
                                         <th>Eliminar</th>
                                     </thead>
                                     <tbody>
-                                        <tr id="tr_vacio_ingreso_ventas">
-                                            <td align="center" colspan="31">No hay datos para mostrar</td>
-                                        </tr>
+                                        <?php if (empty($movimiento_det)) { ?>
+                                            <tr id="tr_vacio_ingreso_ventas">
+                                                <td align="center" colspan="31">No hay datos para mostrar</td>
+                                            </tr>
+                                        <?php } else {
+                                            echo $movimiento_det;
+                                        } ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -624,32 +636,32 @@
                             <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
                                 <label>Cuenta</label>
                                 <select name="CodCuenta" id="CodCuentaBanco" class="form-select form-select-sm form-select-vc" onchange="cambiar_cuenta_contable_banco()">
-
+                                    <?= $option_plan_contable ?>
                                 </select>
                             </div>
                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
                                 <label>Descripción</label>
-                                <input type="text" id="DescCuentaBanco" class="form-control form-control-sm form-control-vc" readonly>
+                                <input type="text" id="DescCuentaBanco" class="form-control form-control-sm form-control-vc" value="<?= $descripcion_plan_contable ?>" readonly>
                             </div>
                         </div>
                         <div class="row mt-1">
                             <div class="col-sm-12 col-md-12 col-lg-2 col-xl-2">
                                 <label>Cheque</label>
-                                <input type="text" name="IdCheque" class="form-control form-control-sm form-control-vc" readonly>
+                                <input type="text" name="IdCheque" class="form-control form-control-sm form-control-vc" value="<?= count($movimiento_cab_banco) > 0 ? $movimiento_cab_banco[0]['IdCheque'] : '' ?>" readonly>
                             </div>
                             <div class="col-sm-12 col-md-12 col-lg-2 col-xl-2">
                                 <label>Número</label>
-                                <input type="text" name="NumCheque" id="NumChequeBanco" class="form-control form-control-sm form-control-vc" onkeypress="esNumero(event)">
+                                <input type="text" name="NumCheque" id="NumChequeBanco" class="form-control form-control-sm form-control-vc" value="<?= count($movimiento_cab_banco) > 0 ? $movimiento_cab_banco[0]['NumCheque'] : '' ?>" onkeypress="esNumero(event)">
                             </div>
                             <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5">
                                 <label>Tipo de Pago</label>
                                 <select name="CodTipoPago" id="CodTipoPagoBanco" class="form-select form-select-sm form-select-vc">
-
+                                    <?= $option_tipo_pago ?>
                                 </select>
                             </div>
                             <div class="col-sm-12 col-md-12 col-lg-3 col-xl-3">
                                 <label>N° Transacci.</label>
-                                <input type="text" name="GlosaDet" id="GlosaDetBanco" class="form-control form-control-sm form-control-vc" onkeypress="esNumero(event)">
+                                <input type="text" name="GlosaDet" id="GlosaDetBanco" class="form-control form-control-sm form-control-vc" value="<?= count($movimiento_cab_banco) > 0 ? $movimiento_cab_banco[0]['GlosaDet'] : '' ?>" onkeypress="esNumero(event)">
                             </div>
                         </div>
                     </div>
@@ -787,14 +799,15 @@
 </div>
 
 <script>
-    var Codmov = '<?= $codigo_voucher_maximo ?>';
+    var Codmov = '<?= $movimiento_cab['Codmov'] ?>';
     var mes = '<?= date('m') ?>';
     var datos_ruc_CodTipPer = '<?= $datos_ruc['CodTipPer'] ?>';
     var datos_ruc_CodTipoDoc = '<?= $datos_ruc['CodTipoDoc'] ?>';
     var datos_ruc_N_tip = '<?= $datos_ruc['N_tip'] ?>';
     var datos_extranjero_CodTipPer = '<?= $datos_extranjero['CodTipPer'] ?>';
     var datos_extranjero_CodTipoDoc = '<?= $datos_extranjero['CodTipoDoc'] ?>';
-    var Referencia = 0;
+    var Referencia = <?= $Referencia ?>;
+    var Importado = <?= $Importado ?>;
     var facturas = JSON.parse('<?= json_encode($facturas) ?>');
     var notas_credito = JSON.parse('<?= json_encode($notas_credito) ?>');
 </script>

@@ -2,8 +2,8 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
-autocompletado($('.CuentaDebe'), {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
-autocompletado($('.CuentaHaber'), {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+autocompletado('.CuentaDebe', {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+autocompletado('.CuentaHaber', {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
 
 mostrarActivoFijo();
 
@@ -165,8 +165,8 @@ function nuevaFilaAmarre() {
 
     $('#tabla_amarres > tbody').append(nuevo);
 
-    autocompletado($('#CuentaDebe' + id_amarre), {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
-    autocompletado($('#CuentaHaber' + id_amarre), {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+    autocompletado('#CuentaDebe' + id_amarre, {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+    autocompletado('#CuentaHaber' + id_amarre, {}, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
 
     id_amarre++;
 }

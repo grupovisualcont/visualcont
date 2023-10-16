@@ -58,7 +58,7 @@ class TiposActivos extends BaseController
                     }
                 }
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/asset_types/create.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/asset_types/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/asset_types/create', [
                     'codigo_maximo' => $codigo_maximo,
@@ -120,11 +120,7 @@ class TiposActivos extends BaseController
             if ((new Empresa())->verificar_inicio_sesion()) {
                 $tipo_activo_fijo = (new TipoActivo())->getTipoActivo($this->CodEmpresa, '', '', [], 'codTipoActivo = "' . $codTipoActivo . '"', '')[0];
 
-                $script = "
-                    var tipo_activo_fijo_descTipoActivo = '" . $tipo_activo_fijo['descTipoActivo'] . "';
-                ";
-
-                $script = (new Empresa())->generar_script($script, ['app/mantenience/asset_types/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/asset_types/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/asset_types/edit', [
                     'tipo_activo_fijo' => $tipo_activo_fijo,

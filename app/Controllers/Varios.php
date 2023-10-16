@@ -81,7 +81,7 @@ class Varios extends BaseController
 
                 $option_estado = '<option value="' . $estado['CodInterno'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/some/create.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/some/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/some/create', [
                     'options_tipos' => $options_tipos,
@@ -135,7 +135,7 @@ class Varios extends BaseController
 
                 $option_estado = '<option value="' . $estado['CodInterno'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/some/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/some/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/some/edit', [
                     'varios' => $varios,

@@ -46,20 +46,38 @@ class Parametro extends BaseController
 
             $parametro = $this->parametro;
 
-            if (isset($post['search'])) {
-                $search = $post['search'];
+            if (isset($post['App']) && !empty($post['App']) && $post['App'] == 'Ventas') {
+                if (isset($post['search'])) {
+                    $search = $post['search'];
 
-                $parametro_auxiliar = array();
+                    $parametro_auxiliar = array();
 
-                foreach ($parametro as $indice => $valor) {
-                    if (strpos(strtolower($valor['text']), strtolower($search)) !== false) {
-                        $array = array('id' => $valor['id'], 'text' => $valor['text']);
+                    foreach ($parametro as $indice => $valor) {
+                        if (strpos(strtolower($valor['text']), strtolower($search)) !== false) {
+                            $array = array('id' => $valor['id'], 'text' => $valor['text']);
 
-                        $parametro_auxiliar[] = $array;
+                            $parametro_auxiliar[] = $array;
+                        }
                     }
-                }
 
-                $parametro = $parametro_auxiliar;
+                    $parametro = $parametro_auxiliar;
+                }
+            } else {
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+
+                    $parametro_auxiliar = array();
+
+                    foreach ($parametro as $indice => $valor) {
+                        if (strpos(strtolower($valor['text']), strtolower($search)) !== false) {
+                            $array = array('id' => $valor['id'], 'text' => $valor['text']);
+
+                            $parametro_auxiliar[] = $array;
+                        }
+                    }
+
+                    $parametro = $parametro_auxiliar;
+                }
             }
 
             echo json_encode($parametro);

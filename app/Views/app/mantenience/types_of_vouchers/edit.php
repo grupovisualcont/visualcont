@@ -143,4 +143,10 @@
     </div>
 </div>
 
+<script>
+    var id_tipo_vouchers = <?= (count($tipoVoucherDet) + 1) ?>;
+    var tipoVoucherCab_CodTV = '<?= $tipoVoucherCab['CodTV'] ?>';
+    var tipoVoucherCab_DescVoucher = '<?= $tipoVoucherCab['DescVoucher'] ?>';
+</script>
+
 <?= $this->endSection() ?>

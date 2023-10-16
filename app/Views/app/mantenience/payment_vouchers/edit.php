@@ -141,4 +141,8 @@
     </div>
 </div>
 
+<script>
+    var documento_CodDocumento = '<?= $documento['CodDocumento'] ?>';
+</script>
+
 <?= $this->endSection() ?>

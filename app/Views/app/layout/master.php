@@ -130,6 +130,14 @@
             function autocompletado(id, data, url) {
                 $(id).select2({
                     placeholder: 'Seleccione',
+                    language: {
+                        noResults: function() {
+                            return data.App == 'Ventas' && id == '#IdSocioN' ? '<button type="button" class="btn btn-primary w-100" onClick="registrar_socio_negocio(this)">Consultar</button>' : 'No se han encontrado resultados';
+                        },
+                    },
+                    escapeMarkup: function(markup) {
+                        return markup;
+                    },
                     dropdownAutoWidth: true,
                     ajax: {
                         url: url,
@@ -154,7 +162,10 @@
                                         TipoDatoS: item.TipoDatoS,
                                         TipoVoucherCab: item.TipoVoucherCab,
                                         RelacionCuenta: item.RelacionCuenta,
-                                        CodInterno: item.CodInterno
+                                        CodInterno: item.CodInterno,
+                                        NumeroDocumento: item.NumeroDocumento,
+                                        RazonSocial: item.RazonSocial,
+                                        DescCuenta: item.DescCuenta
                                     }
                                 })
                             };
@@ -188,6 +199,18 @@
                             $(data.element).attr('data-codigo-interno', data.CodInterno);
                         }
 
+                        if (data.NumeroDocumento) {
+                            $(data.element).attr('data-numero-documento', data.NumeroDocumento);
+                        }
+
+                        if (data.RazonSocial) {
+                            $(data.element).attr('data-razon-social', data.RazonSocial);
+                        }
+
+                        if (data.DescCuenta) {
+                            $(data.element).attr('data-descripcion', data.DescCuenta);
+                        }
+
                         return data.text;
                     },
                     templateResult: function(data, container) {
@@ -218,7 +241,7 @@
 
                             if (datos[0].CodInterno) option.setAttribute('data-codigo-interno', datos[0].CodInterno);
 
-                            $(id).html(option).trigger('change');;
+                            $(id).html(option).trigger('change');
                         }
                     }
                 });
@@ -259,6 +282,12 @@
                 targets: 'no-sort',
                 bSort: false
             });
+
+            function formato_fecha(fecha) {
+                var fecha = fecha.split("/");
+
+                return new Date(fecha[2], fecha[1] - 1, fecha[0]);
+            }
         </script>
         <script type="text/javascript">
             const BASE_URL = "<?= base_url(); ?>"

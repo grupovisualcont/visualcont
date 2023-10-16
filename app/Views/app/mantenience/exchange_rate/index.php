@@ -58,4 +58,9 @@
     </div>
 </div>
 
+<script>
+    var anio_hoy = <?= $anio ?>;
+    var mes_hoy = <?= date('m') ?>;
+</script>
+
 <?= $this->endSection() ?>

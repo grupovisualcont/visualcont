@@ -414,4 +414,8 @@
     </div>
 </div>
 
+<script>
+    var activo_fijo_descripcion = '<?= $activo_fijo['descripcion'] ?>';
+</script>
+
 <?= $this->endSection() ?>

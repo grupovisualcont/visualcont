@@ -10,9 +10,38 @@ autocompletado('#IdCondicion', { IdAnexo: 0, TipoAnexo: 2, OtroDato: '', App: 'V
 autocompletado('#CodCuentaBanco', { tipo: 'banco', App: 'Ventas' }, BASE_URL + 'app/mantenience/accounting_plan/autocompletado');
 autocompletado('#CodTipoPagoBanco', { App: 'Ventas' }, BASE_URL + 'app/tipoPago/autocompletado');
 
-$('#FormaPago').select2();
+autocompletado('select.CodCuenta', { App: 'Ventas' }, BASE_URL + 'app/mantenience/accounting_plan/autocompletado');
+autocompletado('select.CodMoneda', { text: 'Abrev', App: 'Ventas' }, BASE_URL + 'app/moneda/autocompletado_');
+autocompletado('select.IdSocioN', { verDocumento: 'true', App: 'Ventas' }, BASE_URL + 'app/mantenience/business_partner/autocompletado_');
+autocompletado('select.CodDocumento', { App: 'Ventas' }, BASE_URL + 'app/documento/autocompletado');
+autocompletado('select.TipoOperacion', { IdAnexo: 0, TipoAnexo: 5, OtroDato: '', App: 'Ventas' }, BASE_URL + 'app/attached/autocompletado');
+autocompletado('select.CodCcosto', { App: 'Ventas' }, BASE_URL + 'app/mantenience/cost_center/autocompletado');
+autocompletado('select.CodCondPago', { App: 'Ventas' }, BASE_URL + 'app/mantenience/payment_condition/autocompletado_');
+autocompletado('select.Parametro', { App: 'Ventas' }, BASE_URL + 'app/parametro/autocompletado');
+autocompletado('select.IdDetraccion', { App: 'Ventas' }, BASE_URL + 'app/detraccion/autocompletado');
+autocompletado('select.IdTipOpeDetra', { IdAnexo: 0, TipoAnexo: 23, OtroDato: '', App: 'Ventas' }, BASE_URL + 'app/attached/autocompletado');
+autocompletado('select.Declarar_Per', { App: 'Ventas' }, BASE_URL + 'app/declararPeriodo/autocompletado');
+autocompletado('select.Declarar_Est', { IdAnexo: 0, TipoAnexo: 11, OtroDato: '', App: 'Ventas' }, BASE_URL + 'app/attached/autocompletado');
+autocompletado('select.IdActivo', { App: 'Ventas' }, BASE_URL + 'app/mantenience/fixed_assets/autocompletado');
+
+set_suma_total();
+
+set_suma_total_referencia();
+
+verificar_botones_Referencia();
 
 parametros_codTV();
+
+var Tipo = $('#CodTV option:selected').attr('data-tipo');
+
+if (Tipo == 1) {
+    autocompletado('#FormaPago', { IdAnexo: 0, TipoAnexo: 6, OtroDato: '', App: 'Ventas' }, BASE_URL + 'app/attached/autocompletado');
+
+    $('#FormaPago').removeAttr('disabled');
+} else if (Tipo == 2) {
+    $('#FormaPago').html('<option value="NINGUNO">NINGUNO</option>');
+    $('#FormaPago').attr('disabled', true);
+}
 
 var IdReferenciaManual = 0;
 var id_set_total = '';
@@ -21,6 +50,30 @@ var isc_tmp = 0;
 var igv_tmp = 0;
 var igv = 0;
 var total_tmp = 0;
+
+function verificar_botones_Referencia() {
+    var CodDocumento = $('#CodDocumento option:selected').val();
+
+    if (notas_credito.some(item => item.CodDocumento === CodDocumento) && Importado == 0) {
+        $('#btnReferenciaExistente').removeAttr('disabled');
+        $('#btnReferenciaExistente').attr('onclick', 'consulta_notas_credito()');
+        $('#btnReferenciaManual').removeAttr('disabled');
+        $('#btnReferenciaManual').attr('onclick', 'seleccionar_movimiento_manual()');
+        $('#btnQuitarReferencia').removeAttr('disabled');
+    } else if (Importado == 1) {
+        $('#btnReferenciaExistente').attr('disabled', true);
+        $('#btnReferenciaExistente').removeAttr('onclick');
+        $('#btnReferenciaManual').attr('disabled', true);
+        $('#btnReferenciaManual').removeAttr('onclick');
+        $('#btnQuitarReferencia').attr('disabled', true);
+    } else {
+        $('#btnReferenciaExistente').attr('disabled', true);
+        $('#btnReferenciaExistente').removeAttr('onclick');
+        $('#btnReferenciaManual').attr('disabled', true);
+        $('#btnReferenciaManual').removeAttr('onclick');
+        $('#btnQuitarReferencia').attr('disabled', true);
+    }
+}
 
 function parametros_codTV() {
     var CodTV = $('#CodTV option:selected').val();
@@ -453,6 +506,7 @@ function seleccionar_movimiento_existente(IdMov) {
         type: 'POST',
         async: false,
         success: function (data) {
+            console.log(data);
             var datos = JSON.parse(data);
 
             $('#tr_vacio_referencia').remove();
@@ -539,28 +593,30 @@ function seleccionar_movimiento_manual() {
 function referencia_existente(IdMovDet) {
     var Tipo = 1;
 
-    if (
-        !$('#tr_referencia_existente_' + IdMovDet + ' td').hasClass('estilo-referencia')
-    ) {
-        $('.tr_referencia td').removeClass('estilo-referencia');
-        $('#tr_referencia_existente_' + IdMovDet + ' td').toggleClass('estilo-referencia');
-        $('#btnQuitarReferencia').attr('onclick', 'quitar_referencia(' + IdMovDet + ', ' + Tipo + ')');
-    } else {
-        $('.tr_referencia td').removeClass('estilo-referencia');
-        $('#btnQuitarReferencia').removeAttr('onclick');
+    if (Importado == 0) {
+        if (!$('#tr_referencia_existente_' + IdMovDet + ' td').hasClass('estilo-referencia')) {
+            $('.tr_referencia td').removeClass('estilo-referencia');
+            $('#tr_referencia_existente_' + IdMovDet + ' td').toggleClass('estilo-referencia');
+            $('#btnQuitarReferencia').attr('onclick', 'quitar_referencia(' + IdMovDet + ', ' + Tipo + ')');
+        } else {
+            $('.tr_referencia td').removeClass('estilo-referencia');
+            $('#btnQuitarReferencia').removeAttr('onclick');
+        }
     }
 }
 
 function referencia_manual(IdManual) {
     var Tipo = 2;
 
-    if (!$('#tr_referencia_manual_' + IdManual + ' td').hasClass('estilo-referencia')) {
-        $('.tr_referencia td').removeClass('estilo-referencia');
-        $('#tr_referencia_manual_' + IdManual + ' td').toggleClass('estilo-referencia');
-        $('#btnQuitarReferencia').attr( 'onclick', 'quitar_referencia(' + IdManual + ', ' + Tipo + ')');
-    } else {
-        $('.tr_referencia td').removeClass('estilo-referencia');
-        $('#btnQuitarReferencia').removeAttr('onclick');
+    if (Importado == 0) {
+        if (!$('#tr_referencia_manual_' + IdManual + ' td').hasClass('estilo-referencia')) {
+            $('.tr_referencia td').removeClass('estilo-referencia');
+            $('#tr_referencia_manual_' + IdManual + ' td').toggleClass('estilo-referencia');
+            $('#btnQuitarReferencia').attr('onclick', 'quitar_referencia(' + IdManual + ', ' + Tipo + ')');
+        } else {
+            $('.tr_referencia td').removeClass('estilo-referencia');
+            $('#btnQuitarReferencia').removeAttr('onclick');
+        }
     }
 }
 
@@ -677,8 +733,8 @@ function verificar_serie() {
         if (Serie.length == longitud && Serie.match(/[a-zA-Z]/g)) {
             for (let index = 0; index < serie.length; index++) {
                 if (
-                    JSON.stringify(serie[index].toUpperCase().split(/(\d)/).filter((e) => isNaN(e))) == 
-                    JSON.stringify( Serie.toUpperCase().split(/(\d)/).filter((e) => isNaN(e)))
+                    JSON.stringify(serie[index].toUpperCase().split(/(\d)/).filter((e) => isNaN(e))) ==
+                    JSON.stringify(Serie.toUpperCase().split(/(\d)/).filter((e) => isNaN(e)))
                 ) {
                     estado_serie = false;
                     index = serie.length;
@@ -1019,11 +1075,11 @@ function cambiar_cuenta(id) {
                 $('#td_ctacte_' + id).html(datos.ctacte);
 
                 $('#td_socio_negocio_' + id).html(datos.socio_negocio);
-                
+
                 autocompletado('select.IdSocioN', { verDocumento: 'true', App: 'Ventas' }, BASE_URL + 'app/mantenience/business_partner/autocompletado_');
 
                 $('#td_tipo_operacion_' + id).html(datos.tipo_operacion);
-                
+
                 autocompletado('select.TipoOperacion', { IdAnexo: 0, TipoAnexo: 5, OtroDato: '', App: 'Ventas' }, BASE_URL + 'app/attached/autocompletado');
 
                 $('#td_condicion_pago_' + id).html(datos.condicion_pago);
@@ -1053,59 +1109,59 @@ function cambiar_cuenta(id) {
 
     if (Referencia == 1) {
         if (CtaCte == 1) {
-            if (Parametro == 'TOTAL') {
-                $('#tr_' + id + ' td').addClass('background-total');
+            if (Parametro == "TOTAL") {
+                $("#tr_" + id + ' td').addClass("background-total");
 
-                // $('#CodCuenta' + id).attr('disabled', true);
-                // $('#CodMoneda' + id).attr('disabled', true);
-                // $('#DebeSol' + id).attr('readonly', true);
-                // $('#HaberSol' + id).attr('readonly', true);
-                // $('#DebeDol' + id).attr('readonly', true);
-                // $('#HaberDol' + id).attr('readonly', true);
-                // $('#FecEmision' + id).attr('readonly', true);
-                // $('#FecVcto' + id).attr('readonly', true);
-                // $('#IdSocioN' + id).attr('disabled', true);
-                // $('#CodDocumento' + id).attr('disabled', true);
-                // $('#SerieDoc' + id).attr('readonly', true);
-                // $('#NumeroDoc' + id).attr('readonly', true);
-                // $('#NumeroDocF' + id).attr('readonly', true);
-                // $('#TipoOperacion' + id).attr('disabled', true);
-                // $('#CodCcosto' + id).attr('disabled', true);
-                // $('#CodCondPago' + id).attr('disabled', true);
-                // $('#DocRetencion' + id).attr('readonly', true);
-                // $('#DocDetraccion' + id).attr('readonly', true);
-                // $('#Parametro' + id).attr('disabled', true);
-                // $('#IdDetraccion' + id).attr('disabled', true);
-                // $('#IdTipOpeDetra' + id).attr('disabled', true);
-                // $('#IdenContProy' + id).attr('readonly', true);
+                $("#CodCuenta" + id).attr("disabled", true);
+                $("#CodMoneda" + id).attr("disabled", true);
+                $("#DebeSol" + id).attr("readonly", true);
+                $("#HaberSol" + id).attr("readonly", true);
+                $("#DebeDol" + id).attr("readonly", true);
+                $("#HaberDol" + id).attr("readonly", true);
+                $("#FecEmision" + id).attr("readonly", true);
+                $("#FecVcto" + id).attr("readonly", true);
+                $("#IdSocioN" + id).attr("disabled", true);
+                $("#CodDocumento" + id).attr("disabled", true);
+                $("#SerieDoc" + id).attr("readonly", true);
+                $("#NumeroDoc" + id).attr("readonly", true);
+                $("#NumeroDocF" + id).attr("readonly", true);
+                $("#TipoOperacion" + id).attr("disabled", true);
+                $("#CodCcosto" + id).attr("disabled", true);
+                $("#CodCondPago" + id).attr("disabled", true);
+                $("#DocRetencion" + id).attr("readonly", true);
+                $("#DocDetraccion" + id).attr("readonly", true);
+                $("#Parametro" + id).attr("disabled", true);
+                $("#IdDetraccion" + id).attr("disabled", true);
+                $("#IdTipOpeDetra" + id).attr("disabled", true);
+                $("#IdenContProy" + id).attr("readonly", true);
             } else {
-                $('#tr_' + id + ' td').addClass('background-ctacte');
+                $("#tr_" + id + ' td').addClass("background-ctacte");
 
-                // $('#CodCuenta' + id).removeAttr('disabled');
-                // $('#CodMoneda' + id).removeAttr('disabled');
-                // $('#DebeSol' + id).removeAttr('readonly');
-                // $('#HaberSol' + id).removeAttr('readonly');
-                // $('#DebeDol' + id).removeAttr('readonly');
-                // $('#HaberDol' + id).removeAttr('readonly');
-                // $('#FecEmision' + id).removeAttr('readonly');
-                // $('#FecVcto' + id).removeAttr('readonly');
-                // $('#CodDocumento' + id).removeAttr('disabled');
-                // $('#SerieDoc' + id).removeAttr('readonly');
-                // $('#NumeroDoc' + id).removeAttr('readonly');
-                // $('#NumeroDocF' + id).removeAttr('readonly');
-                // $('#DocDetraccion' + id).removeAttr('readonly');
-                // $('#Parametro' + id).removeAttr('disabled');
-                // $('#IdDetraccion' + id).removeAttr('disabled');
-                // $('#IdTipOpeDetra' + id).removeAttr('disabled');
-                // $('#IdenContProy' + id).removeAttr('readonly');
+                $("#CodCuenta" + id).removeAttr("disabled");
+                $("#CodMoneda" + id).removeAttr("disabled");
+                $("#DebeSol" + id).removeAttr("readonly");
+                $("#HaberSol" + id).removeAttr("readonly");
+                $("#DebeDol" + id).removeAttr("readonly");
+                $("#HaberDol" + id).removeAttr("readonly");
+                $("#FecEmision" + id).removeAttr("readonly");
+                $("#FecVcto" + id).removeAttr("readonly");
+                $("#CodDocumento" + id).removeAttr("disabled");
+                $("#SerieDoc" + id).removeAttr("readonly");
+                $("#NumeroDoc" + id).removeAttr("readonly");
+                $("#NumeroDocF" + id).removeAttr("readonly");
+                $("#DocDetraccion" + id).removeAttr("readonly");
+                $("#Parametro" + id).removeAttr("disabled");
+                $("#IdDetraccion" + id).removeAttr("disabled");
+                $("#IdTipOpeDetra" + id).removeAttr("disabled");
+                $("#IdenContProy" + id).removeAttr("readonly");
             }
         }
     } else {
         if (CtaCte == 1) {
-            if (Parametro == 'TOTAL') {
-                $('#tr_' + id + ' td').addClass('background-total');
+            if (Parametro == "TOTAL") {
+                $("#tr_" + id + ' td').addClass("background-total");
             } else {
-                $('#tr_' + id + ' td').addClass('background-ctacte');
+                $("#tr_" + id + ' td').addClass("background-ctacte");
             }
         }
     }
@@ -1289,59 +1345,59 @@ function cambiar_parametro(id) {
 
     if (Referencia == 1) {
         if (CtaCte == 1) {
-            if (Parametro == 'TOTAL') {
-                $('#tr_' + id + ' td').addClass('background-total');
+            if (Parametro == "TOTAL") {
+                $("#tr_" + id + ' td').addClass("background-total");
 
-                // $('#CodCuenta' + id).attr('disabled', true);
-                // $('#CodMoneda' + id).attr('disabled', true);
-                // $('#DebeSol' + id).attr('readonly', true);
-                // $('#HaberSol' + id).attr('readonly', true);
-                // $('#DebeDol' + id).attr('readonly', true);
-                // $('#HaberDol' + id).attr('readonly', true);
-                // $('#FecEmision' + id).attr('readonly', true);
-                // $('#FecVcto' + id).attr('readonly', true);
-                // $('#IdSocioN' + id).attr('disabled', true);
-                // $('#CodDocumento' + id).attr('disabled', true);
-                // $('#SerieDoc' + id).attr('readonly', true);
-                // $('#NumeroDoc' + id).attr('readonly', true);
-                // $('#NumeroDocF' + id).attr('readonly', true);
-                // $('#TipoOperacion' + id).attr('disabled', true);
-                // $('#CodCcosto' + id).attr('disabled', true);
-                // $('#CodCondPago' + id).attr('disabled', true);
-                // $('#DocRetencion' + id).attr('readonly', true);
-                // $('#DocDetraccion' + id).attr('readonly', true);
-                // $('#Parametro' + id).attr('disabled', true);
-                // $('#IdDetraccion' + id).attr('disabled', true);
-                // $('#IdTipOpeDetra' + id).attr('disabled', true);
-                // $('#IdenContProy' + id).attr('readonly', true);
+                $("#CodCuenta" + id).attr("disabled", true);
+                $("#CodMoneda" + id).attr("disabled", true);
+                $("#DebeSol" + id).attr("readonly", true);
+                $("#HaberSol" + id).attr("readonly", true);
+                $("#DebeDol" + id).attr("readonly", true);
+                $("#HaberDol" + id).attr("readonly", true);
+                $("#FecEmision" + id).attr("readonly", true);
+                $("#FecVcto" + id).attr("readonly", true);
+                $("#IdSocioN" + id).attr("disabled", true);
+                $("#CodDocumento" + id).attr("disabled", true);
+                $("#SerieDoc" + id).attr("readonly", true);
+                $("#NumeroDoc" + id).attr("readonly", true);
+                $("#NumeroDocF" + id).attr("readonly", true);
+                $("#TipoOperacion" + id).attr("disabled", true);
+                $("#CodCcosto" + id).attr("disabled", true);
+                $("#CodCondPago" + id).attr("disabled", true);
+                $("#DocRetencion" + id).attr("readonly", true);
+                $("#DocDetraccion" + id).attr("readonly", true);
+                $("#Parametro" + id).attr("disabled", true);
+                $("#IdDetraccion" + id).attr("disabled", true);
+                $("#IdTipOpeDetra" + id).attr("disabled", true);
+                $("#IdenContProy" + id).attr("readonly", true);
             } else {
-                $('#tr_' + id + ' td').addClass('background-ctacte');
+                $("#tr_" + id + ' td').addClass("background-ctacte");
 
-                // $('#CodCuenta' + id).removeAttr('disabled');
-                // $('#CodMoneda' + id).removeAttr('disabled');
-                // $('#DebeSol' + id).removeAttr('readonly');
-                // $('#HaberSol' + id).removeAttr('readonly');
-                // $('#DebeDol' + id).removeAttr('readonly');
-                // $('#HaberDol' + id).removeAttr('readonly');
-                // $('#FecEmision' + id).removeAttr('readonly');
-                // $('#FecVcto' + id).removeAttr('readonly');
-                // $('#CodDocumento' + id).removeAttr('disabled');
-                // $('#SerieDoc' + id).removeAttr('readonly');
-                // $('#NumeroDoc' + id).removeAttr('readonly');
-                // $('#NumeroDocF' + id).removeAttr('readonly');
-                // $('#DocDetraccion' + id).removeAttr('readonly');
-                // $('#Parametro' + id).removeAttr('disabled');
-                // $('#IdDetraccion' + id).removeAttr('disabled');
-                // $('#IdTipOpeDetra' + id).removeAttr('disabled');
-                // $('#IdenContProy' + id).removeAttr('readonly');
+                $("#CodCuenta" + id).removeAttr("disabled");
+                $("#CodMoneda" + id).removeAttr("disabled");
+                $("#DebeSol" + id).removeAttr("readonly");
+                $("#HaberSol" + id).removeAttr("readonly");
+                $("#DebeDol" + id).removeAttr("readonly");
+                $("#HaberDol" + id).removeAttr("readonly");
+                $("#FecEmision" + id).removeAttr("readonly");
+                $("#FecVcto" + id).removeAttr("readonly");
+                $("#CodDocumento" + id).removeAttr("disabled");
+                $("#SerieDoc" + id).removeAttr("readonly");
+                $("#NumeroDoc" + id).removeAttr("readonly");
+                $("#NumeroDocF" + id).removeAttr("readonly");
+                $("#DocDetraccion" + id).removeAttr("readonly");
+                $("#Parametro" + id).removeAttr("disabled");
+                $("#IdDetraccion" + id).removeAttr("disabled");
+                $("#IdTipOpeDetra" + id).removeAttr("disabled");
+                $("#IdenContProy" + id).removeAttr("readonly");
             }
         }
     } else {
         if (CtaCte == 1) {
-            if (Parametro == 'TOTAL') {
-                $('#tr_' + id + ' td').addClass('background-total');
+            if (Parametro == "TOTAL") {
+                $("#tr_" + id + ' td').addClass("background-total");
             } else {
-                $('#tr_' + id + ' td').addClass('background-ctacte');
+                $("#tr_" + id + ' td').addClass("background-ctacte");
             }
         }
     }
@@ -1621,7 +1677,7 @@ function agregar() {
 
             jQuery('.mydatepicker').datepicker({
                 format: 'dd/mm/yyyy',
-                'language' : 'es',
+                'language': 'es',
                 autoclose: true
             });
 
@@ -1692,35 +1748,42 @@ function agregar_fila() {
             type: 'POST',
             async: false,
             success: function (data) {
-                // $('.NumItem').each(function(i) {
-                //         if ($('#CodCuenta' + (i + 1)).val() != null && !$('#CodCuenta' + (i + 1)).val().includes('4011')) {
-                //                 if ($('#CtaCte' + (i + 1)).val() == 0) {
-                //                         $('#CodCuenta' + (i + 1)).removeAttr('disabled');
-                //                         $('#CodMoneda' + (i + 1)).removeAttr('disabled');
-                //                         $('#DebeSol' + (i + 1)).removeAttr('readonly');
-                //                         $('#HaberSol' + (i + 1)).removeAttr('readonly');
-                //                         $('#DebeDol' + (i + 1)).removeAttr('readonly');
-                //                         $('#HaberDol' + (i + 1)).removeAttr('readonly');
-                //                         $('#FecEmision' + (i + 1)).removeAttr('readonly');
-                //                         $('#FecVcto' + (i + 1)).removeAttr('readonly');
-                //                         $('#CodDocumento' + (i + 1)).removeAttr('disabled');
-                //                         $('#SerieDoc' + (i + 1)).removeAttr('readonly');
-                //                         $('#NumeroDoc' + (i + 1)).removeAttr('readonly');
-                //                         $('#NumeroDocF' + (i + 1)).removeAttr('readonly');
-                //                         $('#Parametro' + (i + 1)).removeAttr('disabled');
-                //                         $('#IdDetraccion' + (i + 1)).removeAttr('disabled');
-                //                         $('#IdTipOpeDetra' + (i + 1)).removeAttr('disabled');
-                //                         $('#IdenContProy' + (i + 1)).removeAttr('readonly');
-                //                         $('#IdenContProy' + (i + 1)).removeClass('background-transparente border-none');
-                //                 }
-                //         }
-                // });
-
-                $('#tr_vacio_ingreso_ventas').remove();
+                $("#tr_vacio_ingreso_ventas").remove();
 
                 $('#SeleccionarUltimo').is(':checked') ? $('#tr_' + NumItem).after(data) : $('#tr_' + NumItem).before(data);
 
                 resetear_filas();
+
+                if (Referencia == 1) {
+                    $(".NumItem").each(function (i) {
+                        if (
+                            $("#CodCuenta" + (i + 1)).val() != null &&
+                            !$("#CodCuenta" + (i + 1))
+                                .val()
+                                .includes("4011")
+                        ) {
+                            if ($("#CtaCte" + (i + 1)).val() == 0) {
+                                $("#CodCuenta" + (i + 1)).removeAttr("disabled");
+                                $("#CodMoneda" + (i + 1)).removeAttr("disabled");
+                                $("#DebeSol" + (i + 1)).removeAttr("readonly");
+                                $("#HaberSol" + (i + 1)).removeAttr("readonly");
+                                $("#DebeDol" + (i + 1)).removeAttr("readonly");
+                                $("#HaberDol" + (i + 1)).removeAttr("readonly");
+                                $("#FecEmision" + (i + 1)).removeAttr("readonly");
+                                $("#FecVcto" + (i + 1)).removeAttr("readonly");
+                                $("#CodDocumento" + (i + 1)).removeAttr("disabled");
+                                $("#SerieDoc" + (i + 1)).removeAttr("readonly");
+                                $("#NumeroDoc" + (i + 1)).removeAttr("readonly");
+                                $("#NumeroDocF" + (i + 1)).removeAttr("readonly");
+                                $("#Parametro" + (i + 1)).removeAttr("disabled");
+                                $("#IdDetraccion" + (i + 1)).removeAttr("disabled");
+                                $("#IdTipOpeDetra" + (i + 1)).removeAttr("disabled");
+                                $("#IdenContProy" + (i + 1)).removeAttr("readonly");
+                                $("#IdenContProy" + (i + 1)).removeClass("background-transparente border-none");
+                            }
+                        }
+                    });
+                }
 
                 autocompletado('select.CodCuenta', { App: 'Ventas' }, BASE_URL + 'app/mantenience/accounting_plan/autocompletado');
 
@@ -1743,17 +1806,17 @@ function agregar_fila() {
                 autocompletado('select.Declarar_Per', { App: 'Ventas' }, BASE_URL + 'app/declararPeriodo/autocompletado');
 
                 autocompletado('select.Declarar_Est', { IdAnexo: 0, TipoAnexo: 11, OtroDato: '', App: 'Ventas' }, BASE_URL + 'app/attached/autocompletado');
-                
+
                 jQuery('.mydatepicker').datepicker({
                     format: 'dd/mm/yyyy',
-                    'language' : 'es',
+                    'language': 'es',
                     autoclose: true
                 });
 
                 set_suma_total();
             },
         });
-    }else {
+    } else {
         alertify.alert('Seleccione un item', function () { }).set({ title: 'Contabilidad' });
     }
 }
@@ -2168,7 +2231,6 @@ function verificarFormularioBanco() {
 
 function verificarFormulario() {
     var Codmov = $('#Codmov').val();
-    var codigo_maximo_Codmov = '';
     var Glosa = $('#Glosa').val();
     // var CodCuenta = 0;
     // var estado_CodCuenta = false;
@@ -2254,200 +2316,80 @@ function verificarFormulario() {
         }
     });
 
-    $.ajax({
-        url: BASE_URL + 'app/movements/sales/consulta_codigo',
-        data: {
-            Codmov,
-            tipo: 'nuevo',
-            subtipo: 'voucher',
-        },
-        type: 'POST',
-        async: false,
-        success: function (data) {
-            datos = JSON.parse(data);
+    if (Glosa.length == 0) {
+        alertify.alert("Ingrese Glosa, para Asiento Contable", function () { }).set({ title: 'Contabilidad' });
+    } else if (estado_IdSocioN) {
+        $("#" + IdSocioN).focus();
 
-            if (datos.estado) {
-                codigo_maximo_Codmov = datos.codigo;
-            }
-        },
-    });
+        alertify.alert("Ingrese Razón Social de esta Cuenta", function () { }).set({ title: 'Contabilidad' });
+    } else if (estado_TipoOperacion) {
+        $("#" + TipoOperacion).focus();
 
-    if (codigo_maximo_Codmov.length > 0) {
-        alertify.alert('El Código del Voucher ya se había registrado<br>Se tomara el Código del Voucher ' + codigo_maximo_Codmov, function () { }).set({ title: 'Contabilidad' })
-            .set('onok', function (closeEvent) {
-                if (!estado_grabar) {
-                    return false;
-                } else if (Glosa.length == 0) {
+        alertify.alert("Ingrese Tipo de Operación", function () { }).set({ title: 'Contabilidad' });
+    } else if (estado_CodCondPago) {
+        $("#" + CodCondPago).focus();
+
+        alertify.alert("Ingrese Condición de Pago", function () { }).set({ title: 'Contabilidad' });
+    } else if (estado_CodCcosto) {
+        $("#" + CodCcosto).focus();
+
+        alertify.alert("Ingrese el Centro de Costo de esta Cuenta", function () { }).set({ title: 'Contabilidad' });
+    } else if (estado_Parametro) {
+        $("#" + Parametro).focus();
+
+        alertify.alert("Ingrese el Parametro de esta Cuenta", function () { }).set({ title: 'Contabilidad' });
+    } else if (estado_IdActivo) {
+        $("#" + IdActivo).focus();
+
+        alertify.alert("Ingrese el Activo Fijo de esta Cuenta", function () { }).set({ title: 'Contabilidad' });
+    } else if ($(".tr_referencia").length > 0 && (referencia_Total == 0 || (CodMoneda == "MO002" ? referencia_Total != total_HaberDol : referencia_Total != total_HaberSol))) {
+        alertify.alert("El monto total de las referencias debe ser igual al total de la Nota de Crédito", function () { }).set({ title: 'Contabilidad' });
+    } else if (total_DebeSol != total_HaberSol) {
+        alertify.confirm("El Total Debe Soles es diferente con el Total Haber Soles<br>Desea Continuar..!",
+            function (e) {
+                if (e) {
                     setTimeout(() => {
-                        alertify.alert('Ingrese Glosa, para Asiento Contable', function () { }).set({ title: 'Contabilidad' });
-                    }, 500);
-                } else if (estado_IdSocioN) {
-                    $('#' + IdSocioN).focus();
-                    
-                    alertify.alert('Ingrese Razón Social de esta Cuenta', function () { }).set({ title: 'Contabilidad' });
-                } else if (estado_TipoOperacion) {
-                    $('#' + TipoOperacion).focus();
-
-                    alertify.alert('Ingrese Tipo de Operación', function () { }).set({ title: 'Contabilidad' });
-                } else if (estado_CodCondPago) {
-                    $('#' + CodCondPago).focus();
-                    
-                    alertify.alert('Ingrese Condición de Pago', function () { }).set({ title: 'Contabilidad' });
-                } else if (estado_CodCcosto) {
-                    $('#' + CodCcosto).focus();
-
-                    setTimeout(() => {
-                        alertify.alert('Ingrese el Centro de Costo de esta Cuenta', function () { }).set({ title: 'Contabilidad' });
-                    }, 500);
-                } else if (estado_Parametro) {
-                    $('#' + Parametro).focus();
-
-                    setTimeout(() => {
-                        alertify.alert('Ingrese el Parametro de esta Cuenta', function () { }).set({ title: 'Contabilidad' });
-                    }, 500);
-                } else if (estado_IdActivo) {
-                    $('#' + IdActivo).focus();
-
-                    setTimeout(() => {
-                        alertify.alert('Ingrese el Activo Fijo de esta Cuenta', function () { }).set({ title: 'Contabilidad' });
-                    }, 500);
-                } else if ($('.tr_referencia').length > 0 && (referencia_Total == 0 || (CodMoneda == 'MO002' ? referencia_Total != total_HaberDol : referencia_Total != total_HaberSol))) {
-                    setTimeout(() => {
-                        alertify.alert('El monto total de las referencias debe ser igual al total de la Nota de Crédito', function () { }).set({ title: 'Contabilidad' });
-                    }, 500);
-                } else if (total_DebeSol != total_HaberSol) {
-                    setTimeout(() => {
-                        alertify.confirm('El Total Debe Soles es diferente con el Total Haber Soles<br>Desea Continuar..!',
-                            function (e) {
-                                if (e) {
-                                    setTimeout(() => {
-                                        if (total_DebeDol != total_HaberDol) {
-                                            alertify.confirm('El Total Debe Dolar es diferente con el Total Haber Dolar<br>Desea Continuar..!',
-                                                function (e) {
-                                                    if (e) {
-                                                        setTimeout(() => {
-                                                            if (CodInterno == 2) {
-                                                                $('#bancoModal').modal('show');
-                                                            } else {
-                                                                $('#form').submit();
-                                                            }
-                                                        }, 500);
-                                                    }
-                                                }
-                                            ).set({ title: 'Contabilidad' }).set('labels', { ok: 'Si', cancel: 'No' });
-                                        }
-                                    }, 500);
-                                }
-                            }
-                        ).set({ title: 'Contabilidad' }).set('labels', { ok: 'Si', cancel: 'No' });
-                    }, 500);
-                } else if (total_DebeDol != total_HaberDol) {
-                    setTimeout(() => {
-                        alertify.confirm('El Total Debe Dolar es diferente con el Total Haber Dolar<br>Desea Continuar..!',
-                            function (e) {
-                                if (e) {
-                                    setTimeout(() => {
-                                        if (CodInterno == 2) {
-                                            $('#bancoModal').modal('show');
-                                        } else {
-                                            $('#form').submit();
-                                        }
-                                    }, 500);
-                                }
-                            }
-                        ).set({ title: 'Contabilidad' }).set('labels', { ok: 'Si', cancel: 'No' });
-                    }, 500);
-                } else if (
-                    total_DebeSol == total_HaberSol &&
-                    total_DebeDol == total_HaberDol
-                ) {
-                    if (CodInterno == 2) {
-                        $('#bancoModal').modal('show');
-                    } else {
-                        if (estado_CodCuenta) {
-                            $('#' + CodCuenta).parent().parent().remove();
-                        }
-
-                        $('#form').submit();
-                    }
-                }
-            });
-    } else {
-        if (!estado_grabar) {
-            return false;
-        } else if (Glosa.length == 0) {
-            alertify.alert('Ingrese Glosa, para Asiento Contable', function () { }).set({ title: 'Contabilidad' }); 
-        } else if (estado_IdSocioN) {
-            $('#' + IdSocioN).focus();
-
-            alertify.alert('Ingrese Razón Social de esta Cuenta', function () { }).set({ title: 'Contabilidad' });
-        } else if (estado_TipoOperacion) {
-            $('#' + TipoOperacion).focus();
-
-            alertify.alert('Ingrese Tipo de Operación', function () { }).set({ title: 'Contabilidad' });
-        } else if (estado_CodCondPago) {
-            $('#' + CodCondPago).focus();
-            
-            alertify.alert('Ingrese Condición de Pago', function () { }).set({ title: 'Contabilidad' });
-        } else if (estado_CodCcosto) {
-            $('#' + CodCcosto).focus();
-
-            alertify.alert('Ingrese el Centro de Costo de esta Cuenta', function () { }).set({ title: 'Contabilidad' });
-        } else if (estado_Parametro) {
-            $('#' + Parametro).focus();
-
-            alertify.alert('Ingrese el Parametro de esta Cuenta', function () { }).set({ title: 'Contabilidad' });
-        } else if (estado_IdActivo) {
-            $('#' + IdActivo).focus();
-
-            alertify.alert('Ingrese el Activo Fijo de esta Cuenta', function () { }).set({ title: 'Contabilidad' });
-        } else if ($('.tr_referencia').length > 0 && (referencia_Total == 0 || (CodMoneda == 'MO002' ? referencia_Total != total_HaberDol : referencia_Total != total_HaberSol))) {
-            alertify.alert('El monto total de las referencias debe ser igual al total de la Nota de Crédito', function () { }).set({ title: 'Contabilidad' });
-        } else if (total_DebeSol != total_HaberSol) {
-            alertify.confirm('El Total Debe Soles es diferente con el Total Haber Soles<br>Desea Continuar..!',
-                function (e) {
-                    if (e) {
-                        setTimeout(() => {
-                            if (total_DebeDol != total_HaberDol) {
-                                alertify.confirm('El Total Debe Dolar es diferente con el Total Haber Dolar<br>Desea Continuar..!', function (e) {
+                        if (total_DebeDol != total_HaberDol) {
+                            alertify.confirm("El Total Debe Dolar es diferente con el Total Haber Dolar<br>Desea Continuar..!",
+                                function (e) {
                                     if (e) {
                                         setTimeout(() => {
                                             if (CodInterno == 2) {
-                                                $('#bancoModal').modal('show');
+                                                $("#bancoModal").modal("show");
                                             } else {
-                                                $('#form').submit();
+                                                $("#form").submit();
                                             }
                                         }, 500);
                                     }
-                                }).set({ title: 'Contabilidad' }).set('labels', { ok: 'Si', cancel: 'No' });
-                            }
-                        }, 500);
-                    }
+                                }
+                            ).set({ title: 'Contabilidad' }).set("labels", { ok: "Si", cancel: "No" });
+                        }
+                    }, 500);
                 }
-            ).set({ title: 'Contabilidad' }).set('labels', { ok: 'Si', cancel: 'No' });
-        } else if (total_DebeDol != total_HaberDol) {
-            alertify.confirm('El Total Debe Dolar es diferente con el Total Haber Dolar<br>Desea Continuar..!',
-                function (e) {
-                    if (e) {
-                        setTimeout(() => {
-                            if (CodInterno == 2) {
-                                $('#bancoModal').modal('show');
-                            } else {
-                                $('#form').submit();
-                            }
-                        }, 500);
-                    }
-                }
-            ).set({ title: 'Contabilidad' }).set('labels', { ok: 'Si', cancel: 'No' });
-        } else if (
-            total_DebeSol == total_HaberSol &&
-            total_DebeDol == total_HaberDol
-        ) {
-            if (CodInterno == 2) {
-                $('#bancoModal').modal('show');
-            } else {
-                $('#form').submit();
             }
+        ).set({ title: 'Contabilidad' }).set("labels", { ok: "Si", cancel: "No" });
+    } else if (total_DebeDol != total_HaberDol) {
+        alertify.confirm("El Total Debe Dolar es diferente con el Total Haber Dolar<br>Desea Continuar..!",
+            function (e) {
+                if (e) {
+                    setTimeout(() => {
+                        if (CodInterno == 2) {
+                            $("#bancoModal").modal("show");
+                        } else {
+                            $("#form").submit();
+                        }
+                    }, 500);
+                }
+            }
+        ).set({ title: 'Contabilidad' }).set("labels", { ok: "Si", cancel: "No" });
+    } else if (
+        total_DebeSol == total_HaberSol &&
+        total_DebeDol == total_HaberDol
+    ) {
+        if (CodInterno == 2) {
+            $("#bancoModal").modal("show");
+        } else {
+            $("#form").submit();
         }
     }
 }

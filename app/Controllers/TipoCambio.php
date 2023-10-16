@@ -35,12 +35,7 @@ class TipoCambio extends BaseController
 
                 krsort($meses);
 
-                $script = "
-                    var anio_hoy = " . $anio . ";
-                    var mes_hoy = " . date('m') . ";
-                ";
-
-                $script = (new Empresa())->generar_script($script, ['app/mantenience/exchange_rate/index.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/exchange_rate/index.js']);
 
                 return viewApp($this->page, 'app/mantenience/exchange_rate/index', [
                     'anio' => $anio,
@@ -131,7 +126,7 @@ class TipoCambio extends BaseController
                     }
                 }
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/exchange_rate/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/exchange_rate/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/exchange_rate/edit', [
                     'datos' => $datos,

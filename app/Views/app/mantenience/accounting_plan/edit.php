@@ -274,4 +274,11 @@
     </div>
 </div>
 
+<script>
+    var id_amarre = <?= (count($amarres) + 1) ?>;
+    var plan_contable_TipoDebeHaber = '<?= $plan_contable['TipoDebeHaber'] ?>';
+    var plan_contable_CodCuenta = '<?= $plan_contable['CodCuenta'] ?>';
+    var plan_contable_DescCuenta = '<?= $plan_contable['DescCuenta'] ?>';
+</script>
+
 <?= $this->endSection() ?>

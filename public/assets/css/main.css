@@ -6,45 +6,290 @@
     color: #858796 !important;
 }
 
-.display-block {
-    display: block !important;
+.text-black {
+    color: black !important;
+}
+
+.text-link {
+    color: #6e707e !important;
+}
+
+/* .text-black-tabla:hover {
+    text-decoration: none !important;
+    border-bottom: 1px solid black !important;
+} */
+
+.text-sm {
+    font-size: 14px !important;
+}
+
+.font-size-15px {
+    font-size: 15px !important;
+}
+
+/* .titulo-header-card {
+    color: #212529;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 1px white;
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.titulo-header-card > .link-titulo {
+    color: #004d91;
+} */
+
+.hidden {
+    display: none !important;
+}
+
+.height-sm {
+    height: calc(1.5em + 0.5rem + 0.1px) !important;
+}
+
+.disabled {
+    color: #ccc;
+}
+
+.uppercase {
+    text-transform: uppercase;
 }
 
 .display-none {
     display: none !important;
 }
 
-.underline {
-    border-bottom: 1px solid black !important;
+.display-block {
+    display: block !important;
+}
+
+.display-flex {
+    display: flex !important;
+}
+
+.display-sm-grid {
+    display: grid !important;
+}
+
+.background-white {
+    background-color: white !important;
+}
+
+.background-transparente {
+    background-color: transparent !important;
+}
+
+.background-transparente:focus {
+    background-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border: 0px solid white !important;
 }
 
 .background-readonly {
     background-color: #eaecf4 !important;
 }
 
-.border-none {
-    border: 0px solid transparent !important;
+.background-total {
+    background-color: #fcfc84 !important;
+}
+
+.background-ctacte {
+    background-color: #fcfcc3 !important;
+}
+
+.background-total-pa {
+    background-color: #ffc17f !important;
+}
+
+.background-soles {
+    background-color: #fceccc !important;
+}
+
+.background-dolar {
+    background-color: #ccfce4 !important;
+}
+
+.background-parametro {
+    background-color: #fcc484 !important;
+}
+
+.background-cuadro-total {
+    background-color: #8abbdf !important;
+}
+
+.background-referencia {
+    background-color: #8cbcdb !important;
+}
+
+.background-cuadro-forma-pago {
+    background-color: #d1e6f3 !important;
+}
+
+.background-saldo {
+    background-color: #feff80 !important;
+}
+
+.background-header-movimiento {
+    background-color: #fbfcd2 !important;
+}
+
+.background-importar {
+    background-color: #3082bb !important;
+}
+
+.background-observacion {
+    background-color: #2a507f !important;
+}
+
+.background-excel {
+    background-color: #08743c !important;
+}
+
+.estilo-referencia {
+    background-color: #ffffc0 !important;
+    color: black !important;
 }
 
 .border-rojo {
     border: 2px solid red !important;
 }
 
-.select2-results__option {
-    white-space: wrap;
+.border-none {
+    border: 0px solid transparent !important;
 }
-  
-.select2.select2-container {
-    width: 100% !important;
+
+.underline {
+    border-bottom: 1px solid black !important;
+}
+
+#tabla_ingreso_ventas {
+    white-space: nowrap;
+}
+
+#tabla_ingreso_ventas_detalles {
+    white-space: nowrap;
+}
+
+#tabla_documentos {
+    white-space: nowrap;
+}
+
+#tabla_referencia {
+    white-space: nowrap;
+}
+
+#tabla_movimiento {
+    white-space: nowrap;
+}
+
+#tabla_importar {
+    white-space: nowrap;
 }
 
 .table-wrapper {
     overflow: auto;
 }
 
-#tabla_ingreso_ventas {
+.select2 {
+    max-width: 100% !important;
+}
+
+td > .select2 {
+    width: 100% !important;
+}
+
+div > .select2 {
+    width: 100% !important;
+}
+
+.select2-results__option {
+    color: black !important;
+}
+
+.select2-selection__placeholder {
+    color: black !important;
+}
+
+.select2-selection:focus {
+    outline: none !important;
+    border-color: #1b74e4 !important;
+  }
+
+.select2-container *:focus {
+    outline: none !important;
+}
+
+.select2-results__option--disabled{
+    background: #cccccc !important;
+    color: #666666 !important;
+    opacity: 1 !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected]{
+    background: #1b74e4 !important;
+    color: white !important;
+}
+
+.modal-open .select2-container--open { 
+    z-index: 999999 !important; 
+}
+
+.li_reporte_ventas {
+    list-style-type: none !important;
+    position: relative !important;
+    left: -10px !important;
+}
+
+.nowrap {
+    display: block;
     white-space: nowrap;
 }
+
+.split {
+    display: flex;
+    flex-direction: row;
+}
+
+.gutter {
+    background-color: #eee;
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+    cursor: col-resize;
+}
+
+.vertical-align-middle {
+    vertical-align: middle !important;
+}
+
+fieldset {
+    border: 1px solid #898796 !important;
+}
+
+/* .modal {
+    text-align: center;
+    padding: 0 !important;
+}
+  
+.modal:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -4px;
+}
+  
+.modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+} */
 
 @media (min-width: 576px) {
     .width-35 {

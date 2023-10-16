@@ -27,7 +27,7 @@ class PlanContable extends BaseController
     {
         try {
             if ((new Empresa())->verificar_inicio_sesion()) {
-                $script = (new Empresa())->generar_script('', ['app/mantenience/accounting_plan/index.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/accounting_plan/index.js']);
 
                 return viewApp($this->page, 'app/mantenience/accounting_plan/index', [
                     'typeOrder' => 'string',
@@ -110,7 +110,7 @@ class PlanContable extends BaseController
                         </div>';
                 }
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/accounting_plan/create.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/accounting_plan/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/accounting_plan/create', [
                     'options_relacion_cuentas' => $options_relacion_cuentas,
@@ -240,13 +240,6 @@ class PlanContable extends BaseController
                         </div>';
                 }
 
-                $script = "
-                    var id_amarre = " . (count($amarres) + 1) . ";
-                    var plan_contable_TipoDebeHaber = '" . $plan_contable['TipoDebeHaber'] . "';
-                    var plan_contable_CodCuenta = '" . $plan_contable['CodCuenta'] . "';
-                    var plan_contable_DescCuenta = '" . $plan_contable['DescCuenta'] . "';
-                ";
-
                 foreach ($amarres as $indice => $valor) {
                     $plan_contable_amarre = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, date('Y'), $valor['CuentaDebe'], '', [], '', '')[0];
 
@@ -261,7 +254,7 @@ class PlanContable extends BaseController
                     $amarres[$indice]['CuentaHaber'] = $option;
                 }
 
-                $script = (new Empresa())->generar_script($script, ['app/mantenience/accounting_plan/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/accounting_plan/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/accounting_plan/edit', [
                     'plan_contable' => $plan_contable,
@@ -747,7 +740,21 @@ class PlanContable extends BaseController
         try {
             $post = $this->request->getPost();
 
-            if (isset($post['tipo']) && $post['tipo'] == 'gasto') {
+            if (isset($post['App']) && !empty($post['App']) && $post['App'] == 'Ventas') {
+                $searchTipo = isset($post['tipo']) && !empty($post['tipo']) && $post['tipo'] == 'banco' ? '(CodCuenta LIKE "104%" OR CodCuenta LIKE "105%" OR CodCuenta LIKE "106%")' : '';
+
+                if (!empty($searchTipo) && empty($post['search'])) {
+                    $search = $searchTipo;
+                } else if (isset($post['search']) && !empty($post['search'])) {
+                    if (!empty($searchTipo)) $searchTipo = ' AND ' . $searchTipo;
+
+                    $search = '(CodCuenta LIKE "' . $post['search']  . '%" OR DescCuenta LIKE "%' . $post['search'] . '%")' . $searchTipo;
+                } else {
+                    $search = '';
+                }
+
+                $plan_contable = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, date('Y'), '', 'CodCuenta AS id, CONCAT(CodCuenta, " - ", DescCuenta) AS text, IF(Child = 0, CodCuenta, "") AS disabled, DescCuenta', [], $search, 'CodCuenta ASC');
+            } else if (isset($post['tipo']) && $post['tipo'] == 'gasto') {
                 $search = !empty($post['search']) ? ' AND CodCuenta LIKE "' . $post['search']  . '%"' : '';
 
                 $plan_contable = (new ModelsPlanContable())->getPlanContable($this->CodEmpresa, date('Y'), '', 'CodCuenta AS id, CONCAT(CodCuenta, " - ", DescCuenta) AS text, IF(Child = 0, CodCuenta, "") AS disabled, RelacionCuenta', [], 'CodCuenta LIKE "6%"' . $search, 'CodCuenta ASC');

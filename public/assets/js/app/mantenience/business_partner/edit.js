@@ -2,17 +2,17 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
-autocompletado($('#CodTipPer'), {}, BASE_URL + "app/type_person/autocompletado");
-autocompletado($('#CodTipoDoc'), { tipo: 'documento'}, BASE_URL + "app/identity_document_type/autocompletado");
-autocompletado($('#IdCondicion'), { IdAnexo: 0, TipoAnexo: 2, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
-autocompletado($('#Idestado'), { IdAnexo: 0, TipoAnexo: 1, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
-autocompletado($('#IdSexo'), { IdAnexo: 0, TipoAnexo: 3, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
-autocompletado($('#CodTipoDoc_Tele'), { tipo: 'banco' }, BASE_URL + "app/identity_document_type/autocompletado");
-autocompletado($('#CodVinculo'), {}, BASE_URL + "app/ts27Vinculo/autocompletado");
-autocompletado($('#pais'), { tipo: 'pais' }, BASE_URL + "app/ubigeo/autocompletado");
-autocompletado($('#select_codubigeo'), { tipo: 'ubigeo' }, BASE_URL + "app/ubigeo/autocompletado");
+autocompletado('#CodTipPer', {}, BASE_URL + "app/type_person/autocompletado");
+autocompletado('#CodTipoDoc', { tipo: 'documento'}, BASE_URL + "app/identity_document_type/autocompletado");
+autocompletado('#IdCondicion', { IdAnexo: 0, TipoAnexo: 2, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado('#Idestado', { IdAnexo: 0, TipoAnexo: 1, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado('#IdSexo', { IdAnexo: 0, TipoAnexo: 3, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado('#CodTipoDoc_Tele', { tipo: 'banco' }, BASE_URL + "app/identity_document_type/autocompletado");
+autocompletado('#CodVinculo', {}, BASE_URL + "app/ts27Vinculo/autocompletado");
+autocompletado('#pais', { tipo: 'pais' }, BASE_URL + "app/ubigeo/autocompletado");
+autocompletado('#select_codubigeo', { tipo: 'ubigeo' }, BASE_URL + "app/ubigeo/autocompletado");
 
-verificarTipoDocumentoIdentidad();
+verificar_Tipo_Documento_Identidad();
 
 function cambiarInputByPais() {
     var pais = $('#pais').val();
@@ -28,7 +28,7 @@ function cambiarInputByPais() {
     }
 }
 
-function verificarLongitudDocumento(item) {
+function verificar_Longitud_Documento(item) {
     var CodTipoDoc = $('#CodTipoDoc option:selected').val();
 
     if (CodTipoDoc == '-') {
@@ -136,7 +136,7 @@ function consulta_sunat(tipo_documento) {
                         $('#Idestado').val(estado);
                     }
 
-                    verificarTipoDocumentoIdentidad();
+                    verificar_Tipo_Documento_Identidad();
                 } else {
                     alertify.error('Número de documento inválido');
                 }
@@ -145,7 +145,7 @@ function consulta_sunat(tipo_documento) {
     }
 }
 
-function verificarTipoDocumentoIdentidad() {
+function verificar_Tipo_Documento_Identidad() {
     var CodTipPer = $('#CodTipPer option:selected') ? $('#CodTipPer option:selected').val() : '';
     var CodTipoDoc = $('#CodTipoDoc option:selected') ? $('#CodTipoDoc option:selected').val() : '';
     var TipoDato = $('#CodTipoDoc option:selected').attr('data-tipo-dato');
@@ -210,7 +210,7 @@ function verificarTipoDocumentoIdentidad() {
 
         if (tipo_longitud == 'F') {
             if (tipo_dato == 'N') {
-                $('#' + id).attr('oninput', 'verificarLongitudDocumento(this)');
+                $('#' + id).attr('oninput', 'verificar_Longitud_Documento(this)');
                 $('#' + id).attr('onkeypress', 'esNumero(event)');
             }
         }
@@ -262,8 +262,8 @@ function nuevoBanco() {
 
     $('#tablaBanco > tbody').append(nuevo);
 
-    autocompletado($('#CodBanco' + id_banco), {}, BASE_URL + "app/mantenience/box_banks/autocompletado");
-    autocompletado($('#idTipoCuenta' + id_banco), { IdAnexo: 0, TipoAnexo: 54, OtroDato: '02' }, BASE_URL + "app/attached/autocompletado");
+    autocompletado('#CodBanco' + id_banco, {}, BASE_URL + "app/mantenience/box_banks/autocompletado");
+    autocompletado('#idTipoCuenta' + id_banco, { IdAnexo: 0, TipoAnexo: 54, OtroDato: '02' }, BASE_URL + "app/attached/autocompletado");
 
 
     id_banco++;

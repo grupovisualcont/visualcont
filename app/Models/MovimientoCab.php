@@ -81,6 +81,43 @@ class MovimientoCab extends Model
         }
     }
 
+    public function agregar($data)
+    {
+        try {
+            $this->insert($data);
+
+            $result = $this->insertID();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function actualizar($CodEmpresa, $IdMov, $data)
+    {
+        try {
+            $this->where('CodEmpresa', $CodEmpresa)->update($IdMov, $data);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function eliminar($CodEmpresa, $Importado, $IdMov)
+    {
+        try {
+            $result = $this->where('movimientocab.CodEmpresa', $CodEmpresa);
+
+            if (!empty($Importado)) {
+                $result = $result->where('movimientocab.Importado', $Importado)->delete();
+            } else {
+                $result = $result->delete($IdMov);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function correlativo($periodo, $mes)
     {
         $this->select('movimientocab.Codmov');

@@ -2,8 +2,8 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
-autocompletado($('#CodcCostoSuperior'), { Estado: 11 }, BASE_URL + "app/mantenience/cost_center/autocompletado");
-autocompletado($('#Estado'), { IdAnexo: 0, TipoAnexo: 1, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
+autocompletado('#CodcCostoSuperior', { Estado: 11 }, BASE_URL + "app/mantenience/cost_center/autocompletado");
+autocompletado('#Estado', { IdAnexo: 0, TipoAnexo: 1, OtroDato: '' }, BASE_URL + "app/attached/autocompletado");
 
 function verificarFormulario() {
     var CodcCosto = $('#CodcCosto').val();

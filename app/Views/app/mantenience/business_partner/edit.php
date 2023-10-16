@@ -29,7 +29,7 @@
                                                 <label>Código</label>
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <input type="text" name="IdSocioN" class="form-control form-control-sm" value="<?= $codigo_socio_negocio ?>" readonly>
+                                                <input type="text" name="IdSocioN" class="form-control form-control-sm" value="<?= $socio_negocio['IdSocioN'] ?>" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -453,5 +453,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    var id_banco = <?= (count($socio_negocio_banco) + 1) ?>;
+    var datos_ruc_CodTipPer = '<?= $datos_ruc['CodTipPer'] ?>';
+    var datos_ruc_CodTipoDoc = '<?= $datos_ruc['CodTipoDoc'] ?>';
+    var datos_ruc_N_tip = '<?= $datos_ruc['N_tip'] ?>';
+    var datos_extranjero_CodTipPer = '<?= $datos_extranjero['CodTipPer'] ?>';
+    var datos_extranjero_CodTipoDoc = '<?= $datos_extranjero['CodTipoDoc'] ?>';
+    var socio_negocio_ruc = '<?= $socio_negocio['ruc'] ?>';
+    var socio_negocio_docidentidad = '<?= $socio_negocio['docidentidad'] ?>';
+    var socio_negocio_razonsocial = '<?= str_replace("'", "\'", $socio_negocio['razonsocial']) ?>';
+</script>
 
 <?= $this->endSection() ?>

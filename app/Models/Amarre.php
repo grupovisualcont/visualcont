@@ -54,6 +54,10 @@ class Amarre extends Model
     {
         try {
             $this->insert($data);
+
+            $result = $this->insertID();
+
+            return $result;
         } catch (\Throwable $th) {
             throw $th;
         }

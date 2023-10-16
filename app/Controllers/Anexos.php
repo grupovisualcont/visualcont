@@ -26,15 +26,17 @@ class Anexos extends BaseController
             $post = $this->request->getPost();
 
             if (isset($post['App']) && !empty($post['App']) && $post['App'] == 'Ventas') {
-                $Value = $post['Value'] ?? 'IdAnexo';
+                $value = $post['Value'] ?? 'IdAnexo';
+                $text = $post['TipoAnexo'] == 11 || $post['TipoAnexo'] == 23 ? 'CONCAT(CodInterno, " - ", DescAnexo)' : 'DescAnexo';
+
                 $whereCodInterno = isset($post['CodInterno']) && !empty($post['CodInterno']) ? 'CodInterno = ' . $post['CodInterno'] : '';
 
                 if (isset($post['search'])) {
                     $search = $post['search'];
 
-                    $anexo = (new Anexo())->getAnexo($this->CodEmpresa, $post['IdAnexo'], $post['TipoAnexo'], $post['OtroDato'], $Value . ' AS id, DescAnexo AS text, CodInterno', [], 'DescAnexo LIKE "%' . $search . '%"', '');
+                    $anexo = (new Anexo())->getAnexo($this->CodEmpresa, $post['IdAnexo'], $post['TipoAnexo'], $post['OtroDato'], $value . ' AS id, ' . $text . ' AS text, CodInterno', [], $text . ' LIKE "%' . $search . '%"', '');
                 } else {
-                    $anexo = (new Anexo())->getAnexo($this->CodEmpresa, $post['IdAnexo'], $post['TipoAnexo'], $post['OtroDato'], $Value . ' AS id, DescAnexo AS text, CodInterno', [], $whereCodInterno, '');
+                    $anexo = (new Anexo())->getAnexo($this->CodEmpresa, $post['IdAnexo'], $post['TipoAnexo'], $post['OtroDato'], $value . ' AS id, ' . $text . ' AS text, CodInterno', [], $whereCodInterno, '');
                 }
             } else if (isset($post['CodEFE']) && !empty($post['CodEFE'])) {
                 $option_operacion = array();

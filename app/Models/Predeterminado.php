@@ -44,10 +44,14 @@ class Predeterminado extends Model
         'CodMoneda_te',
     ];
 
-    public function getPredeterminado($columnas)
+    public function getPredeterminado(string $columnas)
     {
         try {
-            $result = $this->select($columnas)->findAll();
+            $result = $this;
+
+            if (!empty($columnas)) $result = $this->select($columnas);
+
+            $result = $result->asArray()->findAll();
 
             return $result[0];
         } catch (\Throwable $th) {

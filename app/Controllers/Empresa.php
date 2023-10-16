@@ -262,18 +262,14 @@ class Empresa extends BaseController
         }
     }
 
-    public function generar_script($nuevo, $rutas)
+    public function generar_script(array $rutas)
     {
         try {
             $script = '';
 
-            if (!empty($nuevo)) {
-                $script .= '<script>' . $nuevo . '</script>';
-            }
-
             if (is_array($rutas) && count($rutas) > 0) {
                 foreach ($rutas as $indice => $valor) {
-                    $script .= '<script src="' . base_url() . 'assets/js/' . $valor . '"></script>';
+                    $script .= '<script src="' . base_url('assets/js/' . $valor) . '"></script>';
                 }
             }
 

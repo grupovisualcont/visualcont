@@ -130,7 +130,7 @@ class Presupuesto extends BaseController
                     }
                 }
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/budget/create.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/budget/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/budget/create', [
                     'options_niveles' => $options_niveles,
@@ -197,7 +197,7 @@ class Presupuesto extends BaseController
                     $option_plan_contable = '<option value="' . $plan_contable['CodCuenta'] . '" ' . $plan_contable['Disabled'] . '>' . $plan_contable['CodCuenta'] . ' - ' . $plan_contable['DescCuenta'] . '</option>';
                 }
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/budget/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/budget/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/budget/edit', [
                     'presupuesto' => $presupuesto,

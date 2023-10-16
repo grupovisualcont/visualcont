@@ -29,7 +29,7 @@ class Documento extends BaseController
                 if (isset($post['search'])) {
                     $search = $post['search'];
     
-                    $documento = (new ModelsDocumento())->getDocumento($this->CodEmpresa, '', 'VE', 'documento.CodDocumento AS id, CONCAT(documento.CodDocumento, " - ", documento.DescDocumento) AS text, tc.TipoDatoS', [ array('tabla' => 'tipocomprobante tc', 'on' => 'tc.CodComprobante = documento.CodSunat', 'tipo' => 'left') ], 'documento.DescDocumento LIKE "%' . $search . '%"', 'documento.DescDocumento ASC');
+                    $documento = (new ModelsDocumento())->getDocumento($this->CodEmpresa, '', 'VE', 'documento.CodDocumento AS id, CONCAT(documento.CodDocumento, " - ", documento.DescDocumento) AS text, tc.TipoDatoS', [ array('tabla' => 'tipocomprobante tc', 'on' => 'tc.CodComprobante = documento.CodSunat', 'tipo' => 'left') ], 'CONCAT(documento.CodDocumento, " - ", documento.DescDocumento) LIKE "%' . $search . '%"', 'documento.DescDocumento ASC');
                 } else {
                     $documento = (new ModelsDocumento())->getDocumento($this->CodEmpresa, '', 'VE', 'documento.CodDocumento AS id, CONCAT(documento.CodDocumento, " - ", documento.DescDocumento) AS text, tc.TipoDatoS', [ array('tabla' => 'tipocomprobante tc', 'on' => 'tc.CodComprobante = documento.CodSunat', 'tipo' => 'left') ], '', 'documento.DescDocumento ASC');
                 }
@@ -37,7 +37,7 @@ class Documento extends BaseController
                 if (isset($post['search'])) {
                     $search = $post['search'];
     
-                    $documento = (new ModelsDocumento())->getDocumento($this->CodEmpresa, '', '', 'CodDocumento AS id, CONCAT(CodDocumento, " - ", DescDocumento) AS text', [], 'DescDocumento LIKE "%' . $search . '%"', '');
+                    $documento = (new ModelsDocumento())->getDocumento($this->CodEmpresa, '', '', 'CodDocumento AS id, CONCAT(CodDocumento, " - ", DescDocumento) AS text', [], 'CONCAT(CodDocumento, " - ", DescDocumento) LIKE "%' . $search . '%"', '');
                 } else {
                     $documento = (new ModelsDocumento())->getDocumento($this->CodEmpresa, '', '', 'CodDocumento AS id, CONCAT(CodDocumento, " - ", DescDocumento) AS text', [], '', '');
                 }

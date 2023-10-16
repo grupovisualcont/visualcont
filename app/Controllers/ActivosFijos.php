@@ -86,7 +86,7 @@ class ActivosFijos extends BaseController
 
                 $option_metodo_depreciacion = '<option value="' . $metodo_depreciacion['IdAnexoS'] . '">' . $metodo_depreciacion['DescAnexoS'] . '</option>';
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/fixed_assets/create.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/fixed_assets/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/fixed_assets/create', [
                     'codigo_maximo' => $codigo_maximo,
@@ -156,11 +156,7 @@ class ActivosFijos extends BaseController
 
                 $option_metodo_depreciacion = '<option value="' . $metodo_depreciacion['IdAnexoS'] . '">' . $metodo_depreciacion['DescAnexoS'] . '</option>';
 
-                $script = "
-                    var activo_fijo_descripcion = '" . $activo_fijo['descripcion'] . "';
-                ";
-
-                $script = (new Empresa())->generar_script($script, ['app/mantenience/fixed_assets/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/fixed_assets/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/fixed_assets/edit', [
                     'activo_fijo' => $activo_fijo,
@@ -437,12 +433,22 @@ class ActivosFijos extends BaseController
         try {
             $post = $this->request->getPost();
 
-            if (isset($post['search'])) {
-                $search = $post['search'];
+            if (isset($post['App']) && !empty($post['App']) && $post['App'] == 'Ventas') {
+                if (isset($post['search'])) {
+                    $search = $post['search'];
 
-                $activo_fijo = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', 'IdActivo AS id, CONCAT(codActivo, " - ", descripcion) AS text', [], 'descripcion LIKE "%' . $search . '%"', '');
+                    $activo_fijo = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', 'IdActivo AS id, CONCAT(codActivo, " - ", descripcion) AS text', [], 'CONCAT(codActivo, " - ", descripcion) LIKE "%' . $search . '%"', '');
+                } else {
+                    $activo_fijo = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', 'IdActivo AS id, CONCAT(codActivo, " - ", descripcion) AS text', [], '', '');
+                }
             } else {
-                $activo_fijo = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', 'IdActivo AS id, CONCAT(codActivo, " - ", descripcion) AS text', [], '', '');
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+
+                    $activo_fijo = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', 'IdActivo AS id, CONCAT(codActivo, " - ", descripcion) AS text', [], 'CONCAT(codActivo, " - ", descripcion) LIKE "%' . $search . '%"', '');
+                } else {
+                    $activo_fijo = (new ActivoFijo())->getActivoFijo($this->CodEmpresa, 0, '', 'IdActivo AS id, CONCAT(codActivo, " - ", descripcion) AS text', [], '', '');
+                }
             }
 
             echo json_encode($activo_fijo);

@@ -124,7 +124,7 @@ class MovimientoDet extends Model
         try {
             $result = $this;
 
-            if (!empty($columnas)) $result = $this->select($columnas);
+            if (!empty($columnas)) $result = $this->select($columnas, TRUE);
 
             if (is_array($join) && count($join) > 0) {
                 foreach ($join as $indice => $valor) {
@@ -151,7 +151,7 @@ class MovimientoDet extends Model
                     if (isset($valor['IdSocioN']) && !empty($valor['IdSocioN'])) $result = $result->where('movimientodet.IdSocioN', $valor['IdSocioN']);
 
                     if (isset($valor['FecEmision']) && !empty($valor['FecEmision'])) $result = $result->where('DATE(movimientodet.FecEmision)', $valor['FecEmision']);
-                    
+
                     if (isset($valor['CodDocumento']) && !empty($valor['CodDocumento'])) $result = $result->where('movimientodet.CodDocumento', $valor['CodDocumento']);
 
                     if (isset($valor['SerieDoc']) && !empty($valor['SerieDoc'])) $result = $result->where('movimientodet.SerieDoc', $valor['SerieDoc']);
@@ -171,6 +171,65 @@ class MovimientoDet extends Model
             $result = $result->asArray()->findAll();
 
             return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function agregar($data)
+    {
+        try {
+            $this->insert($data);
+
+            $result = $this->insertID();
+
+            return $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function actualizar($CodEmpresa, $IdMov, $IdMovDet, $CodCuenta, $Parametro, $where, $data)
+    {
+        try {
+            $result = $this->where('CodEmpresa', $CodEmpresa);
+
+            if (!empty($IdMov)) $result = $result->where('movimientodet.IdMov', $IdMov);
+
+            if (!empty($CodCuenta)) $result = $result->where('movimientodet.CodCuenta', $CodCuenta);
+
+            if (!empty($Parametro)) $result = $result->where('movimientodet.Parametro', $Parametro);
+
+            if (!empty($where)) $result = $result->where($where);
+
+            $result = $result->update($IdMovDet, $data);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function eliminar($CodEmpresa, $Importado, $IdMov, $IdMovDet, $CodDocumento, $SerieDoc, $NumeroDoc, $FecEmision, $where)
+    {
+        try {
+            $result = $this->where('movimientodet.CodEmpresa', $CodEmpresa);
+
+            if (!empty($IdMov)) $result = $result->where('movimientodet.IdMov', $IdMov);
+
+            if (!empty($CodDocumento)) $result = $result->where('movimientodet.CodDocumento', $CodDocumento);
+
+            if (!empty($SerieDoc)) $result = $result->where('movimientodet.SerieDoc', $SerieDoc);
+
+            if (!empty($NumeroDoc)) $result = $result->where('movimientodet.NumeroDoc', $NumeroDoc);
+
+            if (!empty($FecEmision)) $result = $result->where('DATE(movimientodet.FecEmision)', $FecEmision);
+
+            if (!empty($where)) $result = $result->where($where);
+
+            if (!empty($Importado)) {
+                $result = $result->where('movimientodet.Importado', $Importado)->delete();
+            } else {
+                $result = $result->delete($IdMovDet);
+            }
         } catch (\Throwable $th) {
             throw $th;
         }

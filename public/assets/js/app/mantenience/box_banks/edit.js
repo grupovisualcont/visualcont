@@ -2,9 +2,9 @@ $('select').select2({
     width: 'auto', dropdownAutoWidth: true
 });
 
-autocompletado($('#CodEntidad'), { }, BASE_URL + "app/entidadFinanciera/autocompletado");
-autocompletado($('#CodMoneda'), { }, BASE_URL + "app/moneda/autocompletado_");
-autocompletado($('#codcuenta'), { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
+autocompletado('#CodEntidad', { }, BASE_URL + "app/entidadFinanciera/autocompletado");
+autocompletado('#CodMoneda', { }, BASE_URL + "app/moneda/autocompletado_");
+autocompletado('#codcuenta', { }, BASE_URL + "app/mantenience/accounting_plan/autocompletado");
 
 cambiar_estado_checkbox('Propio');
 

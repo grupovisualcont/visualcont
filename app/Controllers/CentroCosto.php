@@ -77,7 +77,7 @@ class CentroCosto extends BaseController
 
                 $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/cost_center/create.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/cost_center/create.js']);
 
                 return viewApp($this->page, 'app/mantenience/cost_center/create', [
                     'codigo_maximo' => $codigo_maximo,
@@ -113,7 +113,7 @@ class CentroCosto extends BaseController
 
                 $option_estado = '<option value="' . $estado['IdAnexo'] . '">' . $estado['DescAnexo'] . '</option>';
 
-                $script = (new Empresa())->generar_script('', ['app/mantenience/cost_center/edit.js']);
+                $script = (new Empresa())->generar_script(['app/mantenience/cost_center/edit.js']);
 
                 return viewApp($this->page, 'app/mantenience/cost_center/edit', [
                     'centro_costo' => $centro_costo,
@@ -357,12 +357,22 @@ class CentroCosto extends BaseController
         try {
             $post = $this->request->getPost();
 
-            if (isset($post['search'])) {
-                $search = $post['search'];
+            if (isset($post['App']) && !empty($post['App']) && $post['App'] == 'Ventas') {
+                if (isset($post['search'])) {
+                    $search = $post['search'];
 
-                $centro_costo = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, '', $post['Estado'] ?? 0, 'CodcCosto AS id, CONCAT(CodcCosto, " - ", DesccCosto) AS text', [], 'DesccCosto LIKE "%' . $search . '%"', '', '');
+                    $centro_costo = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, '', $post['Estado'] ?? 0, 'CodcCosto AS id, CONCAT(CodcCosto, " - ", DesccCosto) AS text', [], 'CONCAT(CodcCosto, " - ", DesccCosto) LIKE "%' . $search . '%"', '', '');
+                } else {
+                    $centro_costo = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, '', $post['Estado'] ?? 0, 'CodcCosto AS id, CONCAT(CodcCosto, " - ", DesccCosto) AS text', [], '', '', '');
+                }
             } else {
-                $centro_costo = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, '', $post['Estado'] ?? 0, 'CodcCosto AS id, CONCAT(CodcCosto, " - ", DesccCosto) AS text', [], '', '', '');
+                if (isset($post['search'])) {
+                    $search = $post['search'];
+
+                    $centro_costo = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, '', $post['Estado'] ?? 0, 'CodcCosto AS id, CONCAT(CodcCosto, " - ", DesccCosto) AS text', [], 'CONCAT(CodcCosto, " - ", DesccCosto) LIKE "%' . $search . '%"', '', '');
+                } else {
+                    $centro_costo = (new ModelsCentroCosto())->getCentroCosto($this->CodEmpresa, '', $post['Estado'] ?? 0, 'CodcCosto AS id, CONCAT(CodcCosto, " - ", DesccCosto) AS text', [], '', '', '');
+                }
             }
 
             echo json_encode($centro_costo);
