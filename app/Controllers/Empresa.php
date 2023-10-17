@@ -108,7 +108,7 @@ class Empresa extends BaseController
     public function empresa()
     {
         try {
-            $result = (new ModelsEmpresa())->getEmpresaByCodEmpresa('RazonSocial, Ruc', $this->CodEmpresa);
+            $result = (new ModelsEmpresa())->getEmpresa($this->CodEmpresa, 'RazonSocial, Ruc', [], '', '')[0];
 
             return $result;
         } catch (\Throwable $th) {

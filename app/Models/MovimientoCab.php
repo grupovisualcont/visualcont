@@ -31,7 +31,7 @@ class MovimientoCab extends Model
         'FlagInterno'
     ];
 
-    public function getMovimientoCab(string $CodEmpresa, int $IdMov, string $columnas, array $join, array $parametros, string $where, string $orderBy)
+    public function getMovimientoCab(string $CodEmpresa, int $IdMov, string $columnas, array $join, array $parametros, string $where, string $groupBy, string $orderBy)
     {
         try {
             $result = $this;
@@ -71,8 +71,10 @@ class MovimientoCab extends Model
 
             if (!empty($where)) $result = $result->where($where);
 
-            if (!empty($orderBy)) $result = $result->orderBy($orderBy);
+            if (!empty($groupBy)) $result = $result->groupBy($groupBy);
 
+            if (!empty($orderBy)) $result = $result->orderBy($orderBy);
+            
             $result = $result->asArray()->findAll();
 
             return $result;

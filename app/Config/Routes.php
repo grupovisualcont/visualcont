@@ -1,6 +1,7 @@
 <?php
 
 use CodeIgniter\Router\RouteCollection;
+use Config\Database;
 
 /**
  * @var RouteCollection $routes
@@ -254,4 +255,56 @@ $routes->group('app', static function ($routes) {
 
         });
     });
+
+    $routes->group('reports', static function ($routes) {
+
+        $routes->group('sales', static function ($routes) {
+
+            $routes->get('index', 'Reportes::index');
+            $routes->post('registro_ventas/pdf', 'Reportes::registro_ventas_pdf');
+            $routes->post('registro_ventas/excel', 'Reportes::registro_ventas_excel');
+            $routes->post('registro_ventas_sunat/pdf', 'Reportes::registro_ventas_sunat_pdf');
+            $routes->post('registro_ventas_sunat/excel', 'Reportes::registro_ventas_sunat_excel');
+            $routes->post('registro_ventas_sunat_formato_14_1/pdf', 'Reportes::registro_ventas_sunat_formato_14_1_pdf');
+            $routes->post('registro_ventas_sunat_formato_14_1/excel', 'Reportes::registro_ventas_sunat_formato_14_1_excel');
+            $routes->post('registro_ventas_sunat_A4/pdf', 'Reportes::registro_ventas_sunat_A4_pdf');
+            $routes->post('registro_ventas_sunat_A4/excel', 'Reportes::registro_ventas_sunat_A4_excel');
+
+        });
+    });
+});
+
+$routes->get('db', function() {
+
+    $db = Database::connect();
+    
+    $tables = $db->listTables();
+    echo '<pre>';
+    $txtTable = '';
+
+    foreach ($tables as $table) {
+        if ($table == 'tmp_amarres') {
+            $fields = $db->getFieldData($table);
+            foreach ($fields as $indice => $field) {
+                $txtTable .= "'{$field->name}' => [";
+                $txtTable .= "'type' => '{$field->type}',";
+                if (strtolower($field->type) == 'varchar' || strtolower($field->type) == 'int' || strtolower($field->type) == 'decimal' || strtolower($field->type) == 'tinyint') {
+                    $txtTable .= "'constraint' => '{$field->max_length}',";
+                }
+                if ($field->primary_key == '1' && (strtolower($field->type) == 'int' || strtolower($field->type) == 'bigint')) {
+                    $txtTable .= "'auto_increment' => 'true',";
+                }
+                $nullable = (empty($field->nullable)) ? 'false' : 'true';
+                $txtTable .= "'null' => '{$nullable}',";
+                if (!empty($field->default)) {
+                    $txtTable .= "'default' => '{$field->default}',";
+                }
+
+                (count($fields) == ($indice + 1)) ? $txtTable .= "]" . PHP_EOL : $txtTable .= "]," . PHP_EOL;
+            }
+        }
+    }
+
+    echo $txtTable;
+
 });

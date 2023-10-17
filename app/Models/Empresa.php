@@ -10,10 +10,26 @@ class Empresa extends Model
     protected $primaryKey       = 'CodEmpresa';
     protected $allowedFields    = [];
 
-    public function login($usuario, $password)
+    public function getEmpresa(string $CodEmpresa, string $columnas, array $join, string $where, string $orderBy)
     {
         try {
-            $result = $this->where('CodEmpresa', $usuario)->where('Contraseña', $password)->findAll();
+            $result = $this;
+
+            if (!empty($columnas)) $result = $this->select($columnas);
+
+            if (is_array($join) && count($join) > 0) {
+                foreach ($join as $indice => $valor) {
+                    $result = $result->join($valor['tabla'], $valor['on'], $valor['tipo']);
+                }
+            }
+
+            if (!empty($CodEmpresa)) $result = $result->where('CodEmpresa', $CodEmpresa);
+
+            if (!empty($where)) $result->where($where);
+
+            if (!empty($orderBy)) $result = $result->orderBy($orderBy);
+
+            $result = $result->asArray()->findAll();
 
             return $result;
         } catch (\Throwable $th) {
@@ -21,12 +37,12 @@ class Empresa extends Model
         }
     }
 
-    public function getEmpresaByCodEmpresa($columnas, $CodEmpresa)
+    public function login($usuario, $password)
     {
         try {
-            $result = $this->select($columnas)->where('CodEmpresa', $CodEmpresa)->findAll();
+            $result = $this->where('CodEmpresa', $usuario)->where('Contraseña', $password)->findAll();
 
-            return $result[0];
+            return $result;
         } catch (\Throwable $th) {
             throw $th;
         }

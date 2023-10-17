@@ -55,6 +55,7 @@ class Ventas extends BaseController
                         array('Periodo' => date('Y'), 'Mes' => date('m'), 'Origen' => array('VEN', 'IMPORVEN'))
                     ],
                     '',
+                    '',
                     ''
                 );
 
@@ -66,6 +67,7 @@ class Ventas extends BaseController
                         [],
                         [array('IdMovRef' => $valor['IdMov'])],
                         'IdMov !=' . $valor['IdMov'],
+                        '',
                         ''
                     );
 
@@ -78,6 +80,7 @@ class Ventas extends BaseController
                         [],
                         [array('IdMovAplica' => $valor['IdMov'])],
                         'IdMov !=' . $valor['IdMov'],
+                        '',
                         ''
                     );
 
@@ -118,6 +121,7 @@ class Ventas extends BaseController
                     [
                         array('Periodo' => date('Y'), 'Mes' => date('m'), 'Origen' => array('VEN', 'IMPORVEN'))
                     ],
+                    '',
                     '',
                     ''
                 );
@@ -230,7 +234,7 @@ class Ventas extends BaseController
     {
         try {
             if ((new Empresa())->verificar_inicio_sesion()) {
-                $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, 'IdMov', [], [array('IdMovRef' => $IdMov)], '', '');
+                $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, 'IdMov', [], [array('IdMovRef' => $IdMov)], '', '', '');
 
                 $IdMovRef = '';
 
@@ -249,6 +253,7 @@ class Ventas extends BaseController
                     ],
                     [],
                     'movdet.IdSocioN IS NOT NULL',
+                    '',
                     'movdet.IdMovDet ASC'
                 )[0];
 
@@ -274,10 +279,11 @@ class Ventas extends BaseController
                         array('IdMovRef' => $IdMov)
                     ],
                     'movdet.Parametro = "BANCO" AND movdet.CodTipoPago IS NOT NULL',
+                    '',
                     ''
                 );
 
-                $movimiento_cab_referencia = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, 'IdMov', [], [array('IdMovAplica' => $IdMov)], '', '');
+                $movimiento_cab_referencia = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, 'IdMov', [], [array('IdMovAplica' => $IdMov)], '', '', '');
 
                 $tipo_voucher_cab = (new TipoVoucherCab())->getTipoVoucherCab($this->CodEmpresa, $movimiento_cab['CodTV'], array(1, 2), '', [], '', 'DescVoucher ASC')[0];
 
@@ -424,6 +430,7 @@ class Ventas extends BaseController
                 [
                     array('Origen' => array('VEN', 'IMPORVEN'), 'Periodo' => date('Y'), 'Mes' => date('m'))
                 ],
+                '',
                 '',
                 ''
             );
@@ -836,6 +843,7 @@ class Ventas extends BaseController
                             array('Origen' => array('VEN_AP'), 'Periodo' => date('Y'), 'Mes' => date('m'))
                         ],
                         '',
+                        '',
                         ''
                     );
 
@@ -1091,6 +1099,7 @@ class Ventas extends BaseController
                         [
                             array('Origen' => array('VEN_CO'), 'Periodo' => date('Y'), 'Mes' => date('m'))
                         ],
+                        '',
                         '',
                         ''
                     );
@@ -1521,6 +1530,7 @@ class Ventas extends BaseController
                         ],
                         [],
                         $where,
+                        '',
                         ''
                     );
 
@@ -1913,6 +1923,7 @@ class Ventas extends BaseController
                             [
                                 array('Origen' => array('VEN_AP'), 'Periodo' => date('Y'), 'Mes' => date('m'))
                             ],
+                            '',
                             '',
                             ''
                         );
@@ -2311,6 +2322,7 @@ class Ventas extends BaseController
                                 array('Origen' => array('VEN_CO'), 'Periodo' => date('Y'), 'Mes' => date('m'))
                             ],
                             '',
+                            '',
                             ''
                         );
 
@@ -2634,6 +2646,7 @@ class Ventas extends BaseController
                                 [
                                     array('Origen' => array('VEN_CO'), 'Periodo' => date('Y'), 'Mes' => date('m'))
                                 ],
+                                '',
                                 '',
                                 ''
                             );
@@ -2959,6 +2972,7 @@ class Ventas extends BaseController
                     array('IdMovAplica' => $IdMov)
                 ],
                 '',
+                '',
                 ''
             );
 
@@ -3000,6 +3014,7 @@ class Ventas extends BaseController
                             ],
                             [],
                             $where,
+                            '',
                             ''
                         );
 
@@ -3013,7 +3028,7 @@ class Ventas extends BaseController
                 }
             }
 
-            $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, '', [], [array('IdMovRef' => $IdMov)], '', '');
+            $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, '', [], [array('IdMovRef' => $IdMov)], '', '', '');
 
             if (count($movimiento_cab) > 0) {
                 $IdMovRef = $movimiento_cab[0]['IdMov'];
@@ -3025,7 +3040,7 @@ class Ventas extends BaseController
                 (new SaldoDet())->eliminar($this->CodEmpresa, '', $IdMovRef, 0, null);
             }
 
-            $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, '', [], [array('IdMovAplica' => $IdMov)], '', '');
+            $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, '', [], [array('IdMovAplica' => $IdMov)], '', '', '');
 
             if (count($movimiento_cab) > 0) {
                 $IdMovAplica = $movimiento_cab[0]['IdMov'];
@@ -3218,6 +3233,7 @@ class Ventas extends BaseController
                 ],
                 [],
                 '',
+                '',
                 ''
             )[0];
 
@@ -3301,6 +3317,7 @@ class Ventas extends BaseController
                     array('tabla' => 'tipovouchercab tvcab', 'on' => 'tvcab.CodTV = movimientocab.CodTV AND tvcab.CodEmpresa = movimientocab.CodEmpresa', 'tipo' => 'inner')
                 ],
                 [],
+                '',
                 '',
                 ''
             )[0];
@@ -3467,7 +3484,7 @@ class Ventas extends BaseController
                 'movimientodet.NumItem ASC'
             );
 
-            $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, 'IdMov', [], [array('IdMovAplica' => $IdMov)], '', '');
+            $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, 'IdMov', [], [array('IdMovAplica' => $IdMov)], '', '', '');
 
             $IdMovAplica = 0;
 
@@ -3741,7 +3758,7 @@ class Ventas extends BaseController
         try {
             $CampoLibre1 = array();
 
-            $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, 'IdMov', [],  [array('IdMovAplica' => $IdMov)], '', '');
+            $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, 'IdMov', [],  [array('IdMovAplica' => $IdMov)], '', '', '');
 
             $tr = '';
 
@@ -3774,6 +3791,7 @@ class Ventas extends BaseController
                         ],
                         [],
                         $where,
+                        '',
                         ''
                     );
 
@@ -4005,6 +4023,7 @@ class Ventas extends BaseController
                     array('tabla' => 'tipovouchercab tvcab', 'on' => 'tvcab.CodTV = movimientocab.CodTV AND tvcab.CodEmpresa = movimientocab.CodEmpresa', 'tipo' => 'inner')
                 ],
                 [],
+                '',
                 '',
                 ''
             )[0];
@@ -5101,7 +5120,7 @@ class Ventas extends BaseController
                     $existe_codigo = array('existe' => false);
 
                     if (count($movimiento_det) > 0) {
-                        $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, $movimiento_det[0]['IdMov'], 'Codmov', [], [], '', '')[0];
+                        $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, $movimiento_det[0]['IdMov'], 'Codmov', [], [], '', '', '')[0];
 
                         $existe_codigo = array('existe' => true, 'periodo' => date('Y', strtotime($movimiento_det[0]['FecEmision'])), 'mes' => date('m', strtotime($movimiento_det[0]['FecEmision'])), 'movi' => $movimiento_cab['Codmov']);
                     }
@@ -5111,10 +5130,10 @@ class Ventas extends BaseController
             } else if ($subtipo == 'voucher') {
                 $Codmov = trim(strval($this->request->getPost('Codmov')));
 
-                $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, '', [], [array('Codmov' => $Codmov)], '', '');
+                $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, '', [], [array('Codmov' => $Codmov)], '', '', '');
 
                 if (count($movimiento_cab) > 0) {
-                    $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, 'MAX(SUBSTRING(Codmov, 6)) AS codigo', [], [array('Origen' => array('VEN', 'IMPORVEN'))], '', '');
+                    $movimiento_cab = (new MovimientoCab())->getMovimientoCab($this->CodEmpresa, 0, 'MAX(SUBSTRING(Codmov, 6)) AS codigo', [], [array('Origen' => array('VEN', 'IMPORVEN'))], '', '', '');
 
                     $codigo_voucher_maximo = 'VEN' . date('m') . '000001';
 
@@ -6052,6 +6071,7 @@ class Ventas extends BaseController
                         [],
                         [],
                         'IdMovAplica IS NOT NULL AND LENGTH(IdMovAplica) > 0 AND Importado = ' . $id,
+                        '',
                         ''
                     );
         
@@ -6092,6 +6112,7 @@ class Ventas extends BaseController
                                     ],
                                     [],
                                     $where,
+                                    '',
                                     ''
                                 );
         
@@ -6763,6 +6784,7 @@ class Ventas extends BaseController
                             array('Origen' => array($CodTV_ve, 'IMPORVEN'), 'Periodo' => date('Y'), 'Mes' => date('m'))
                         ],
                         '',
+                        '',
                         ''
                     );
 
@@ -6890,6 +6912,7 @@ class Ventas extends BaseController
                                 array('Origen' => array('VEN_CO', 'IMPORCOB'), 'Periodo' => date('Y'), 'Mes' => date('m'))
                             ],
                             '',
+                            '',
                             ''
                         );
 
@@ -6944,6 +6967,7 @@ class Ventas extends BaseController
                             [
                                 array('Origen' => array('VEN_AP', 'IMPORVEN_AP'), 'Periodo' => date('Y'), 'Mes' => date('m'))
                             ],
+                            '',
                             '',
                             ''
                         );
