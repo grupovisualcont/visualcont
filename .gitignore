@@ -5,6 +5,8 @@
 /app/Database/
 /vendor/
 /writable/
+/build/
+.phpunit.result.cache
 
 # VUE
 /node_modules

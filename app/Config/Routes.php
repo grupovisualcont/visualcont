@@ -5,9 +5,31 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
+$routes->get('/', 'Web\\LoginController::index');
 
-$routes->post('login', 'Empresa::login');
+$routes->post('login', 'Web\\LoginController::validarUsuario');
+
+$routes->group('web', ['filter' => 'auth'], static function($routes) {
+
+    $routes->get('panel', 'Web\\PanelController::index');
+
+    $routes->group('mantenience', static function ($routes) {
+
+        $routes->group('business_partner', static function ($routes) {
+            $routes->get('/', 'Web\\SocioNegocioController::lista');
+            $routes->get('create', 'Web\\SocioNegocioController::crear');
+            $routes->post('save', 'Web\\SocioNegocioController::store');
+            $routes->get('edit/(:any)', 'Web\\SocioNegocioController::edit/$1');
+            $routes->put('update', 'Web\\SocioNegocioController::update');
+            $routes->delete('destroy/(:any)', 'Web\\SocioNegocioController::destroy/$1');
+            $routes->get('autocomplete', 'Web\\T27VinculoController::autoCompletado');
+        });
+    });
+
+    $routes->get('logout', 'LoginController::logout');
+});
+
+// Revisar
 $routes->post('empresa/consulta_sunat', 'Empresa::consulta_sunat');
 $routes->post('empresa/consulta_tipo_cambio', 'Empresa::consulta_tipo_cambio');
 

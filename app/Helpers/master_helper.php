@@ -13,3 +13,16 @@ if (!function_exists('assetVersion')) {
         return base_url('assets/'. $url . $ver);
     }
 }
+
+if (!function_exists('baseUrlWeb')) {
+    /**
+     * devuelve la ruta deifina para el uso del cliente
+     * 
+     * @param string $url
+     * @return string
+     */
+    function baseUrlWeb(string $url): string
+    {
+        return base_url('web/' . $url);
+    }
+}

@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class Sidebar extends Model
 {
-    protected $table            = 'sidebar';
+    protected $table            = 'menu';
     protected $primaryKey       = 'id';
     protected $allowedFields    = [];
 

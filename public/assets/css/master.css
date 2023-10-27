@@ -60,6 +60,11 @@ a {
     padding-left: 0;
 }
 
+.input-group-sm>.btn, .input-group-sm>.form-control, .input-group-sm>.form-select, .input-group-sm>.input-group-text {
+    border-radius: inherit;
+    padding: 0.1rem 0.1rem;
+}
+
 /*
  * ====================================================================
  * MENU
@@ -162,7 +167,7 @@ a {
 }
 
 .body-wrapper>.container-fluid, .body-wrapper>.container-lg, .body-wrapper>.container-md, .body-wrapper>.container-sm, .body-wrapper>.container-xl, .body-wrapper>.container-xxl {
-    max-width: 1500px;
+    max-width: 2500px;
 }
 
 @media (min-width: 992px) {

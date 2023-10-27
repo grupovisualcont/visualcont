@@ -6,9 +6,9 @@ use CodeIgniter\Model;
 
 class Anexo extends Model
 {
-    protected $table = 'anexos';
+    protected $table = 'anexo';
 
-    protected $primaryKey = 'IdAnexo';
+    protected $primaryKey = 'CodAnexo';
 
     protected $allowedFields = [
         'IdAnexo',
@@ -34,9 +34,9 @@ class Anexo extends Model
                 }
             }
 
-            $result = $this->where('CodEmpresa', $CodEmpresa);
+            // $result = $this->where('CodEmpresa', $CodEmpresa);
 
-            if (!empty($IdAnexo)) $result = $result->where('IdAnexo', $IdAnexo);
+            if (!empty($IdAnexo)) $result = $result->where('CodAnexo', $IdAnexo);
 
             if (!is_array($TipoAnexo) && !empty($TipoAnexo)) $result = $result->where('TipoAnexo', $TipoAnexo);
 

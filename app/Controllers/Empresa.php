@@ -8,8 +8,6 @@ use App\Models\Sidebar;
 use App\Models\SidebarDetalles;
 use App\Models\TipoCambio;
 
-@session_start();
-
 class Empresa extends BaseController
 {
     protected $page;
